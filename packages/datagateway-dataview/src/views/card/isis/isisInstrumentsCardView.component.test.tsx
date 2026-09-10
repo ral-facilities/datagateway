@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, type RenderResult } from '@testing-library/react';
+import { act, render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -8,11 +8,12 @@ import {
   useInstrumentsPaginated,
   type Instrument,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../../page/pageContainer.component';
+import { flushPromises } from '../../../setupTests';
 import type { StateType } from '../../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
@@ -32,17 +33,22 @@ describe('ISIS Instruments - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Instrument[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
+  let props: React.ComponentProps<typeof ISISInstrumentsCardView>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsCardView dataPublication={false} />
+            <Routes>
+              <Route
+                path={paths.toggle.isisInstrument}
+                element={<ISISInstrumentsCardView {...props} />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -54,7 +60,8 @@ describe('ISIS Instruments - Card View', () => {
         name: 'Test 1',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState({}, '', paths.toggle.isisInstrument);
+    props = { dataPublication: false };
 
     state = JSON.parse(
       JSON.stringify({
@@ -101,15 +108,8 @@ describe('ISIS Instruments - Card View', () => {
   });
 
   it('correct link used for studyHierarchy', async () => {
-    render(
-      <Provider store={mockStore(state)}>
-        <Router history={history}>
-          <QueryClientProvider client={new QueryClient()}>
-            <ISISInstrumentsCardView dataPublication={true} />
-          </QueryClientProvider>
-        </Router>
-      </Provider>
-    );
+    props.dataPublication = true;
+    renderComponent();
     expect(await screen.findByRole('link', { name: 'Test 1' })).toHaveAttribute(
       'href',
       '/browseDataPublications/instrument/1/dataPublication'
@@ -131,7 +131,7 @@ describe('ISIS Instruments - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toContain(
       `?filters=${encodeURIComponent(
         '{"fullName":{"value":"test","type":"include"}}'
       )}`
@@ -139,23 +139,28 @@ describe('ISIS Instruments - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).not.toContain('filters=');
   });
 
   it('uses default sort', async () => {
     renderComponent();
 
+    await act(async () => {
+      await flushPromises();
+    });
+
     expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-    expect(history.length).toBe(1);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"asc"}')}`
     );
 
-    // check that the data request is sent only once after mounting
-    expect(useInstrumentsPaginated).toHaveBeenCalledTimes(2);
-    expect(useInstrumentsPaginated).toHaveBeenCalledWith(undefined, false);
-    expect(useInstrumentsPaginated).toHaveBeenLastCalledWith(undefined, true);
+    // check that the data hook is only called once with the query enabled
+    expect(
+      vi
+        .mocked(useInstrumentsPaginated)
+        .mock.calls.filter((call) => call[1] === true)
+    ).toHaveLength(1);
   });
 
   it('updates sort query params on sort', async () => {
@@ -165,7 +170,7 @@ describe('ISIS Instruments - Card View', () => {
       await screen.findByRole('button', { name: 'Sort by INSTRUMENTS.NAME' })
     );
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"fullName":"desc"}')}`
     );
   });

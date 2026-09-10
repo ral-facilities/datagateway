@@ -5,12 +5,10 @@ import {
   type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import type { MockInstance } from 'vitest';
 import type { StateType } from '../state/app.types';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import CheckBoxesGroup from './checkBoxes.component';
@@ -22,23 +20,20 @@ describe('Checkbox component tests', () => {
   let state: StateType;
   const mockStore = configureStore([thunk]);
   let testStore: ReturnType<typeof mockStore>;
-  let history: History;
-  let pushSpy: MockInstance;
 
   function renderComponent(): RenderResult {
     return render(
       <Provider store={testStore}>
-        <Router history={history}>
+        <BrowserRouter>
           <CheckBoxesGroup />
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   }
 
   beforeEach(() => {
     user = userEvent.setup();
-    history = createMemoryHistory();
-    pushSpy = vi.spyOn(history, 'push');
+    window.history.replaceState({}, '', '/');
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
@@ -61,7 +56,7 @@ describe('Checkbox component tests', () => {
   });
 
   it('renders a dropdown button that expands to show search type checkboxes', async () => {
-    history.replace('/?searchText=&investigation=false');
+    window.history.replaceState({}, '', '/?searchText=&investigation=false');
     renderComponent();
 
     // open the dropdown
@@ -85,7 +80,7 @@ describe('Checkbox component tests', () => {
 
   it('renders correctly when datafiles are not searchable', async () => {
     state.dgsearch.searchableEntities = ['investigation', 'dataset'];
-    history.replace('/?searchText=&investigation=false');
+    window.history.replaceState({}, '', '/?searchText=&investigation=false');
     renderComponent();
 
     // open the dropdown
@@ -109,7 +104,9 @@ describe('Checkbox component tests', () => {
   });
 
   it('renders an error message when nothing is selected', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/?searchText=&investigation=false&dataset=false&datafile=false'
     );
 
@@ -121,7 +118,7 @@ describe('Checkbox component tests', () => {
   });
 
   it('pushes URL with new dataset value when user clicks checkbox', async () => {
-    history.replace('/?searchText=&investigation=false');
+    window.history.replaceState({}, '', '/?searchText=&investigation=false');
     renderComponent();
 
     await user.click(
@@ -135,13 +132,13 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith(
+    expect(window.location.search).toBe(
       '?searchText=&dataset=false&investigation=false'
     );
   });
 
   it('pushes URL with new datafile value when user clicks checkbox', async () => {
-    history.replace('/?searchText=&investigation=false');
+    window.history.replaceState({}, '', '/?searchText=&investigation=false');
     renderComponent();
 
     await user.click(
@@ -155,13 +152,13 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith(
+    expect(window.location.search).toBe(
       '?searchText=&datafile=false&investigation=false'
     );
   });
 
   it('pushes URL with new investigation value when user clicks checkbox', async () => {
-    history.replace('/?searchText=&investigation=false');
+    window.history.replaceState({}, '', '/?searchText=&investigation=false');
     renderComponent();
 
     await user.click(
@@ -175,6 +172,6 @@ describe('Checkbox component tests', () => {
       })
     );
 
-    expect(pushSpy).toHaveBeenCalledWith('?searchText=');
+    expect(window.location.search).toBe('?searchText=');
   });
 });

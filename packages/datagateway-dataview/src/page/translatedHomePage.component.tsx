@@ -14,8 +14,8 @@ import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 
 export interface TranslatedHomePageStateProps {
-  facilityImageURL?: string | undefined;
-  pluginHost: string | undefined;
+  facilityImageURL?: string;
+  pluginHost?: string;
 }
 
 export const TranslatedHomePage = React.memo(

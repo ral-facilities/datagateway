@@ -16,14 +16,14 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 
-interface ISISFacilityCyclesCVProps {
+interface BaseISISFacilityCyclesCVProps {
   instrumentId: string;
 }
 
-const ISISFacilityCyclesCardView = (
-  props: ISISFacilityCyclesCVProps
+const BaseISISFacilityCyclesCardView = (
+  props: BaseISISFacilityCyclesCVProps
 ): React.ReactElement => {
   const { instrumentId } = props;
   const [t] = useTranslation();
@@ -41,19 +41,20 @@ const ISISFacilityCyclesCardView = (
   const pushPage = usePushPage();
   const pushResults = usePushResults();
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { data: totalDataCount, isPending: countLoading } =
     useFacilityCycleCount(parseInt(instrumentId));
   const { isPending: dataLoading, data } = useFacilityCyclesPaginated(
     parseInt(instrumentId),
-    isMounted
+    isInitialised
   );
 
   const title: CardViewDetails = React.useMemo(
@@ -119,6 +120,11 @@ const ISISFacilityCyclesCardView = (
       information={information}
     />
   );
+};
+
+const ISISFacilityCyclesCardView = () => {
+  const { instrumentId = '' } = useParams();
+  return <BaseISISFacilityCyclesCardView instrumentId={instrumentId} />;
 };
 
 export default ISISFacilityCyclesCardView;

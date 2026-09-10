@@ -15,10 +15,6 @@ vi.setConfig({ testTimeout: 20_000 });
 // and https://github.com/testing-library/user-event/issues/1115
 vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
 
-function noOp(): void {
-  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
-}
-
 // Mock Date.toLocaleDateString so that it always uses en-GB as locale and UTC timezone
 // instead of using the system default, which can be different depending on the environment.
 // save a reference to the original implementation of Date.toLocaleDateString
@@ -34,10 +30,6 @@ vi.spyOn(Date.prototype, 'toLocaleDateString').mockImplementation(function (
   // Date.toLocaleDateString('en-GB', { timeZone: 'UTC' })
   return toLocaleDateString.call(this, 'en-GB', { timeZone: 'UTC' });
 });
-
-if (typeof window.URL.createObjectURL === 'undefined') {
-  Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
-}
 
 // jsdom doesn't implement ResizeObserver so mock it
 vi.stubGlobal(

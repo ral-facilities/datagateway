@@ -31,17 +31,17 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { StateType } from '../../../state/app.types';
 
-interface ISISInvestigationsTableProps {
+interface BaseISISInvestigationsTableProps {
   instrumentId: string;
   facilityCycleId: string;
 }
 
-const ISISInvestigationsTable = (
-  props: ISISInvestigationsTableProps
+const BaseISISInvestigationsTable = (
+  props: BaseISISInvestigationsTableProps
 ): React.ReactElement => {
   const { instrumentId, facilityCycleId } = props;
   const disableSelectAll = useSelector(
@@ -52,7 +52,7 @@ const ISISInvestigationsTable = (
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
   const location = useLocation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const [t] = useTranslation();
 
   const { filters, view, sort } = React.useMemo(
@@ -79,13 +79,14 @@ const ISISInvestigationsTable = (
     },
   ];
 
-  // isMounted is used to disable queries when the component isn't fully mounted.
+  // isInitialised is used to disable queries when the component isn't fully initialised.
   // It prevents the request being sent twice if default sort is set.
   // It is not needed for cards/tables that don't have default sort.
-  const [isMounted, setIsMounted] = React.useState(false);
+  const [isInitialised, setIsInitialised] = React.useState(false);
+
   React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    if (!isInitialised && Object.keys(sort).length > 0) setIsInitialised(true);
+  }, [isInitialised, sort]);
 
   const { data: totalDataCount } = useInvestigationCount(
     investigationQueryFilters
@@ -111,7 +112,7 @@ const ISISInvestigationsTable = (
       },
     ],
     undefined,
-    isMounted
+    isInitialised
   );
   const { data: allIds, isPending: allIdsLoading } = useIds(
     'investigation',
@@ -170,11 +171,11 @@ const ISISInvestigationsTable = (
           rowData={rowData}
           detailsPanelResize={detailsPanelResize}
           viewDatasets={(id: number) =>
-            push(`${location.pathname}/${id}/dataset`)
+            navigate(`${location.pathname}/${id}/dataset`)
           }
         />
       ),
-      [push, location.pathname]
+      [navigate, location.pathname]
     );
 
   const columns: ColumnType[] = React.useMemo(
@@ -308,6 +309,16 @@ const ISISInvestigationsTable = (
         ),
       ]}
       columns={columns}
+    />
+  );
+};
+
+const ISISInvestigationsTable = () => {
+  const { instrumentId = '', facilityCycleId = '' } = useParams();
+  return (
+    <BaseISISInvestigationsTable
+      instrumentId={instrumentId}
+      facilityCycleId={facilityCycleId}
     />
   );
 };

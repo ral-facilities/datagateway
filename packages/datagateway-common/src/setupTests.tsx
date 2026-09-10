@@ -4,10 +4,9 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import '@testing-library/jest-dom';
-import { History, createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import type { Action } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -24,20 +23,6 @@ vi.setConfig({ testTimeout: 20_000 });
 // see https://github.com/testing-library/react-testing-library/issues/1197
 // and https://github.com/testing-library/user-event/issues/1115
 vi.stubGlobal('jest', { advanceTimersByTime: vi.advanceTimersByTime.bind(vi) });
-
-if (typeof window.URL.createObjectURL === 'undefined') {
-  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
-  Object.defineProperty(window.URL, 'createObjectURL', {
-    value: () => 'testObjectUrl',
-  });
-}
-
-if (typeof window.URL.revokeObjectURL === 'undefined') {
-  // required as work-around for jsdom environment not implementing window.URL.createObjectURL method
-  Object.defineProperty(window.URL, 'revokeObjectURL', {
-    value: () => {},
-  });
-}
 
 // Add in ResizeObserver as it's not in jsdom's environment
 vi.stubGlobal(
@@ -99,7 +84,6 @@ export const createTestQueryClient = (): QueryClient =>
   });
 
 export const createReactQueryWrapper = (
-  history: History = createMemoryHistory(),
   queryClient: QueryClient = createTestQueryClient()
 ): React.JSXElementConstructor<{ children: React.ReactNode }> => {
   const state = {
@@ -123,11 +107,11 @@ export const createReactQueryWrapper = (
     children: React.ReactNode;
   }> = ({ children }) => (
     <Provider store={mockStore(state)}>
-      <Router history={history}>
+      <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
   return wrapper;

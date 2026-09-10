@@ -3,7 +3,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Order, parseSearchToQuery, useSingleSort } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

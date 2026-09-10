@@ -31,14 +31,17 @@ describe('ISIS - Instruments Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     //Revert the default sort
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.contains('[aria-sort="descending"]', 'Name').should('exist');
     cy.get('@nameSortButton').click();
+    cy.get('[aria-sort]').should('not.exist');
 
     // ascending order
     cy.get('@nameSortButton').click();
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
       'Eight imagine picture tough.'
@@ -83,14 +86,17 @@ describe('ISIS - Instruments Table', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Name').click();
-    cy.contains('[role="button"]', 'Name').click();
-
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
+    //Revert the default sort
+    cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
+    cy.contains('[aria-sort="descending"]', 'Name').should('exist');
+    cy.get('@nameSortButton').click();
+    cy.get('[aria-sort]').should('not.exist');
     cy.get('[data-testid="SortIcon"]').should('have.length', 2);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Name').click();
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

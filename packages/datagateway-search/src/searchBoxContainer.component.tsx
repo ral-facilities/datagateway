@@ -1,8 +1,7 @@
 import { Box, Grid, Link, styled, Theme, Typography } from '@mui/material';
-import { Location } from 'history';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router';
 import AdvancedHelpDialog from './search/advancedHelpDialog.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SelectDates from './search/datePicker.component';
@@ -29,6 +28,18 @@ interface SearchBoxContainerProps {
   onMyDataCheckboxChange: (checked: boolean) => void;
 }
 
+function searchTextExampleLink(
+  exampleSearchText: string,
+  location: ReturnType<typeof useLocation>
+) {
+  const searchParams = new URLSearchParams(location.search);
+  searchParams.set('searchText', exampleSearchText);
+  return {
+    ...location,
+    search: searchParams.toString(),
+  };
+}
+
 const SearchBoxContainer = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
@@ -41,17 +52,7 @@ const SearchBoxContainer = (
     onMyDataCheckboxChange,
   } = props;
   const [t] = useTranslation();
-
-  function searchTextExampleLink(exampleSearchText: string) {
-    return (location: Location): Location => {
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set('searchText', exampleSearchText);
-      return {
-        ...location,
-        search: searchParams.toString(),
-      };
-    };
-  }
+  const location = useLocation();
 
   return (
     <ContainerBox data-testid="search-box-container">
@@ -120,7 +121,10 @@ const SearchBoxContainer = (
             <Link
               component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              to={searchTextExampleLink(t('searchBox.examples_label_link1'))}
+              to={searchTextExampleLink(
+                t('searchBox.examples_label_link1'),
+                location
+              )}
             >
               &quot;instrument calibration&quot;
             </Link>
@@ -128,7 +132,10 @@ const SearchBoxContainer = (
             <Link
               component={RouterLink}
               sx={{ fontWeight: 'bold' }}
-              to={searchTextExampleLink(t('searchBox.examples_label_link2'))}
+              to={searchTextExampleLink(
+                t('searchBox.examples_label_link2'),
+                location
+              )}
             >
               neutron AND scattering
             </Link>

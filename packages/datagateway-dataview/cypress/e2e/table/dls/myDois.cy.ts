@@ -137,7 +137,7 @@ describe('DLS - MyDOIs Table', () => {
         // ascending order
         cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
-        cy.get('[aria-sort="ascending"]').should('exist');
+        cy.contains('[aria-sort="ascending"]', 'Title').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
           'Test DOI Title 1'
@@ -254,10 +254,18 @@ describe('DLS - MyDOIs Table', () => {
         cy.title().should('equal', 'DataGateway DataView');
         cy.get('#datagateway-dataview').should('be.visible');
 
+        // wait for default sort to get applied before changing the DOI type
+        // which also updates the URL and can cause a race condition
+        cy.contains('[aria-sort="descending"]', 'Publication Date').should(
+          'exist'
+        );
+
         cy.contains('Session DOIs').click();
 
         //Default sort
-        cy.get('[aria-sort="descending"]').should('exist');
+        cy.contains('[aria-sort="descending"]', 'Publication Date').should(
+          'exist'
+        );
         cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');
 
         cy.contains('72: Star enter wide nearly off.').click({ force: true });

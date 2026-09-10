@@ -29,13 +29,10 @@ describe('ISIS - FacilityCycles Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Start Date').click();
-
     // ascending order
     cy.contains('[role="button"]', 'Name').as('nameSortButton').click();
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Name').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
       '2001-04-02 00:00:00'
@@ -75,29 +72,28 @@ describe('ISIS - FacilityCycles Table', () => {
 
     // should replace previous sort when clicked without shift
     cy.contains('[role="button"]', 'End Date').click();
+    cy.contains('[aria-sort="ascending"]', 'End Date').should('exist');
     cy.contains('[role="button"]', 'End Date').click();
     cy.get('[aria-sort="descending"]').should('have.length', 1);
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('2004 cycle 3');
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Start Date').click();
-
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 2);
 
     // check icon when clicking on a column
-    cy.contains('[role="button"]', 'Start Date').click();
+    cy.contains('[role="button"]', 'End Date').click();
+    cy.contains('[aria-sort="ascending"]', 'End Date').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 
     // check icon when clicking on a column again
-    cy.contains('[role="button"]', 'Start Date').click();
+    cy.contains('[role="button"]', 'End Date').click();
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
     // check icon when hovering over a column
-    cy.contains('[role="button"]', 'End Date').trigger('mouseover');
+    cy.contains('[role="button"]', 'Start Date').trigger('mouseover');
     cy.get('[data-testid="ArrowUpwardIcon"]').should('have.length', 1);
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
 

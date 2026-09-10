@@ -1,18 +1,24 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMemoryHistory } from 'history';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import SortSelectComponent from './sortSelect.component';
 
 describe('sortSelect', () => {
+  const renderComponent = () =>
+    render(
+      <BrowserRouter>
+        <SortSelectComponent />
+      </BrowserRouter>
+    );
+
+  beforeEach(() => {
+    window.history.replaceState({}, '', '/');
+  });
+
   it('renders correctly', async () => {
     const user = userEvent.setup();
 
-    render(
-      <MemoryRouter>
-        <SortSelectComponent />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     // open the dropdown menu
     await user.click(screen.getByRole('combobox', { name: 'sort.label' }));
@@ -36,13 +42,8 @@ describe('sortSelect', () => {
 
   it('updates URL correctly accordingly to selected sort', async () => {
     const user = userEvent.setup();
-    const history = createMemoryHistory();
 
-    render(
-      <Router history={history}>
-        <SortSelectComponent />
-      </Router>
-    );
+    renderComponent();
 
     // open the dropdown menu
     await user.click(screen.getByRole('combobox', { name: 'sort.label' }));
@@ -50,7 +51,7 @@ describe('sortSelect', () => {
       screen.getByRole('option', { name: 'sort.date_desc' }),
     ]);
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?${new URLSearchParams({
         sort: JSON.stringify({ date: 'desc' }),
       }).toString()}`
@@ -62,7 +63,7 @@ describe('sortSelect', () => {
       screen.getByRole('option', { name: 'sort.name_asc' }),
     ]);
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?${new URLSearchParams({
         sort: JSON.stringify({ name: 'asc' }),
       }).toString()}`
@@ -74,16 +75,9 @@ describe('sortSelect', () => {
       sort: JSON.stringify({ fileSize: 'asc' }),
     });
 
-    const history = createMemoryHistory();
-    history.replace({
-      search: `?${initialQuery.toString()}`,
-    });
+    window.history.replaceState({}, '', `/?${initialQuery.toString()}`);
 
-    render(
-      <Router history={history}>
-        <SortSelectComponent />
-      </Router>
-    );
+    renderComponent();
 
     expect(
       within(screen.getByRole('combobox', { name: 'sort.label' })).getByText(

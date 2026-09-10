@@ -1,20 +1,19 @@
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
-import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import type { StateType } from '../state/app.types';
-import { createLocation, createMemoryHistory, type History } from 'history';
-import PageBreadcrumbs from './breadcrumbs.component';
-import axios from 'axios';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
+import axios from 'axios';
+import { dGCommonInitialState } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { StateType } from '../state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import PageBreadcrumbs from './breadcrumbs.component';
 
 vi.mock('loglevel');
 
@@ -58,7 +57,6 @@ const DLSRoutes = {
 
 describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   let state: StateType;
-  let history: History;
 
   const renderComponent = (
     state: StateType,
@@ -68,17 +66,15 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
     return render(
       <Provider store={mockStore(state)}>
         <QueryClientProvider client={new QueryClient()}>
-          <Router history={history}>
+          <BrowserRouter>
             <PageBreadcrumbs landingPageEntities={landingPageEntities} />
-          </Router>
+          </BrowserRouter>
         </QueryClientProvider>
       </Provider>
     );
   };
 
   beforeEach(() => {
-    history = createMemoryHistory();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: {
@@ -126,6 +122,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
         },
       });
     });
+
+    window.history.replaceState({}, '', '/');
   });
 
   afterEach(() => {
@@ -135,7 +133,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   describe('Generic', () => {
     it('generic route renders correctly at the base route and does not request', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(genericRoutes['investigations']));
+      window.history.replaceState({}, '', genericRoutes['investigations']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state);
@@ -151,11 +149,10 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('generic route renders correctly at the dataset level and requests the investigation entity', async () => {
       // Set up test state pathname.
-      history.replace(
-        createLocation({
-          pathname: genericRoutes['datasets'],
-          search: '?view=card',
-        })
+      window.history.replaceState(
+        {},
+        '',
+        `${genericRoutes['datasets']}?view=card`
       );
 
       // Set up store with test state and mount the breadcrumb.
@@ -191,7 +188,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('generic route renders correctly at the datafile level and requests the investigation & dataset entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(genericRoutes['datafiles']));
+      window.history.replaceState({}, '', genericRoutes['datafiles']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state);
@@ -232,7 +229,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   describe('DLS', () => {
     it('DLS route renders correctly at the base level and does not request', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(DLSRoutes['proposals']));
+      window.history.replaceState({}, '', DLSRoutes['proposals']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state);
@@ -247,7 +244,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('DLS route renders correctly at the investigation level and requests the proposal entity', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(DLSRoutes['investigations']));
+      window.history.replaceState({}, '', DLSRoutes['investigations']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state);
@@ -256,7 +253,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(
         '/investigations/findone?where=' +
-          JSON.stringify({ name: { eq: 'INVESTIGATION 1' } }),
+          JSON.stringify({ name: { eq: 'INVESTIGATION%201' } }),
         {
           headers: {
             Authorization: 'Bearer null',
@@ -272,7 +269,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('DLS route renders correctly at the dataset level and requests the proposal & investigation entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(DLSRoutes['datasets']));
+      window.history.replaceState({}, '', DLSRoutes['datasets']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state);
@@ -282,7 +279,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(axios.get).toHaveBeenNthCalledWith(
         1,
         '/investigations/findone?where=' +
-          JSON.stringify({ name: { eq: 'INVESTIGATION 1' } }),
+          JSON.stringify({ name: { eq: 'INVESTIGATION%201' } }),
         {
           headers: {
             Authorization: 'Bearer null',
@@ -305,7 +302,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
-        '/browse/proposal/INVESTIGATION 1/investigation'
+        '/browse/proposal/INVESTIGATION%201/investigation'
       );
       expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
       expect(within(breadcrumbs[1]).getByText('1')).toBeInTheDocument();
@@ -319,7 +316,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('DLS route renders correctly at the datafile level and requests the proposal, investigation and dataset entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(DLSRoutes['datafiles']));
+      window.history.replaceState({}, '', DLSRoutes['datafiles']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state);
@@ -329,7 +326,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       expect(axios.get).toHaveBeenNthCalledWith(
         1,
         '/investigations/findone?where=' +
-          JSON.stringify({ name: { eq: 'INVESTIGATION 1' } }),
+          JSON.stringify({ name: { eq: 'INVESTIGATION%201' } }),
         {
           headers: {
             Authorization: 'Bearer null',
@@ -357,12 +354,12 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
       );
       expect(breadcrumbs[0]).toHaveAttribute(
         'href',
-        '/browse/proposal/INVESTIGATION 1/investigation'
+        '/browse/proposal/INVESTIGATION%201/investigation'
       );
       expect(within(breadcrumbs[0]).getByText('Title 1')).toBeInTheDocument();
       expect(breadcrumbs[1]).toHaveAttribute(
         'href',
-        '/browse/proposal/INVESTIGATION 1/investigation/1/dataset'
+        '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
       );
       expect(within(breadcrumbs[1]).getByText('1')).toBeInTheDocument();
       expect(within(breadcrumbs[2]).getByText('Name 2')).toBeInTheDocument();
@@ -378,7 +375,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
   describe('ISIS', () => {
     it('ISIS route renders correctly at the base level and does not request', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISRoutes['instruments']));
+      window.history.replaceState({}, '', ISISRoutes['instruments']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['investigation', 'dataset']);
@@ -394,7 +391,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS route renders correctly at the facility cycle level and requests the instrument entity', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISRoutes['facilityCycles']));
+      window.history.replaceState({}, '', ISISRoutes['facilityCycles']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['investigation', 'dataset']);
@@ -426,7 +423,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS route renders correctly at the investigation level and requests the instrument and facility cycle entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISRoutes['investigations']));
+      window.history.replaceState({}, '', ISISRoutes['investigations']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['investigation', 'dataset']);
@@ -468,7 +465,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS route renders correctly at the dataset level and requests the instrument, facility cycle and investigation entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISRoutes['datasets']));
+      window.history.replaceState({}, '', ISISRoutes['datasets']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['investigation', 'dataset']);
@@ -524,7 +521,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS route renders correctly at the datafile level and requests the instrument, facility cycle, investigation and dataset entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISRoutes['datafiles']));
+      window.history.replaceState({}, '', ISISRoutes['datafiles']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['investigation', 'dataset']);
@@ -585,7 +582,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS experiments route renders correctly at the base level and does not request', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISExperimentsRoutes['instruments']));
+      window.history.replaceState({}, '', ISISExperimentsRoutes['instruments']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['investigation', 'dataset']);
@@ -601,8 +598,10 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS experiments route renders correctly at the study datapublications level and requests the instrument entity', async () => {
       // Set up test state pathname.
-      history.replace(
-        createLocation(ISISExperimentsRoutes['studyDataPublications'])
+      window.history.replaceState(
+        {},
+        '',
+        ISISExperimentsRoutes['studyDataPublications']
       );
 
       // Set up store with test state and mount the breadcrumb.
@@ -638,8 +637,10 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS experiments route renders correctly at the data publication investigation level and requests the instrument and datapublication entities', async () => {
       // Set up test state pathname.
-      history.replace(
-        createLocation(ISISExperimentsRoutes['investigationDataPublications'])
+      window.history.replaceState(
+        {},
+        '',
+        ISISExperimentsRoutes['investigationDataPublications']
       );
 
       // Set up store with test state and mount the breadcrumb.
@@ -685,7 +686,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS experiments route renders correctly at the dataset level and requests the instrument, data publication and investigation entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISExperimentsRoutes['datasets']));
+      window.history.replaceState({}, '', ISISExperimentsRoutes['datasets']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['dataPublication', 'investigation', 'dataset']);
@@ -744,7 +745,7 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
     it('ISIS experiments route renders correctly at the datafile level and requests the instrument, data publication, investigation and dataset entities', async () => {
       // Set up test state pathname.
-      history.replace(createLocation(ISISExperimentsRoutes['datafiles']));
+      window.history.replaceState({}, '', ISISExperimentsRoutes['datafiles']);
 
       // Set up store with test state and mount the breadcrumb.
       renderComponent(state, ['dataPublication', 'investigation', 'dataset']);

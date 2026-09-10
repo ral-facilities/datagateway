@@ -21,7 +21,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Navigate, generatePath, useLocation, useParams } from 'react-router';
 import { paths } from '../../../page/pageContainer.component';
 import { StateType } from '../../../state/app.types';
 import DLSDataPublicationDataEditor, {
@@ -29,13 +29,13 @@ import DLSDataPublicationDataEditor, {
 } from './dlsDataPublicationDataEditor.component';
 import { compareDataPublicationUsersByOrderKey } from './dlsDataPublicationLanding.component';
 
-interface DLSDataPublicationEditFormProps {
+interface BaseDLSDataPublicationEditFormProps {
   dataPublicationId: string;
 }
 
-const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
-  props
-) => {
+const BaseDLSDataPublicationEditForm: React.FC<
+  BaseDLSDataPublicationEditFormProps
+> = (props) => {
   const { dataPublicationId } = props;
   const [selectedUsers, setSelectedUsers] = React.useState<ContributorUser[]>(
     []
@@ -291,7 +291,8 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     unmintableEntityIDs,
   ]);
 
-  const location = useLocation<{ fromEdit: boolean } | undefined>();
+  const location = useLocation();
+  const locationState: { fromEdit: boolean } | undefined = location.state;
 
   const [t] = useTranslation();
 
@@ -385,12 +386,14 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   }, [draftVersionDataPublicationId, deleteVersionDraft, dataPublicationId]);
 
   // redirect if the user tries to access the link directly instead of from the edit button
-  if (!location.state?.fromEdit) {
-    const landingPageUrl = paths.landing.dlsDataPublicationLanding.replace(
-      ':dataPublicationId',
-      dataPublicationId
+  if (!locationState?.fromEdit) {
+    const landingPageUrl = generatePath(
+      paths.landing.dlsDataPublicationLanding,
+      {
+        dataPublicationId,
+      }
     );
-    return <Redirect to={landingPageUrl} />;
+    return <Navigate to={landingPageUrl} replace={true} />;
   }
 
   return (
@@ -476,6 +479,14 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
         />
       </>
     </Box>
+  );
+};
+
+const DLSDataPublicationEditForm = () => {
+  const { dataPublicationId = '' } = useParams();
+
+  return (
+    <BaseDLSDataPublicationEditForm dataPublicationId={dataPublicationId} />
   );
 };
 

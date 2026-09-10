@@ -78,6 +78,7 @@ exports[`Home page component > homepage renders correctly 1`] = `
               >
                 <a
                   class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  data-discover="true"
                   data-testid="browse-button"
                   href="/home_page.browse.link"
                   tabindex="0"
@@ -147,6 +148,7 @@ exports[`Home page component > homepage renders correctly 1`] = `
               >
                 <a
                   class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  data-discover="true"
                   data-testid="search-button"
                   href="/home_page.search.link"
                   tabindex="0"
@@ -199,6 +201,7 @@ exports[`Home page component > homepage renders correctly 1`] = `
               >
                 <a
                   class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-sghohy-MuiButtonBase-root-MuiButton-root"
+                  data-discover="true"
                   data-testid="download-button"
                   href="/home_page.download.link"
                   tabindex="0"

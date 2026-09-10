@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter, useLocation } from 'react-router';
 import {
   datasetLink,
   formatBytes,
@@ -90,6 +91,27 @@ describe('Cell content renderers', () => {
       expect(screen.getByRole('link', { name: 'test text' })).toHaveAttribute(
         'href',
         '/test/url?test=true&view=card'
+      );
+    });
+
+    it('renders correctly with location state', async () => {
+      const StateTestComponent = () => {
+        const { state } = useLocation();
+        return <div data-testid="state-test">{JSON.stringify(state)}</div>;
+      };
+      const user = userEvent.setup();
+
+      render(
+        <MemoryRouter>
+          {tableLink('/test/url', 'test text', undefined, undefined, {
+            test: true,
+          })}
+          <StateTestComponent />
+        </MemoryRouter>
+      );
+      await user.click(screen.getByRole('link', { name: 'test text' }));
+      expect(screen.getByTestId('state-test')).toHaveTextContent(
+        '{"test":true}'
       );
     });
   });

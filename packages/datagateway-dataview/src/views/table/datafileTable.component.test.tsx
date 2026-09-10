@@ -17,33 +17,41 @@ import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../page/pageContainer.component';
 import { findAllRows, findColumnHeaderByName } from '../../setupTests';
 import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import DatafileTable from './datafileTable.component';
+
+vi.mock('../../page/idCheckFunctions', () => ({
+  checkInvestigationId: vi.fn().mockResolvedValue(true),
+}));
 
 describe('Datafile table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let rowData: Datafile[];
   let cartItems: DownloadCartItem[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
   let holder: HTMLElement;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <DatafileTable datasetId="1" investigationId="2" />
+            <Routes>
+              <Route
+                path={paths.standard.datafile}
+                element={<DatafileTable />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -62,7 +70,14 @@ describe('Datafile table component', () => {
         datafileCreateTime: '2019-01-01',
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.standard.datafile, {
+        datasetId: '1',
+        investigationId: '2',
+      })
+    );
 
     holder = document.createElement('div');
     holder.setAttribute('id', 'datagateway-dataview');
@@ -215,8 +230,8 @@ describe('Datafile table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 4 characters in "test" = 5 entries
-    expect(history.length).toBe(5);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -224,8 +239,7 @@ describe('Datafile table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(6);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -237,8 +251,7 @@ describe('Datafile table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"datafileModTime":{"endDate":"2019-08-06"}}'
       )}`
@@ -249,8 +262,7 @@ describe('Datafile table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates sort query params on sort', async () => {
@@ -260,8 +272,7 @@ describe('Datafile table component', () => {
       await screen.findByRole('button', { name: 'datafiles.name' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });

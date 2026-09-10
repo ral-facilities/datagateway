@@ -82,15 +82,10 @@ describe('ISIS - Investigation Data Publication Table', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    //Revert the default sort
-    cy.contains('[role="button"]', 'Publication Date')
-      .as('dateSortButton')
-      .click();
-
     // ascending order
     cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Title').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
       'Because fine have business'
@@ -124,7 +119,9 @@ describe('ISIS - Investigation Data Publication Table', () => {
     );
 
     // multiple columns (shift click)
-    cy.get('@dateSortButton').click();
+    cy.contains('[role="button"]', 'Publication Date')
+      .as('dateSortButton')
+      .click();
     cy.get('@dateSortButton').click({ shiftKey: true });
     cy.get('@titleSortButton').click({ shiftKey: true });
 
@@ -139,13 +136,11 @@ describe('ISIS - Investigation Data Publication Table', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Publication Date').click();
-
-    cy.get('[data-testid="SortIcon"]').should('have.length', 3);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 2);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'DOI').click();
+    cy.contains('[aria-sort="ascending"]', 'DOI').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

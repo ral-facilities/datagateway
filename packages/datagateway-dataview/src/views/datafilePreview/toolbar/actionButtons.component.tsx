@@ -9,7 +9,7 @@ import { downloadDatafile } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import type { StateType } from '../../../state/app.types';
 import DatafilePreviewerContext from '../datafilePreviewerContext';
 import DATAFILE_PREVIEWER_DEFAULT from '../defaults';
@@ -48,7 +48,7 @@ function ActionButtons(): JSX.Element {
   );
   const [t] = useTranslation();
   const { pathname } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // this should only occur when DatafilePreviewerContext is not provided
   if (!previewerContext) return <></>;
@@ -56,7 +56,7 @@ function ActionButtons(): JSX.Element {
   const { datafile, datafileContent } = previewerContext;
 
   function goBackToDatafileTable(): void {
-    history.push(pathname.split('/').slice(0, -1).join('/'));
+    navigate(pathname.split('/').slice(0, -1).join('/'));
   }
 
   function zoomIn(): void {

@@ -1,25 +1,19 @@
 import { render, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createMemoryHistory, MemoryHistory } from 'history';
 import * as React from 'react';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import DOIConfirmDialog from './DOIConfirmDialog.component';
 
 describe('DOI Confirm Dialog component', () => {
   let user: ReturnType<typeof userEvent.setup>;
   let props: React.ComponentProps<typeof DOIConfirmDialog>;
 
-  const renderComponent = (): RenderResult & { history: MemoryHistory } => {
-    const history = createMemoryHistory();
-    return {
-      history,
-      ...render(
-        <Router history={history}>
-          <DOIConfirmDialog {...props} />
-        </Router>
-      ),
-    };
-  };
+  const renderComponent = (): RenderResult =>
+    render(
+      <BrowserRouter>
+        <DOIConfirmDialog {...props} />
+      </BrowserRouter>
+    );
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -66,7 +60,7 @@ describe('DOI Confirm Dialog component', () => {
         attributes: { doi: 'test_doiv1' },
       },
     };
-    const { history } = renderComponent();
+    renderComponent();
 
     expect(
       screen.getByText('DOIConfirmDialog.mint_success')
@@ -79,8 +73,8 @@ describe('DOI Confirm Dialog component', () => {
         name: 'DOIConfirmDialog.view_data_publication',
       })
     );
-    expect(history.location).toMatchObject({
-      pathname: `/browse/dataPublication/${props.data.version.data_publication_id}`,
+    expect(window.location).toMatchObject({
+      pathname: `/browse/dataPublication/${props.data?.version.data_publication_id}`,
     });
   });
 

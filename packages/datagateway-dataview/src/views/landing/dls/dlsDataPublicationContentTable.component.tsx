@@ -27,7 +27,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DLSDataPublicationContentTableProps {
@@ -49,15 +49,13 @@ const DLSDataPublicationContentTable = (
   ): void => {
     setCurrentTab(newValue);
     // remove any applied sorts/filters on tab change
-    history.replace({
-      search: '',
-    });
+    navigate({ search: '' }, { replace: true });
   };
 
   const [t] = useTranslation();
 
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -111,11 +109,11 @@ const DLSDataPublicationContentTable = (
           filterComponent: textFilter,
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              {
-                pathname: `/redirect/DLS/investigation/id/${cellProps.rowData.id}`,
-                state: { fromDataPublication: true },
-              },
-              cellProps.rowData.visitId
+              `/redirect/DLS/investigation/id/${cellProps.rowData.id}`,
+              cellProps.rowData.visitId,
+              undefined,
+              undefined,
+              { fromDataPublication: true }
             ),
         },
         {
@@ -162,11 +160,11 @@ const DLSDataPublicationContentTable = (
           filterComponent: textFilter,
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              {
-                pathname: `/redirect/DLS/dataset/id/${cellProps.rowData.id}`,
-                state: { fromDataPublication: true },
-              },
-              cellProps.rowData.name
+              `/redirect/DLS/dataset/id/${cellProps.rowData.id}`,
+              cellProps.rowData.name,
+              undefined,
+              undefined,
+              { fromDataPublication: true }
             ),
         },
         {
@@ -204,11 +202,11 @@ const DLSDataPublicationContentTable = (
           filterComponent: textFilter,
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              {
-                pathname: `/redirect/DLS/datafile/id/${cellProps.rowData.id}`,
-                state: { fromDataPublication: true },
-              },
-              cellProps.rowData.name
+              `/redirect/DLS/datafile/id/${cellProps.rowData.id}`,
+              cellProps.rowData.name,
+              undefined,
+              undefined,
+              { fromDataPublication: true }
             ),
         },
         {

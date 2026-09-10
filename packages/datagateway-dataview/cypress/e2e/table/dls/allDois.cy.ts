@@ -98,7 +98,7 @@ describe('DLS - All DOIs Table', () => {
     // ascending order
     cy.contains('[role="button"]', 'Title').as('titleSortButton').click();
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Title').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains('72: Star');
 

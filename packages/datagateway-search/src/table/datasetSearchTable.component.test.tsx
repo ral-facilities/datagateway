@@ -16,9 +16,8 @@ import {
   type SearchResponse,
   type SearchResult,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -83,7 +82,6 @@ describe('Dataset table component', () => {
   const mockStore = configureStore([thunk]);
   let container: HTMLDivElement;
   let state: StateType;
-  let history: History;
   let queryClient: QueryClient;
   let user: ReturnType<typeof userEvent.setup>;
   let cartItems: DownloadCartItem[];
@@ -93,11 +91,11 @@ describe('Dataset table component', () => {
   const renderComponent = (hierarchy?: string): RenderResult => {
     return render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <DatasetSearchTable hierarchy={hierarchy ?? ''} />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>,
       { container: document.body.appendChild(container) }
     );
@@ -148,9 +146,11 @@ describe('Dataset table component', () => {
   beforeEach(() => {
     user = userEvent.setup();
 
-    history = createMemoryHistory({
-      initialEntries: [{ search: 'searchText=test search&currentTab=dataset' }],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=test search&currentTab=dataset'
+    );
     queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
@@ -186,10 +186,13 @@ describe('Dataset table component', () => {
   });
 
   it('disables the search query if dataset search is disabled', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append('dataset', 'false');
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // check that column headers are shown correctly.
@@ -424,15 +427,18 @@ describe('Dataset table component', () => {
   });
 
   it('applies filters already present in the URL on first render', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Dataset.name': ['asd'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied
@@ -459,15 +465,18 @@ describe('Dataset table component', () => {
   });
 
   it('allows filters to be removed through the facet filter panel', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Dataset.name': ['asd'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     const selectedFilterChips = await screen.findByLabelText('selectedFilters');
@@ -527,15 +536,18 @@ describe('Dataset table component', () => {
   });
 
   it('allows filters to be removed by removing filter chips', async () => {
-    const searchParams = new URLSearchParams(history.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.append(
       'filters',
       JSON.stringify({
         'Dataset.name': ['asd'],
       })
     );
-    history.replace({ search: `?${searchParams.toString()}` });
-
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
     renderComponent();
 
     // when filters are applied
@@ -710,7 +722,7 @@ describe('Dataset table component', () => {
       })
     );
 
-    expect(history.location.pathname).toBe(
+    expect(window.location.pathname).toBe(
       '/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1/datafile'
     );
   });

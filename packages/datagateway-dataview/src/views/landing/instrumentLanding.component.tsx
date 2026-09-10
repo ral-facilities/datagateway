@@ -11,7 +11,7 @@ import { Instrument, useInstrumentDetails } from 'datagateway-common';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { StateType } from '../../state/app.types';
 import StyledDOI from './StyledDOILink.component';
 import Branding from './branding.component';

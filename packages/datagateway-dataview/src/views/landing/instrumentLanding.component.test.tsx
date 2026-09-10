@@ -3,7 +3,7 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import axios, { AxiosResponse } from 'axios';
 import { Instrument, dGCommonInitialState } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, generatePath } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { paths } from '../../page/pageContainer.component';
@@ -20,9 +20,12 @@ describe('Instrument landing page', () => {
       <Provider store={mockStore(state)}>
         <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <Route path={paths.instrumentLandingPage}>
-              <InstrumentLandingPage />
-            </Route>
+            <Routes>
+              <Route
+                path={paths.instrumentLandingPage}
+                element={<InstrumentLandingPage />}
+              />
+            </Routes>
           </QueryClientProvider>
         </BrowserRouter>
       </Provider>

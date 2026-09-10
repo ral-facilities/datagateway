@@ -1,33 +1,40 @@
-import { type DataPublication, dGCommonInitialState } from 'datagateway-common';
-import { Provider } from 'react-redux';
-import { generatePath, Router } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import type { StateType } from '../../../state/app.types';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import ISISDataPublicationsCardView from './isisDataPublicationsCardView.component';
-import { createMemoryHistory, type History } from 'history';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
+import { dGCommonInitialState, type DataPublication } from 'datagateway-common';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { paths } from '../../../page/pageContainer.component';
+import type { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import ISISDataPublicationsCardView from './isisDataPublicationsCardView.component';
 
 describe('ISIS Data Publication - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: DataPublication[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (studyDataPublicationId?: string): RenderResult => {
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.dataPublications.toggle.isisStudyDataPublication, {
+        instrumentId: 1,
+      })
+    );
     if (studyDataPublicationId)
-      history.replace(
+      window.history.replaceState(
+        {},
+        '',
         generatePath(
           paths.dataPublications.toggle.isisInvestigationDataPublication,
           {
@@ -38,14 +45,22 @@ describe('ISIS Data Publication - Card View', () => {
       );
     return render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <ISISDataPublicationsCardView
-              instrumentId="1"
-              studyDataPublicationId={studyDataPublicationId}
-            />
+            <Routes>
+              <Route
+                path={paths.dataPublications.toggle.isisStudyDataPublication}
+                element={<ISISDataPublicationsCardView />}
+              />
+              <Route
+                path={
+                  paths.dataPublications.toggle.isisInvestigationDataPublication
+                }
+                element={<ISISDataPublicationsCardView />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   };
@@ -76,13 +91,6 @@ describe('ISIS Data Publication - Card View', () => {
         },
       },
     ];
-    history = createMemoryHistory({
-      initialEntries: [
-        generatePath(paths.dataPublications.toggle.isisStudyDataPublication, {
-          instrumentId: 1,
-        }),
-      ],
-    });
 
     state = JSON.parse(
       JSON.stringify({
@@ -148,8 +156,7 @@ describe('ISIS Data Publication - Card View', () => {
 
       expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-      expect(history.length).toBe(1);
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?sort=${encodeURIComponent('{"title":"desc"}')}`
       );
 
@@ -175,7 +182,7 @@ describe('ISIS Data Publication - Card View', () => {
 
       await user.type(filter, 'Test');
 
-      expect(history.location.search).toBe(
+      expect(window.location.search).toContain(
         `?filters=${encodeURIComponent(
           '{"title":{"value":"Test","type":"include"}}'
         )}`
@@ -183,7 +190,7 @@ describe('ISIS Data Publication - Card View', () => {
 
       await user.clear(filter);
 
-      expect(history.location.search).toBe('?');
+      expect(window.location.search).not.toContain('filters=');
     });
 
     it('updates sort query params on sort', async () => {
@@ -195,7 +202,7 @@ describe('ISIS Data Publication - Card View', () => {
         })
       );
 
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?sort=${encodeURIComponent('{"pid":"asc"}')}`
       );
     });
@@ -231,8 +238,7 @@ describe('ISIS Data Publication - Card View', () => {
 
       expect(await screen.findByTestId('card')).toBeInTheDocument();
 
-      expect(history.length).toBe(1);
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?sort=${encodeURIComponent('{"publicationDate":"desc"}')}`
       );
 
@@ -256,7 +262,7 @@ describe('ISIS Data Publication - Card View', () => {
       });
 
       await user.type(filterInput, '2019-08-06');
-      expect(history.location.search).toBe(
+      expect(window.location.search).toContain(
         `?filters=${encodeURIComponent(
           '{"publicationDate":{"endDate":"2019-08-06"}}'
         )}`
@@ -267,7 +273,7 @@ describe('ISIS Data Publication - Card View', () => {
       await user.keyboard('{Control}a{/Control}');
       await user.keyboard('{Delete}');
 
-      expect(history.location.search).toBe('?');
+      expect(window.location.search).not.toContain('filters=');
     });
   });
 });

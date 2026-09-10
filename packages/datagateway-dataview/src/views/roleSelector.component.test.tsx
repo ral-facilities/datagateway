@@ -3,15 +3,15 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import {
-  dGCommonInitialState,
   InvestigationUser,
+  StateType,
+  dGCommonInitialState,
   parseSearchToQuery,
   readSciGatewayToken,
-  StateType,
   usePushFilter,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';

@@ -5,6 +5,7 @@ import {
   waitFor,
   type RenderResult,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
   Datafile,
@@ -14,10 +15,9 @@ import {
   dGCommonInitialState,
   readSciGatewayToken,
 } from 'datagateway-common';
-import { History, createLocation, createMemoryHistory } from 'history';
 import log from 'loglevel';
 import { Provider } from 'react-redux';
-import { Route, Router } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes } from 'react-router';
 import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -39,7 +39,6 @@ vi.mock('datagateway-common', async () => {
 });
 
 describe('Redirect component', () => {
-  let history: History;
   let mockInvestigationData: Investigation;
   let mockDatasetData: Dataset;
   let mockDatafileData: Datafile;
@@ -130,27 +129,26 @@ describe('Redirect component', () => {
     function renderComponent(): RenderResult {
       return render(
         <Provider store={mockStore(state)}>
-          <Router history={history}>
+          <BrowserRouter>
             <QueryClientProvider client={new QueryClient()}>
-              <Route path={paths.doiRedirect}>
-                <DoiRedirect />
-              </Route>
+              <Routes>
+                <Route path={paths.doiRedirect} element={<DoiRedirect />} />
+                <Route path={'*'} element={null} />
+              </Routes>
             </QueryClientProvider>
-          </Router>
+          </BrowserRouter>
         </Provider>
       );
     }
 
     beforeEach(() => {
-      history = createMemoryHistory({
-        initialEntries: [createLocation('/doi-redirect/LILS/investigation/1')],
-      });
+      window.history.replaceState({}, '', '/doi-redirect/LILS/investigation/1');
     });
 
     it('redirects to correct link when everything loads correctly', async () => {
       renderComponent();
       await waitFor(() =>
-        expect(history.location.pathname).toBe(
+        expect(window.location.pathname).toBe(
           '/browse/instrument/2/facilityCycle/3/investigation/1/dataset'
         )
       );
@@ -183,7 +181,7 @@ describe('Redirect component', () => {
       renderComponent();
 
       await waitFor(() =>
-        expect(history.location.pathname).toBe('/datagateway')
+        expect(window.location.pathname).toBe('/datagateway')
       );
       expect(log.error).toHaveBeenCalledWith('Invalid redirect');
       expect(events.length).toBe(1);
@@ -199,36 +197,55 @@ describe('Redirect component', () => {
   });
 
   describe('Generic Redirect component', () => {
+    let stateTestLinkLocation = '';
     function renderComponent(): RenderResult {
       return render(
         <Provider store={mockStore(state)}>
-          <Router history={history}>
+          <BrowserRouter>
             <QueryClientProvider client={new QueryClient()}>
-              <Route path={paths.genericRedirect}>
-                <GenericRedirect />
-              </Route>
+              <Routes>
+                <Route
+                  path={paths.genericRedirect}
+                  element={<GenericRedirect />}
+                />
+                <Route
+                  path={'/state-test'}
+                  element={
+                    <Link
+                      to={stateTestLinkLocation}
+                      state={{ fromDataPublication: true }}
+                    >
+                      Test link
+                    </Link>
+                  }
+                />
+                <Route path={'*'} element={null} />
+              </Routes>
             </QueryClientProvider>
-          </Router>
+          </BrowserRouter>
         </Provider>
       );
     }
 
     beforeEach(() => {
-      history = createMemoryHistory({
-        initialEntries: [createLocation('/redirect/LILS/investigation/name/1')],
-      });
+      stateTestLinkLocation = '';
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/LILS/investigation/name/1'
+      );
     });
 
     it('redirects to correct link when everything loads correctly', async () => {
-      history.replace('/redirect/LILS/datafile/name/3');
+      window.history.replaceState({}, '', '/redirect/LILS/datafile/name/3');
 
       renderComponent();
       await waitFor(() =>
-        expect(history.location.pathname).toBe(
+        expect(window.location.pathname).toBe(
           '/browse/investigation/1/dataset/2/datafile'
         )
       );
-      expect(history.location.search).toBe(
+      expect(window.location.search).toBe(
         `?filters=${encodeURIComponent(
           '{"name":{"value":"datafile3","type":"exact"}}'
         )}`
@@ -247,10 +264,10 @@ describe('Redirect component', () => {
     });
 
     it('redirects to correct link when everything loads correctly (ISIS hierarchy)', async () => {
-      history.replace('/redirect/ISIS/dataset/name/2');
+      window.history.replaceState({}, '', '/redirect/ISIS/dataset/name/2');
       renderComponent();
       await waitFor(() =>
-        expect(history.location.pathname).toBe(
+        expect(window.location.pathname).toBe(
           '/browse/instrument/2/facilityCycle/3/investigation/1/dataset/2/datafile'
         )
       );
@@ -272,10 +289,14 @@ describe('Redirect component', () => {
     });
 
     it('redirects to correct link when everything loads correctly (DLS hierarchy)', async () => {
-      history.replace('/redirect/DLS/investigation/visitId/1');
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/DLS/investigation/visitId/1'
+      );
       renderComponent();
       await waitFor(() =>
-        expect(history.location.pathname).toBe(
+        expect(window.location.pathname).toBe(
           '/browse/proposal/investigation1/investigation/1/dataset'
         )
       );
@@ -289,10 +310,10 @@ describe('Redirect component', () => {
     });
 
     it('redirects to correct link when everything loads correctly (DLS hierarchy at dataset level)', async () => {
-      history.replace('/redirect/DLS/dataset/name/2');
+      window.history.replaceState({}, '', '/redirect/DLS/dataset/name/2');
       renderComponent();
       await waitFor(() =>
-        expect(history.location.pathname).toBe(
+        expect(window.location.pathname).toBe(
           '/browse/proposal/investigation1/investigation/1/dataset/2/datafile'
         )
       );
@@ -307,7 +328,7 @@ describe('Redirect component', () => {
     });
 
     it('displays loading spinner when things are loading', async () => {
-      history.replace('/redirect/ISIS/datafile/name/3');
+      window.history.replaceState({}, '', '/redirect/ISIS/datafile/name/3');
       vi.mocked(axios.get).mockImplementation(
         () =>
           new Promise((_) => {
@@ -339,7 +360,11 @@ describe('Redirect component', () => {
     });
 
     it('throws error and redirects to homepage if no investigation is returned', async () => {
-      history.replace('/redirect/ISIS/investigation/name/1');
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/ISIS/investigation/name/1'
+      );
       const events: CustomEvent[] = [];
 
       document.dispatchEvent = (e: Event) => {
@@ -352,7 +377,7 @@ describe('Redirect component', () => {
       renderComponent();
 
       await waitFor(() =>
-        expect(history.location.pathname).toBe('/datagateway')
+        expect(window.location.pathname).toBe('/datagateway')
       );
       const params = new URLSearchParams();
       params.append('order', '"id asc"');
@@ -382,23 +407,24 @@ describe('Redirect component', () => {
     });
 
     it('throws error and redirects to homepage if no investigation is returned with fromDataPublication true', async () => {
-      history.replace({
-        pathname: '/redirect/DLS/investigation/id/1',
-        state: { fromDataPublication: true },
-      });
+      stateTestLinkLocation = '/redirect/DLS/investigation/id/1';
+      window.history.replaceState({}, '', '/state-test');
       const events: CustomEvent[] = [];
 
       document.dispatchEvent = (e: Event) => {
         events.push(e as CustomEvent<AnyAction>);
         return true;
       };
+
+      const user = userEvent.setup();
       vi.mocked(axios.get).mockResolvedValue({ data: undefined });
       vi.spyOn(console, 'error').mockImplementation(() => {});
 
       renderComponent();
+      await user.click(screen.getByRole('link'));
 
       await waitFor(() =>
-        expect(history.location.pathname).toBe('/datagateway')
+        expect(window.location.pathname).toBe('/datagateway')
       );
       const params = new URLSearchParams();
       params.append('order', '"id asc"');
@@ -426,7 +452,12 @@ describe('Redirect component', () => {
         sessionId: 'abcdef',
         token: '1234abcdef',
       });
-      history.replace('/redirect/ISIS/investigation/name/1');
+      window.history.replaceState(
+        {},
+        '',
+        '/redirect/ISIS/investigation/name/1'
+      );
+
       const events: CustomEvent[] = [];
 
       document.dispatchEvent = (e: Event) => {
@@ -438,7 +469,7 @@ describe('Redirect component', () => {
 
       renderComponent();
 
-      await waitFor(() => expect(history.location.pathname).toBe('/login'));
+      await waitFor(() => expect(window.location.pathname).toBe('/login'));
 
       const params = new URLSearchParams();
       params.append('order', '"id asc"');

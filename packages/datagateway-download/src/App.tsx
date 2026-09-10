@@ -13,7 +13,7 @@ import {
   queryCacheConfig,
 } from 'datagateway-common';
 import React, { Component } from 'react';
-import { Link, Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router';
 
 import ConfigProvider, { DownloadSettingsContext } from './ConfigProvider';
 import DOIGenerationForm from './DOIGenerationForm/DOIGenerationForm.component';
@@ -116,23 +116,22 @@ class App extends Component<unknown, { hasError: boolean }> {
                 }
               >
                 <Router>
-                  <Switch>
+                  <Routes>
                     {/* development redirect route so people don't get confused by blank screen */}
                     <Route
-                      exact
                       path="/"
-                      render={() => <Link to="/download">Downloads</Link>}
+                      element={<Link to="/download">Downloads</Link>}
                     />
-                    <Route exact path="/admin/download">
-                      <AdminDownloadStatusTable />
-                    </Route>
-                    <Route exact path="/download/mint">
-                      <DOIGenerationForm />
-                    </Route>
-                    <Route exact path="/download">
-                      <DownloadTabs />
-                    </Route>
-                  </Switch>
+                    <Route
+                      path="/admin/download"
+                      element={<AdminDownloadStatusTable />}
+                    />
+                    <Route
+                      path="/download/mint"
+                      element={<DOIGenerationForm />}
+                    />
+                    <Route path="/download" element={<DownloadTabs />} />
+                  </Routes>
                 </Router>
               </React.Suspense>
               <ReactQueryDevtools initialIsOpen={false} />

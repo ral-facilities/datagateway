@@ -44,15 +44,12 @@ describe('Admin Download Status', () => {
   });
 
   it('should be able to sort by all sort directions on single and multiple columns', () => {
-    // remove default sort
-    cy.contains('[role="button"]', 'Requested Date').click();
-
     // ascending order
     cy.contains('[role="button"]', 'Access Method')
       .as('accessMethodSortButton')
       .click();
 
-    cy.get('[aria-sort="ascending"]').should('exist');
+    cy.contains('[aria-sort="ascending"]', 'Access Method').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
     cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
       'have.text',
@@ -108,13 +105,11 @@ describe('Admin Download Status', () => {
   });
 
   it('should change icons when sorting on a column', () => {
-    // clear default sort
-    cy.contains('[role="button"]', 'Requested Date').click();
-
-    cy.get('[data-testid="SortIcon"]').should('have.length', 9);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 8);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'ID').click();
+    cy.contains('[aria-sort="ascending"]', 'ID').should('exist');
     cy.get('[data-testid="ArrowDownwardIcon"]').should('have.length', 1);
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('exist');
 

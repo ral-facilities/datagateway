@@ -12,11 +12,11 @@ import {
   useDatasetsPaginated,
   type Dataset,
 } from 'datagateway-common';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, generatePath } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { paths } from '../../page/pageContainer.component';
 import type { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import DatasetCardView from './datasetCardView.component';
@@ -32,21 +32,31 @@ vi.mock('datagateway-common', async () => {
   };
 });
 
+vi.mock('../../../page/idCheckFunctions', () => ({
+  checkInstrumentId: vi.fn().mockResolvedValue(true),
+  checkStudyDataPublicationId: vi.fn().mockResolvedValue(true),
+  checkInstrumentAndFacilityCycleId: vi.fn().mockResolvedValue(true),
+}));
+
 describe('Dataset - Card View', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cardData: Dataset[];
-  let history: History;
   let user: ReturnType<typeof userEvent.setup>;
 
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
-            <DatasetCardView investigationId="1" />
+            <Routes>
+              <Route
+                path={paths.toggle.dataset}
+                element={<DatasetCardView />}
+              />
+            </Routes>
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
@@ -62,7 +72,11 @@ describe('Dataset - Card View', () => {
         fileCount: 1,
       },
     ];
-    history = createMemoryHistory();
+    window.history.replaceState(
+      {},
+      '',
+      generatePath(paths.toggle.dataset, { investigationId: '1' })
+    );
     user = userEvent.setup();
 
     state = JSON.parse(
@@ -183,7 +197,7 @@ describe('Dataset - Card View', () => {
 
     await user.type(filter, 'test');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"name":{"value":"test","type":"include"}}'
       )}`
@@ -191,7 +205,7 @@ describe('Dataset - Card View', () => {
 
     await user.clear(filter);
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -208,7 +222,7 @@ describe('Dataset - Card View', () => {
 
     await user.type(filter, '2019-08-06');
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent('{"modTime":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -217,7 +231,7 @@ describe('Dataset - Card View', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates sort query params on sort', async () => {
@@ -227,7 +241,7 @@ describe('Dataset - Card View', () => {
       await screen.findByRole('button', { name: 'Sort by DATASETS.NAME' })
     );
 
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"name":"asc"}')}`
     );
   });

@@ -1,29 +1,31 @@
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
-import { StateType } from './state/app.types';
-import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
 import {
   dGCommonInitialState,
   readSciGatewayToken,
   type DownloadCartItem,
-  useCart,
-  parseSearchToQuery,
 } from 'datagateway-common';
-import { createMemoryHistory, createPath, type History } from 'history';
-import { Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Link } from 'react-router';
+import type { DeepPartial } from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
 import SearchPageContainer, {
   usePushCurrentTab,
 } from './searchPageContainer.component';
-import { Provider } from 'react-redux';
-import axios from 'axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, type RenderResult, screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import type { DeepPartial } from 'redux';
-import { applyMiddleware, compose, createStore } from 'redux';
+import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
-import { renderHook } from '@testing-library/react';
-import type { MockInstance } from 'vitest';
+import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 
 vi.mock('loglevel');
 
@@ -33,12 +35,6 @@ vi.mock('datagateway-common', async () => {
   return {
     __esModule: true,
     ...originalModule,
-    parseSearchToQuery: vi.fn((queryParams: string) =>
-      (originalModule.parseSearchToQuery as typeof parseSearchToQuery)(
-        queryParams
-      )
-    ),
-    useCart: vi.fn(() => (originalModule.useCart as typeof useCart)()),
     readSciGatewayToken: vi.fn(),
   };
 });
@@ -73,6 +69,7 @@ describe('usePushCurrentTab', () => {
       window.localStorage.__proto__,
       'getItem'
     );
+    window.history.replaceState({}, '', '/');
   });
 
   afterEach(() => {
@@ -81,28 +78,26 @@ describe('usePushCurrentTab', () => {
   });
 
   it('returns callback that when called pushes a new tab to the url query', () => {
-    const history = createMemoryHistory();
-
     const { result } = renderHook(() => usePushCurrentTab(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
     act(() => {
       result.current('dataset');
     });
 
-    expect(history.location.search).toEqual('?currentTab=dataset');
+    expect(window.location.search).toEqual('?currentTab=dataset');
   });
 
   it('returns callback that when called pushes a new tab to the url query, and stores and restores any stored search query params', () => {
-    const history = createMemoryHistory({
-      initialEntries: [
-        '/search/data?currentTab=investigation&filters={"title":{"value":"test","type":"include"}}&page=2&results=30',
-      ],
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?currentTab=investigation&filters={"title":{"value":"test","type":"include"}}&page=2&results=30'
+    );
 
     const { result } = renderHook(() => usePushCurrentTab(), {
-      wrapper: ({ children }) => <Router history={history}>{children}</Router>,
+      wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter>,
     });
 
     localStorageGetItemMock.mockImplementation((name) => {
@@ -126,7 +121,7 @@ describe('usePushCurrentTab', () => {
       '30'
     );
 
-    expect(history.location.search).toEqual(
+    expect(window.location.search).toEqual(
       '?page=3&results=20&currentTab=dataset&filters=%7B%22name%22%3A%7B%22value%22%3A%22test2%22%2C%22type%22%3A%22include%22%7D%7D'
     );
   });
@@ -135,18 +130,17 @@ describe('usePushCurrentTab', () => {
 describe('SearchPageContainer - Tests', () => {
   let state: DeepPartial<StateType>;
   let queryClient: QueryClient;
-  let history: History;
   let holder: HTMLElement;
   let cartItems: DownloadCartItem[];
 
   function renderComponent(): RenderResult {
     return render(
       <Provider store={configureStore([thunk])(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={queryClient}>
             <SearchPageContainer />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
   }
@@ -154,40 +148,7 @@ describe('SearchPageContainer - Tests', () => {
   beforeEach(() => {
     cartItems = [];
     queryClient = new QueryClient();
-    history = createMemoryHistory({
-      initialEntries: ['/search/data'],
-    });
-    // @ts-expect-error we need it this way
-    delete window.location;
-    // @ts-expect-error we need it this way
-    window.location = new URL(`http://localhost/search/data`);
-
-    // below code keeps window.location in sync with history changes
-    // (needed because useUpdateQueryParam uses window.location not history)
-    const historyReplace = history.replace;
-    const historyReplaceSpy = vi.spyOn(history, 'replace');
-    historyReplaceSpy.mockImplementation((args) => {
-      historyReplace(args);
-      if (typeof args === 'string') {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${args}`);
-      } else {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${createPath(args)}`);
-      }
-    });
-    const historyPush = history.push;
-    const historyPushSpy = vi.spyOn(history, 'push');
-    historyPushSpy.mockImplementation((args) => {
-      historyPush(args);
-      if (typeof args === 'string') {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${args}`);
-      } else {
-        // @ts-expect-error we need it this way
-        window.location = new URL(`http://localhost${createPath(args)}`);
-      }
-    });
+    window.history.replaceState({}, '', '/search/data');
 
     window.localStorage.clear();
 
@@ -246,7 +207,7 @@ describe('SearchPageContainer - Tests', () => {
       window.localStorage.__proto__,
       'removeItem'
     );
-    history.replace({ key: 'testKey', pathname: '/' });
+    window.history.replaceState({}, '', '/');
 
     renderComponent();
 
@@ -373,7 +334,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=hello&dataset=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
@@ -410,7 +373,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if date and search text properties are in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=hello&datafile=false&investigation=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
@@ -449,7 +414,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if date and search text properties are in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=hello&dataset=false&datafile=false&startDate=2013-11-11&endDate=2016-11-11'
     );
 
@@ -491,7 +458,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for datafile request if only start date is in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=&dataset=false&investigation=false&startDate=2013-11-11'
     );
 
@@ -527,7 +496,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if only start date is in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=test&datafile=false&investigation=false&startDate=2013-11-11'
     );
 
@@ -566,7 +537,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if only start date is in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=test&dataset=false&datafile=false&startDate=2013-11-11'
     );
 
@@ -610,7 +583,9 @@ describe('SearchPageContainer - Tests', () => {
   it('builds correct parameters for datafile request if only end date is in use', async () => {
     const user = userEvent.setup();
 
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=&dataset=false&investigation=false&endDate=2016-11-11'
     );
 
@@ -649,7 +624,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for dataset request if only end date is in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=test&datafile=false&investigation=false&endDate=2016-11-11'
     );
 
@@ -688,7 +665,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('builds correct parameters for investigation request if only end date is in use', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=test&dataset=false&datafile=false&endDate=2016-11-11'
     );
 
@@ -731,7 +710,11 @@ describe('SearchPageContainer - Tests', () => {
   it('builds correct parameters for datafile request if date and search text properties are not in use', async () => {
     const user = userEvent.setup();
 
-    history.replace('/search/data?dataset=false&investigation=false');
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?dataset=false&investigation=false'
+    );
 
     renderComponent();
 
@@ -770,7 +753,11 @@ describe('SearchPageContainer - Tests', () => {
   it('builds correct parameters for dataset request if date and search text properties are not in use', async () => {
     const user = userEvent.setup();
 
-    history.replace('/search/data?datafile=false&investigation=false');
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?datafile=false&investigation=false'
+    );
 
     renderComponent();
 
@@ -807,7 +794,11 @@ describe('SearchPageContainer - Tests', () => {
   it('builds correct parameters for investigation request if date and search text properties are not in use', async () => {
     const user = userEvent.setup();
 
-    history.replace('/search/data?dataset=false&datafile=false');
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?dataset=false&datafile=false'
+    );
 
     renderComponent();
 
@@ -845,18 +836,13 @@ describe('SearchPageContainer - Tests', () => {
 
   it('display clear filters button and clear for filters onClick', async () => {
     const user = userEvent.setup();
-
-    renderComponent();
-
-    await user.click(
-      screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
+    window.history.replaceState(
+      {},
+      '',
+      `/search/data?searchText=&filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
     );
 
-    act(() => {
-      history.replace(
-        `/search/data?filters=%7B"title"%3A%7B"value"%3A"spend"%2C"type"%3A"include"%7D%7D`
-      );
-    });
+    renderComponent();
 
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
@@ -867,7 +853,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(
       await screen.findByRole('button', { name: 'app.clear_filters' })
     ).toBeDisabled();
-    expect(history.location.search).toEqual('?');
+    expect(window.location.search).toEqual('?searchText=');
   });
 
   it('display disabled clear filters button', async () => {
@@ -892,11 +878,15 @@ describe('SearchPageContainer - Tests', () => {
         <Provider
           store={createStore(AppReducer(), compose(applyMiddleware(thunk)))}
         >
-          <Router history={history}>
+          <BrowserRouter>
             <QueryClientProvider client={queryClient}>
               <SearchPageContainer />
+              {/* Test link to update search params mid-test */}
+              <Link to={{ search: 'searchText=test&datafile=false' }}>
+                Link
+              </Link>
             </QueryClientProvider>
-          </Router>
+          </BrowserRouter>
         </Provider>
       );
     }
@@ -904,11 +894,11 @@ describe('SearchPageContainer - Tests', () => {
     const user = userEvent.setup();
 
     // test it works with loading from URL params
-    act(() => {
-      history.replace(
-        '/search/data?searchText=test&dataset=false&datafile=false'
-      );
-    });
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=test&dataset=false&datafile=false'
+    );
 
     renderComponentWithRealStore();
 
@@ -919,9 +909,7 @@ describe('SearchPageContainer - Tests', () => {
     expect(screen.queryByRole('tab', { name: 'tabs.datafile' })).toBeNull();
 
     // also test it works on initiateSearch
-    act(() => {
-      history.replace('/search/data?searchText=test&datafile=false');
-    });
+    await user.click(screen.getByRole('link', { name: 'Link' }));
 
     await user.click(
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
@@ -939,7 +927,9 @@ describe('SearchPageContainer - Tests', () => {
   it('search is not initiated when no search types are enabled', async () => {
     const user = userEvent.setup();
 
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=test&investigation=false&dataset=false&datafile=false'
     );
 
@@ -977,7 +967,7 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    expect(history.location.search).toEqual('?searchText=test&restrict=true');
+    expect(window.location.search).toEqual('?searchText=test&restrict=true');
   });
 
   it('shows SelectionAlert banner when item selected', async () => {
@@ -1002,7 +992,9 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when visiting a direct url', async () => {
-    history.replace(
+    window.history.replaceState(
+      {},
+      '',
       '/search/data?searchText=hello&restrict=true&startDate=2013-11-11&endDate=2016-11-11'
     );
 
@@ -1042,7 +1034,7 @@ describe('SearchPageContainer - Tests', () => {
   });
 
   it('initiates search when visiting a direct url with empty search text', async () => {
-    history.replace('/search/data?searchText=');
+    window.history.replaceState({}, '', '/search/data?searchText=');
 
     renderComponent();
 
@@ -1079,7 +1071,11 @@ describe('SearchPageContainer - Tests', () => {
     if (state.dgsearch)
       state.dgsearch.searchableEntities = ['investigation', 'dataset'];
 
-    history.replace('/search/data?searchText=hello&datafiles=true');
+    window.history.replaceState(
+      {},
+      '',
+      '/search/data?searchText=hello&datafile=true'
+    );
 
     renderComponent();
 
@@ -1172,8 +1168,9 @@ describe('SearchPageContainer - Tests', () => {
       screen.getByRole('button', { name: 'searchBox.search_button_arialabel' })
     );
 
-    expect(axios.get).toHaveBeenNthCalledWith(
-      1,
+    // expect 4 calls, 1 to the cart and 3 searches
+    expect(axios.get).toHaveBeenCalledTimes(4);
+    expect(axios.get).toHaveBeenCalledWith(
       'https://example.com/icat/search/documents',
       {
         params: generateURLSearchParams({
@@ -1244,7 +1241,7 @@ describe('SearchPageContainer - Tests', () => {
       await screen.findByTestId('search-box-container')
     ).toBeInTheDocument();
 
-    expect(history.location.search).toEqual('?currentTab=dataset');
+    expect(window.location.search).toEqual('?currentTab=dataset');
   });
 
   it('defaults to datafile if when investigation and dataset are false ', async () => {
@@ -1263,7 +1260,7 @@ describe('SearchPageContainer - Tests', () => {
       await screen.findByTestId('search-box-container')
     ).toBeInTheDocument();
 
-    expect(history.location.search).toEqual('?currentTab=datafile');
+    expect(window.location.search).toEqual('?currentTab=datafile');
   });
 
   it('defaults to investigation if when investigation ,dataset and datafile are false ', async () => {
@@ -1283,7 +1280,7 @@ describe('SearchPageContainer - Tests', () => {
     ).toBeInTheDocument();
 
     // i.e default value is investigation it set in the searchPageContainer
-    expect(history.location.search).toEqual('');
+    expect(window.location.search).toEqual('');
   });
 
   it('handles anonymous users correctly', async () => {

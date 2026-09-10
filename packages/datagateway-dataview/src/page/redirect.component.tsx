@@ -15,7 +15,7 @@ import {
 import log from 'loglevel';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router';
 import { paths } from './pageContainer.component';
 
 export const RedirectComponent: React.FC<{
@@ -35,7 +35,7 @@ export const RedirectComponent: React.FC<{
 
   if (loggedInAnonymously === true && typeof error !== 'undefined') {
     sessionStorage.setItem('referrer', pathname);
-    return <Redirect to={'/login'} />;
+    return <Navigate to={'/login'} />;
   }
 
   if (error) {
@@ -55,7 +55,7 @@ export const RedirectComponent: React.FC<{
 
   return (
     <Preloader loading={loading}>
-      <Redirect to={redirectUrl ?? paths.homepage} />
+      <Navigate to={redirectUrl ?? paths.homepage} replace={true} />
     </Preloader>
   );
 };
@@ -67,7 +67,8 @@ type DoiRedirectRouteParams = {
 };
 
 export const DoiRedirect: React.FC = () => {
-  const { entityName, entityId } = useParams<DoiRedirectRouteParams>();
+  const { entityName = '', entityId = '' } =
+    useParams<DoiRedirectRouteParams>();
 
   const { data: investigation, isPending: isInvestigationLoading } = useEntity(
     'investigation',
@@ -112,16 +113,21 @@ type GenericRedirectRouteParams = {
 };
 
 export const GenericRedirect: React.FC = () => {
-  const { facilityName, entityName, entityField, fieldValue } =
-    useParams<GenericRedirectRouteParams>();
+  const {
+    facilityName = '',
+    entityName,
+    entityField = '',
+    fieldValue = '',
+  } = useParams<GenericRedirectRouteParams>();
 
-  const { state } = useLocation<{ fromDataPublication?: boolean }>();
+  const location = useLocation();
+  const state = location.state as { fromDataPublication?: boolean } | undefined;
 
   const isISIS =
     facilityName.toLowerCase() === FACILITY_NAME.isis.toLowerCase();
 
   const { data: entity, isPending: isEntityLoading } = useEntity(
-    entityName,
+    entityName as GenericRedirectRouteParams['entityName'],
     entityField,
     decodeURIComponent(fieldValue), // call decodeURIComponent here to e.g. allow URL encoding of slashes to search for datafile locations etc.
     entityName === 'investigation'
@@ -162,7 +168,7 @@ export const GenericRedirect: React.FC = () => {
               ]),
             }
           : undefined,
-    true,
+    typeof entityName !== 'undefined',
     true
   );
 

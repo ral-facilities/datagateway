@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { StateType } from '../state/app.types';
@@ -13,11 +13,7 @@ import ViewButton from './viewButton.component';
 describe('Generic view button', () => {
   let state: StateType;
 
-  function Wrapper({
-    children,
-  }: {
-    children: React.ReactElement;
-  }): JSX.Element {
+  function Wrapper({ children }: { children: React.ReactNode }): JSX.Element {
     return (
       <Provider store={configureStore([thunk])(state)}>
         <MemoryRouter

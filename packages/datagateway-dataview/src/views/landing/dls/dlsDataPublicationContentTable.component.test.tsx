@@ -20,9 +20,8 @@ import {
   findCellInRow,
   findColumnIndexByName,
 } from 'datagateway-search/src/setupTests';
-import { createMemoryHistory, type History } from 'history';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { findAllRows, findColumnHeaderByName } from '../../../setupTests';
@@ -34,7 +33,6 @@ describe('DataPublication content table component', () => {
   const mockStore = configureStore([thunk]);
   let state: StateType;
   let cartItems: DownloadCartItem[];
-  let history: History;
   let user: UserEvent;
   let holder: HTMLElement;
   let investigations: Investigation[];
@@ -44,18 +42,17 @@ describe('DataPublication content table component', () => {
   const renderComponent = (): RenderResult =>
     render(
       <Provider store={mockStore(state)}>
-        <Router history={history}>
+        <BrowserRouter>
           <QueryClientProvider client={new QueryClient()}>
             <DLSDataPublicationContentTable dataPublicationId="1" />
           </QueryClientProvider>
-        </Router>
+        </BrowserRouter>
       </Provider>
     );
 
   beforeEach(() => {
     user = userEvent.setup();
     cartItems = [];
-    history = createMemoryHistory();
 
     investigations = [
       {
@@ -424,8 +421,8 @@ describe('DataPublication content table component', () => {
     // user.type inputs the given string character by character to simulate user typing
     // each keystroke of user.type creates a new entry in the history stack
     // so the initial entry + 1 characters in "1" = 2 entries
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent(
         '{"visitId":{"value":"1","type":"include"}}'
       )}`
@@ -433,8 +430,7 @@ describe('DataPublication content table component', () => {
 
     await user.clear(filterInput);
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates filter query params on date filter', async () => {
@@ -446,8 +442,7 @@ describe('DataPublication content table component', () => {
 
     await user.type(filterInput, '2019-08-06');
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?filters=${encodeURIComponent('{"startDate":{"endDate":"2019-08-06"}}')}`
     );
 
@@ -455,8 +450,7 @@ describe('DataPublication content table component', () => {
     await user.keyboard('{Control}a{/Control}');
     await user.keyboard('{Delete}');
 
-    expect(history.length).toBe(3);
-    expect(history.location.search).toBe('?');
+    expect(window.location.search).toBe('');
   });
 
   it('updates sort query params on sort', async () => {
@@ -466,8 +460,7 @@ describe('DataPublication content table component', () => {
       await screen.findByRole('button', { name: 'investigations.visit_id' })
     );
 
-    expect(history.length).toBe(2);
-    expect(history.location.search).toBe(
+    expect(window.location.search).toBe(
       `?sort=${encodeURIComponent('{"visitId":"asc"}')}`
     );
   });

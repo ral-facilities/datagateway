@@ -21,12 +21,20 @@ import {
   getTooltipText,
   parseSearchToQuery,
   StateType,
+  useDataPublication,
   useDatasetDetails,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInstrumentId,
+  checkInvestigationId,
+  checkStudyDataPublicationId,
+} from '../../../page/idCheckFunctions';
+import WithIdCheck from '../../../page/withIdCheck';
 import Branding from '../branding.component';
 
 const Subheading = styled(Typography)(({ theme }) => ({
@@ -68,9 +76,11 @@ interface LandingPageProps {
   datasetId: string;
 }
 
-const LandingPage = (props: LandingPageProps): React.ReactElement => {
+export const BaseISISDatasetLandingPage = (
+  props: LandingPageProps
+): React.ReactElement => {
   const [t] = useTranslation();
-  const { push } = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { view } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -150,7 +160,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 id="dataset-datafiles-tab"
                 label={t('datasets.details.datafiles')}
                 onClick={() =>
-                  push(
+                  navigate(
                     view
                       ? `${location.pathname}/datafile?view=${view}`
                       : `${location.pathname}/datafile`
@@ -226,4 +236,50 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
 };
 
-export default LandingPage;
+const ISISDatasetLandingPage = (props: {
+  dataPublication: boolean;
+}): React.ReactElement => {
+  const {
+    instrumentId = '',
+    facilityCycleId = '',
+    dataPublicationId = '',
+    investigationId = '',
+    datasetId = '',
+  } = useParams();
+  const { data, isPending } = useDataPublication(
+    parseInt(investigationId),
+    props.dataPublication
+  );
+  const dataPublicationInvestigationId =
+    data?.content?.dataCollectionInvestigations?.[0]?.investigation?.id;
+
+  const checkingPromise = props.dataPublication
+    ? Promise.all([
+        checkInstrumentId(parseInt(instrumentId), parseInt(dataPublicationId)),
+        checkStudyDataPublicationId(
+          parseInt(dataPublicationId),
+          parseInt(investigationId)
+        ),
+        checkInvestigationId(
+          dataPublicationInvestigationId ?? -1,
+          parseInt(datasetId)
+        ),
+        ...(isPending ? [new Promise(() => undefined)] : []),
+      ]).then((values) => !values.includes(false))
+    : Promise.all([
+        checkInstrumentAndFacilityCycleId(
+          parseInt(instrumentId),
+          parseInt(facilityCycleId),
+          parseInt(investigationId)
+        ),
+        checkInvestigationId(parseInt(investigationId), parseInt(datasetId)),
+      ]).then((values) => !values.includes(false));
+
+  return (
+    <WithIdCheck checkingPromise={checkingPromise}>
+      <BaseISISDatasetLandingPage datasetId={datasetId} />
+    </WithIdCheck>
+  );
+};
+
+export default ISISDatasetLandingPage;

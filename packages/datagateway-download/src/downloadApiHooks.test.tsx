@@ -11,9 +11,7 @@ import {
   Download,
   queryCacheConfig,
 } from 'datagateway-common';
-import { createMemoryHistory } from 'history';
 import * as React from 'react';
-import { Router } from 'react-router-dom';
 import { DownloadSettingsContext } from './ConfigProvider';
 import {
   useAdminDownloadDeleted,
@@ -52,17 +50,14 @@ const createReactQueryWrapper = (
   children: React.ReactNode;
 }> => {
   const testQueryClient = createTestQueryClient();
-  const history = createMemoryHistory();
 
   const wrapper: React.JSXElementConstructor<{
     children: React.ReactNode;
   }> = ({ children }) => (
     <DownloadSettingsContext.Provider value={settings}>
-      <Router history={history}>
-        <QueryClientProvider client={testQueryClient}>
-          {children}
-        </QueryClientProvider>
-      </Router>
+      <QueryClientProvider client={testQueryClient}>
+        {children}
+      </QueryClientProvider>
     </DownloadSettingsContext.Provider>
   );
   return wrapper;

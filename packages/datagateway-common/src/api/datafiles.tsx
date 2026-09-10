@@ -2,7 +2,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios, { AxiosError, AxiosProgressEvent } from 'axios';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { getApiParams, parseSearchToQuery, useEntity } from '.';
 import {
   AdditionalFilters,
