@@ -29,15 +29,6 @@ describe('DOI Generation form', () => {
 
   afterEach(() => {
     cy.clearDownloadCart();
-    cy.intercept('/datagateway-download-settings.json', (req) => {
-      delete req.headers['if-none-match'];
-      delete req.headers['if-modified-since'];
-      req.continue((res) => {
-        res.body.uiFeatures.disableContributors = false
-        res.send();
-      });
-    });
-    cy.reload();
   });
 
   // tidy up the data publications table
@@ -761,8 +752,6 @@ describe('DOI Generation form', () => {
 
     it('should not let a user add contributors if disableContributors enabled in settings', () => {
       cy.intercept('/datagateway-download-settings.json', (req) => {
-        delete req.headers['if-none-match'];
-        delete req.headers['if-modified-since'];
         req.continue((res) => {
           res.body.uiFeatures.disableContributors = true;
           res.send();

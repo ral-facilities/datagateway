@@ -13,7 +13,12 @@ app.get('/datagateway-download-settings.json', function (req, res) {
       isCiEnv
         ? './server/e2e-settings.json'
         : './public/datagateway-download-settings.json'
-    )
+    ),
+    {
+      headers: {
+        'Cache-Control': 'no-store',
+      },
+    }
   );
 });
 
