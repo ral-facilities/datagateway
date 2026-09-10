@@ -82,6 +82,7 @@ describe('Creators and contributors component', () => {
       disabled: false,
       localContactRole: 'local_contact|DataCollector',
       showErrors: false,
+      disableContributors: false,
     };
 
     mockUser = {
@@ -147,7 +148,6 @@ describe('Creators and contributors component', () => {
 
   it('should let the user add creators (but not duplicate users or if checkUser fails)', async () => {
     renderComponent();
-
     expect(
       within(
         screen.getByRole('table', {
@@ -271,7 +271,6 @@ describe('Creators and contributors component', () => {
   it('should let the user add contributors & select their contributor type', async () => {
     props.showErrors = true;
     renderComponent();
-
     expect(
       within(
         screen.getByRole('table', {

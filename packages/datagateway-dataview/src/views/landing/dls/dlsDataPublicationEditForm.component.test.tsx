@@ -522,7 +522,6 @@ describe('DOI edit form component', () => {
         name: 'DOIGenerationForm.delete_creator',
       })[1]
     );
-
     expect(
       within(
         screen.getByRole('table', {
@@ -965,4 +964,13 @@ describe('DOI edit form component', () => {
       })
     );
   }, 60_000);
+
+  it('should not show the add contributor button if the feature is disabled', async () => {
+    state.dgdataview.features.disableContributors = true;
+    renderComponent();
+
+    expect(
+      screen.queryByText(`DOIGenerationForm.add_contributor`)
+    ).not.toBeInTheDocument();
+  });
 });

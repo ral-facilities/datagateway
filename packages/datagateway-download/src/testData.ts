@@ -344,6 +344,7 @@ export const mockedSettings: DownloadSettings = {
   localContactRole: 'local_contact|DataCollector',
   uiFeatures: {
     downloadProgress: false,
+    disableContributors: false,
   },
   routes: [],
   helpSteps: [],
