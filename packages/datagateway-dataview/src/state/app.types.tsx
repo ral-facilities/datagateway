@@ -14,7 +14,7 @@ export interface DGDataViewState {
   PIRole: string;
   localContactRole: string;
   features: {
-    disableContributor: boolean;
+    disableContributors: boolean;
   };
 }
 

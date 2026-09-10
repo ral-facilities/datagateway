@@ -82,7 +82,7 @@ describe('Creators and contributors component', () => {
       disabled: false,
       localContactRole: 'local_contact|DataCollector',
       showErrors: false,
-      disableContributor: false,
+      disableContributors: false,
     };
 
     mockUser = {

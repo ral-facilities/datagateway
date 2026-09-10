@@ -33,7 +33,7 @@ describe('DOI Generation form', () => {
       delete req.headers['if-none-match'];
       delete req.headers['if-modified-since'];
       req.continue((res) => {
-        res.body.uiFeatures.disableContributor = false
+        res.body.uiFeatures.disableContributors = false
         res.send();
       });
     });
@@ -759,12 +759,12 @@ describe('DOI Generation form', () => {
       );
     });
 
-    it('should not let a user add contributors if disableContributor enabled in settings', () => {
+    it('should not let a user add contributors if disableContributors enabled in settings', () => {
       cy.intercept('/datagateway-download-settings.json', (req) => {
         delete req.headers['if-none-match'];
         delete req.headers['if-modified-since'];
         req.continue((res) => {
-          res.body.uiFeatures.disableContributor = true;
+          res.body.uiFeatures.disableContributors = true;
           res.send();
         });
       });

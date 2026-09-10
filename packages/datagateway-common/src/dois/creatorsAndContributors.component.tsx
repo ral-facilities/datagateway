@@ -61,7 +61,7 @@ type CreatorsAndContributorsProps = {
   localContactRole: string;
   disabled: boolean;
   showErrors: boolean;
-  disableContributor: boolean;
+  disableContributors: boolean;
 };
 
 const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
@@ -74,7 +74,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
     localContactRole,
     disabled,
     showErrors,
-    disableContributor,
+    disableContributors,
   } = props;
   const [t] = useTranslation();
   const [username, setUsername] = React.useState('');
@@ -208,7 +208,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                 {t('DOIGenerationForm.add_creator')}
               </Button>
             </Grid>
-            {disableContributor === false && (
+            {disableContributors === false && (
               <Grid item>
                 <Button
                   variant="contained"
@@ -236,7 +236,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                   {t('DOIGenerationForm.creator_affiliation')}
                 </TableCell>
                 <TableCell>{t('DOIGenerationForm.creator_email')}</TableCell>
-                {disableContributor === false && (
+                {disableContributors === false && (
                   <TableCell>{t('DOIGenerationForm.creator_type')}</TableCell>
                 )}
                 <TableCell>{t('DOIGenerationForm.creator_action')}</TableCell>
@@ -262,7 +262,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                     </TableCell>
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
-                    {disableContributor === false && (
+                    {disableContributors === false && (
                       <TableCell>
                         {user.contributor_type === ContributorType.Creator ? (
                           user.contributor_type

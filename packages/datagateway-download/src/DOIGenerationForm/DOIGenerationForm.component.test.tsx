@@ -1074,7 +1074,7 @@ describe('DOI generation form component', () => {
   });
 
   it('should not show the add contributor button if the feature is disabled', async () => {
-    mockedSettings.uiFeatures.disableContributor = true;
+    mockedSettings.uiFeatures.disableContributors = true;
     renderComponent();
     // accept data policy
     await user.click(

@@ -55,6 +55,6 @@
     }
   ],
   "uiFeatures": {
-    "disableContributor": false
+    "disableContributors": false
   }
 }

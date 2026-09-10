@@ -29,7 +29,7 @@ export const initialState: DGDataViewState = {
   PIRole: 'PI',
   localContactRole: 'local_contact|DataCollector',
   features: {
-    disableContributor: false,
+    disableContributors: false,
   },
 };
 
