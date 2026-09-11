@@ -790,6 +790,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <TabPanel value={currentTab} index="content">
             <DLSDataPublicationContentTable
               dataPublicationId={dataPublicationId}
+              isSessionDOI={isSessionDOI}
             />
           </TabPanel>
         </Grid>
