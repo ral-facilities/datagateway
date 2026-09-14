@@ -32,7 +32,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DLSDataPublicationContentTableProps {
   dataPublicationId: string;
-  isSessionDOI: boolean;
+  isSessionDOI?: boolean;
 }
 
 const DLSDataPublicationContentTable = (
@@ -282,14 +282,14 @@ const DLSDataPublicationContentTable = (
         indicatorColor="secondary"
         textColor="secondary"
       >
-        {isSessionDOI && (
+        {(isSessionDOI === true || isSessionDOI === undefined) && (
           <Tab
             label={t('breadcrumbs.investigation_other')}
             value="investigation"
           />
         )}
         <Tab label={t('breadcrumbs.dataset_other')} value="dataset" />
-        {!isSessionDOI && (
+        {(isSessionDOI === false || isSessionDOI === undefined) && (
           <Tab label={t('breadcrumbs.datafile_other')} value="datafile" />
         )}
       </Tabs>

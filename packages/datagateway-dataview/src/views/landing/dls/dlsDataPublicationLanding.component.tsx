@@ -183,7 +183,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
   );
 
-  const isSessionDOI = data?.type?.name === 'Investigation';
+  let isSessionDOI;
+  if (data?.type?.name === 'Investigation') {
+    isSessionDOI = true;
+  } else if (data?.type?.name === 'User-defined-concept') {
+    isSessionDOI = false;
+  } else {
+    isSessionDOI = undefined;
+  }
   const isConceptDOI = !isVersionDOI && !isSessionDOI;
 
   const pid = data?.pid;
