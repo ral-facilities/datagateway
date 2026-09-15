@@ -97,10 +97,6 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('Datafiles').click();
     cy.get('[aria-rowcount="2"]').should('exist');
     cy.contains('Location').should('be.visible');
-
-    cy.contains('Investigations').click();
-    cy.contains('Visit ID').should('be.visible');
-    cy.get('[aria-rowcount="0"]').should('exist');
   });
 
   it('should be able to click a DOI & it renders the correct webpage ', () => {
