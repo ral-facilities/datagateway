@@ -12,8 +12,6 @@ export const ConfigurePIRoleSettingType =
 export const ConfigureLocalContactRoleSettingType =
   'datagateway_dataview:configure_local_contact_role';
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
-export const DisableContributorsType =
-  'datagateway_dataview:disable_contributors';
 
 export interface ConfigureBreadcrumbSettingsPayload {
   settings: BreadcrumbSettings[];

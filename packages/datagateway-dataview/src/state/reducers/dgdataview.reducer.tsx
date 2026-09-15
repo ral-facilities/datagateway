@@ -17,7 +17,6 @@ import {
   ConfigurePluginHostSettingPayload,
   ConfigurePluginHostSettingType,
   SettingsLoadedType,
-  DisableContributorsType,
 } from '../actions/actions.types';
 import { DGDataViewState } from '../app.types';
 
@@ -33,15 +32,6 @@ export const initialState: DGDataViewState = {
     disableContributors: false,
   },
 };
-
-export function handleFeatureSwitches(state: DGDataViewState): DGDataViewState {
-  return {
-    ...state,
-    features: {
-      disableContributors: true,
-    },
-  };
-}
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
   return {
@@ -113,7 +103,6 @@ export function handleConfigureLocalContactRoleSetting(
 }
 
 const DGDataViewReducer = createReducer(initialState, {
-  [DisableContributorsType]: handleFeatureSwitches,
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
