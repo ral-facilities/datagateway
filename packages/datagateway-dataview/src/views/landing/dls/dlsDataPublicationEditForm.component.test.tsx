@@ -966,7 +966,10 @@ describe('DOI edit form component', () => {
   }, 60_000);
 
   it('should not show the add contributor button if the feature is disabled', async () => {
-    state.dgdataview.features.disableContributors = true;
+    state.dgcommon.features = {
+      ...(state.dgcommon.features ?? {}),
+      disableContributors: true,
+    };
     renderComponent();
 
     expect(
