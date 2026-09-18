@@ -201,7 +201,26 @@ describe('DLS Data Publication Landing page', () => {
         },
         rightsList: [],
         geoLocations: [],
-        fundingReferences: [],
+        fundingReferences: [
+          {
+            funderName: 'funder 1',
+            funderIdentifier: null,
+            funderIdentifierType: null,
+            schemeUri: null,
+            awardUri: null,
+            awardTitle: null,
+            awardNumber: '',
+          },
+          {
+            funderName: 'funder 2',
+            funderIdentifier: null,
+            funderIdentifierType: null,
+            schemeUri: null,
+            awardUri: null,
+            awardTitle: null,
+            awardNumber: '',
+          },
+        ],
         url: '',
         identifiers: [],
         creators: [],
@@ -416,6 +435,8 @@ describe('DLS Data Publication Landing page', () => {
 
     expect(screen.getByText('sample 1, sample 2')).toBeInTheDocument();
 
+    expect(screen.getByText('funder 1, funder 2'));
+
     // two citation formatters
     expect(
       screen.getByText(
@@ -436,6 +457,7 @@ describe('DLS Data Publication Landing page', () => {
     initialData.publicationDate = undefined;
     initialData.type = undefined;
     initialDataCiteData.attributes.subjects = [];
+    initialDataCiteData.attributes.fundingReferences = [];
     renderComponent();
 
     // displays doi + link correctly
@@ -453,6 +475,7 @@ describe('DLS Data Publication Landing page', () => {
     ).toBeNull();
     expect(screen.queryByText('datapublications.details.subjects')).toBeNull();
     expect(screen.queryByText('datapublications.details.samples')).toBeNull();
+    expect(screen.queryByText('datapublications.details.funders')).toBeNull();
   });
 
   it('renders correctly whilst loading', async () => {
