@@ -67,6 +67,8 @@ jobs:
   dataview-e2e-tests:
     name: DataGateway DataView End to End Tests
     runs-on: ubuntu-24.04
+    env:
+      ICAT__URL: https://localhost:8181
     steps:
       - name: Checkout repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -176,17 +178,17 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v11.1.0
+          ref: v12.0.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
 
       - name: Create config.yaml
-        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
+        run: cp datagateway-api/config.yaml.example datagateway-api/config.yaml
 
       - name: Create logging.ini
-        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
+        run: cp datagateway-api/logging.example.ini datagateway-api/logging.ini
 
       # DataGateway API dependencies
       - name: Install dependencies
@@ -235,6 +237,8 @@ jobs:
   download-e2e-tests:
     name: DataGateway Download End to End Tests
     runs-on: ubuntu-24.04
+    env:
+      ICAT__URL: https://localhost:8181
     steps:
       - name: Checkout repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -354,17 +358,17 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v11.1.0
+          ref: v12.0.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
 
       - name: Create config.yaml
-        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
+        run: cp datagateway-api/config.yaml.example datagateway-api/config.yaml
 
       - name: Create logging.ini
-        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
+        run: cp datagateway-api/logging.example.ini datagateway-api/logging.ini
 
       # DataGateway API dependencies
       - name: Install dependencies
@@ -413,6 +417,8 @@ jobs:
   search-e2e-tests:
     name: DataGateway Search End to End Tests
     runs-on: ubuntu-24.04
+    env:
+      ICAT__URL: https://localhost:8181
     steps:
       - name: Checkout repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -487,17 +493,17 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v11.1.0
+          ref: v12.0.0
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
 
       - name: Create config.yaml
-        run: cp datagateway-api/datagateway_api/config.yaml.example datagateway-api/datagateway_api/config.yaml
+        run: cp datagateway-api/config.yaml.example datagateway-api/config.yaml
 
       - name: Create logging.ini
-        run: cp datagateway-api/datagateway_api/logging.example.ini datagateway-api/datagateway_api/logging.ini
+        run: cp datagateway-api/logging.example.ini datagateway-api/logging.ini
 
       # DataGateway API dependencies
       - name: Install dependencies
