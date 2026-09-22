@@ -81,17 +81,20 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Dataset' },
-          {
-            target: 'DatasetParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          DatasetParameter: {
+            terms: {
+              field: 'datasetparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+          InvestigationInstrument: {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+        },
       },
       currentTab === 'dataset' ? filters : {},
       {
@@ -154,11 +157,11 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {

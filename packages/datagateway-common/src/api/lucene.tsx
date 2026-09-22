@@ -7,7 +7,6 @@ import {
   type UseQueryResult,
 } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
-import { format, set } from 'date-fns';
 import { useSelector } from 'react-redux';
 import {
   FiltersType,
@@ -21,15 +20,6 @@ import { NotificationType } from '../state/actions/actions.types';
 import { StateType } from '../state/app.types';
 import { useRetryICATErrors } from './retryICATErrors';
 
-interface QueryParameters {
-  target: string;
-  text?: string;
-  lower?: string;
-  upper?: string;
-  filter?: object;
-  facets?: object[];
-}
-
 export type DatasearchType = 'Investigation' | 'Dataset' | 'Datafile';
 
 export type LuceneSearchParams = UrlBuilderParameters & {
@@ -39,26 +29,6 @@ export type LuceneSearchParams = UrlBuilderParameters & {
   maxCount?: number;
   restrict?: boolean;
 };
-
-interface UrlBuilderParameters {
-  searchText: string;
-  startDate: Date | null;
-  endDate: Date | null;
-  filters?: FiltersType;
-  facets?: FacetRequest[];
-}
-
-interface SearchAfter {
-  doc: number;
-  shardIndex: number;
-  score: number;
-  fields: [];
-}
-
-export interface FacetRequest {
-  target: string;
-  dimensions?: DimensionRequest[];
-}
 
 interface DimensionRequest {
   dimension: string;
@@ -71,10 +41,77 @@ interface RangeRequest {
   key?: string;
 }
 
-export interface SearchResult {
-  id: number;
+export interface FacetRequest {
+  target: string;
+  dimensions?: DimensionRequest[];
+}
+
+interface UrlBuilderParameters {
+  searchText: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  filters?: FiltersType;
+  facets?: FacetQuery;
+}
+
+interface SearchAfter {
+  doc: number;
+  shardIndex: number;
   score: number;
-  source: SearchResultSource;
+  fields: [];
+}
+
+export interface TextQuery {
+  query_string: {
+    query: string;
+    fields?: string[];
+  };
+}
+
+interface RangeFilter {
+  lt?: number;
+  gte?: number;
+}
+
+interface TermFilter {
+  [field: string]: (string | number)[];
+}
+
+export interface FilterQuery {
+  range?: RangeFilter;
+  terms?: TermFilter;
+}
+
+export interface BoolQuery {
+  bool: {
+    must?: TextQuery;
+    filter?: FilterQuery;
+    minimum_should_match?: number | string;
+  };
+}
+
+export interface FacetQuery {
+  [facet: string]: {
+    terms: {
+      field: string;
+      show_term_doc_count_error: boolean;
+    };
+  };
+}
+
+export interface ElasticsearchQuery {
+  target: DatasearchType;
+  size: number;
+  query?: BoolQuery;
+  facets?: FacetQuery;
+  sort?: SortType[];
+  search_after?: SearchAfter;
+}
+
+export interface SearchResult {
+  _id: number;
+  _score: number;
+  _source: SearchResultSource;
 }
 
 interface RangeFacetResponse {
@@ -186,42 +223,79 @@ const handleLuceneError = (error: AxiosError<LuceneError>): void => {
   }
 };
 
+// Rename to query builder or something
 const urlParamsBuilder = (
   datasearchtype: DatasearchType,
-  params: UrlBuilderParameters
-): QueryParameters => {
-  const query: QueryParameters = {
-    target: datasearchtype,
-  };
-
+  params: LuceneSearchParams
+): ElasticsearchQuery => {
+  const dateRange: RangeFilter = {};
+  const filters: TermFilter = {};
+  const search: TextQuery = { query_string: { query: '' } };
+  const facets: FacetQuery = {};
   if (params.startDate !== null || params.endDate !== null) {
-    query.lower =
-      params.startDate !== null
-        ? format(
-            set(params.startDate, { hours: 0, minutes: 0 }),
-            'yyyyMMddHHmm'
-          )
-        : '0000001010000';
+    dateRange.gte =
+      params.startDate !== null ? params.startDate.valueOf() : undefined;
 
-    query.upper =
-      params.endDate !== null
-        ? format(
-            set(params.endDate, { hours: 23, minutes: 59 }),
-            'yyyyMMddHHmm'
-          )
-        : '9000012312359';
+    dateRange.lt =
+      params.endDate !== null ? params.endDate.valueOf() : undefined;
   }
 
   if (params.filters && Object.entries(params.filters).length > 0) {
-    query.filter = params.filters;
+    for (const item in Object.entries(params.filters)) {
+      for (const filter in params.filters[item]) {
+        filters[item] = [filter];
+      }
+    }
   }
 
   if (params.searchText.length > 0) {
-    query.text = params.searchText;
+    search.query_string.query = params.searchText;
+    // Add fields here
   }
+
+  const filter_query: FilterQuery = {
+    terms: filters,
+  };
+
+  if (dateRange.gte !== undefined && dateRange.lt !== undefined) {
+    filter_query.range = dateRange;
+  }
+
+  if (Object.keys(filters).length !== 0) {
+    filter_query.terms = filters;
+  }
+
+  const query: ElasticsearchQuery = {
+    target: datasearchtype,
+    query: {
+      bool: {},
+    },
+    size: params.maxCount ?? 10,
+    facets: facets,
+    sort:
+      params.sort !== undefined
+        ? [params.sort, { id: 'desc' }]
+        : [{ _score: 'desc' }],
+  };
 
   if (params.facets) {
     query.facets = params.facets;
+  }
+
+  if (filter_query.range !== undefined && filter_query.terms !== undefined) {
+    if (query.query) {
+      query.query.bool.filter = filter_query;
+    }
+  }
+
+  if (search.query_string !== undefined) {
+    if (query.query) {
+      query.query.bool.must = search;
+    }
+  }
+
+  if (params.search_after) {
+    query.search_after = params.search_after;
   }
 
   // return query.
@@ -242,8 +316,8 @@ export const fetchLuceneData = async (
     'query',
     JSON.stringify(urlParamsBuilder(datasearchType, params))
   );
-  if (params.sort && Object.keys(params.sort).length > 0)
-    queryParams.append('sort', JSON.stringify(params.sort));
+  // if (params.sort && Object.keys(params.sort).length > 0)
+  //   queryParams.append('sort', JSON.stringify(params.sort));
   if (params.search_after)
     queryParams.append('search_after', JSON.stringify(params.search_after));
   queryParams.append('minCount', `${params.minCount ? params.minCount : 10}`);
@@ -262,7 +336,7 @@ export const fetchLuceneData = async (
 
 export const fetchLuceneFacets = async (
   datasearchType: DatasearchType,
-  facets: FacetRequest[],
+  facets: object[],
   filters: FiltersType,
   settings: {
     icatUrl: string;
@@ -290,13 +364,13 @@ export const fetchLuceneFacets = async (
 
 export const useLuceneFacet = <TSelectData,>(
   datasearchType: DatasearchType,
-  facetRequests: FacetRequest[],
+  facetRequests: object[],
   facetFilters: FiltersType,
   options: UseQueryOptions<
     SearchResponse,
     AxiosError,
     TSelectData,
-    [string, DatasearchType, FacetRequest[], FiltersType]
+    [string, DatasearchType, object[], FiltersType]
   > = {}
 ): UseQueryResult<TSelectData, AxiosError> => {
   const icatUrl = useSelector(
@@ -307,7 +381,7 @@ export const useLuceneFacet = <TSelectData,>(
     SearchResponse,
     AxiosError,
     TSelectData,
-    [string, DatasearchType, FacetRequest[], FiltersType]
+    [string, DatasearchType, object[], FiltersType]
   >(
     ['facet', datasearchType, facetRequests, facetFilters],
     (queryFunctionContext) => {
