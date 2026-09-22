@@ -66,24 +66,27 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
     useLuceneSearchInfinite(
       'Datafile',
       {
-        searchText,
-        startDate,
-        endDate,
-        sort,
+        searchText: searchText,
+        startDate: startDate,
+        endDate: endDate,
+        sort: sort,
         minCount: minNumResults,
         maxCount: maxNumResults,
-        restrict,
-        facets: [
-          { target: 'Datafile' },
-          {
-            target: 'DatafileParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        restrict: restrict,
+        facets: {
+          DatafileParameter: {
+            terms: {
+              field: 'datafileparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+          InvestigationInstrument: {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+        },
       },
       currentTab === 'datafile' ? filters : {},
       {
@@ -137,11 +140,11 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {

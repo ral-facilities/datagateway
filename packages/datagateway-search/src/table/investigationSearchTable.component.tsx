@@ -86,21 +86,26 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Investigation' },
-          {
-            target: 'InvestigationParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          InvestigationParameter: {
+            terms: {
+              field: 'investigationparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'Sample',
-            dimensions: [{ dimension: 'sample.type.name' }],
+          Sample: {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+          InvestigationInstrument: {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+        },
       },
       currentTab === 'investigation' ? filters : {},
 
@@ -128,11 +133,11 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {

@@ -408,6 +408,7 @@ export interface SearchResultSource {
   'investigation.startDate'?: number;
   'facility.name'?: string;
   'facility.id'?: number;
+  'user.name'?: string[];
 }
 
 export type ICATEntity =
