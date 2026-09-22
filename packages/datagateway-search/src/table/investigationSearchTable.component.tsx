@@ -87,19 +87,19 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
         maxCount: maxNumResults,
         restrict,
         facets: {
-          InvestigationParameter: {
+          'InvestigationParameter.type.name': {
             terms: {
               field: 'investigationparameter.type.name',
               show_term_doc_count_error: true,
             },
           },
-          Sample: {
+          'Sample.sample.type.name': {
             terms: {
               field: 'sample.type.name',
               show_term_doc_count_error: true,
             },
           },
-          InvestigationInstrument: {
+          'InvestigationInstrument.instrument.name': {
             terms: {
               field: 'investigationinstrument.instrument.name',
               show_term_doc_count_error: true,
