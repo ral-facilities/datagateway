@@ -73,19 +73,19 @@ interface RangeFilter {
   gte?: number;
 }
 
-interface TermFilter {
-  [field: string]: (string | number)[];
+interface DateFilter {
+  date: RangeFilter;
 }
 
 export interface FilterQuery {
-  range?: RangeFilter;
-  terms?: TermFilter;
+  range?: DateFilter;
+  terms?: FiltersType;
 }
 
 export interface BoolQuery {
   bool: {
     must?: TextQuery;
-    filter?: FilterQuery;
+    filter?: FilterQuery[];
     minimum_should_match?: number | string;
   };
 }
@@ -229,22 +229,16 @@ const urlParamsBuilder = (
   params: LuceneSearchParams
 ): ElasticsearchQuery => {
   const dateRange: RangeFilter = {};
-  const filters: TermFilter = {};
+  const filters: FiltersType | undefined = params?.filters;
   const search: TextQuery = { query_string: { query: '' } };
   const facets: FacetQuery = {};
+
   if (params.startDate !== null || params.endDate !== null) {
-    dateRange.gte =
-      params.startDate !== null ? params.startDate.valueOf() : undefined;
-
-    dateRange.lt =
-      params.endDate !== null ? params.endDate.valueOf() : undefined;
-  }
-
-  if (params.filters && Object.entries(params.filters).length > 0) {
-    for (const item in Object.entries(params.filters)) {
-      for (const filter in params.filters[item]) {
-        filters[item] = [filter];
-      }
+    if (params.startDate) {
+      dateRange.gte = params.startDate.valueOf();
+    }
+    if (params.endDate) {
+      dateRange.lt = params.endDate.valueOf();
     }
   }
 
@@ -253,16 +247,24 @@ const urlParamsBuilder = (
     // Add fields here
   }
 
-  const filter_query: FilterQuery = {
-    terms: filters,
-  };
+  const filter_query: FilterQuery[] = [];
 
-  if (dateRange.gte !== undefined && dateRange.lt !== undefined) {
-    filter_query.range = dateRange;
+  if (dateRange.gte !== undefined || dateRange.lt !== undefined) {
+    const range_filter: FilterQuery = {};
+    range_filter.range = {
+      date: dateRange,
+    };
+    filter_query.push(range_filter);
   }
 
-  if (Object.keys(filters).length !== 0) {
-    filter_query.terms = filters;
+  if (filters !== undefined) {
+    for (const [field, value] of Object.entries(filters)) {
+      const filter_item: FilterQuery = {};
+      filter_item.terms = {
+        [field]: value,
+      };
+      filter_query.push(filter_item);
+    }
   }
 
   const query: ElasticsearchQuery = {
@@ -282,7 +284,7 @@ const urlParamsBuilder = (
     query.facets = params.facets;
   }
 
-  if (filter_query.range !== undefined && filter_query.terms !== undefined) {
+  if (filter_query.length !== 0) {
     if (query.query) {
       query.query.bool.filter = filter_query;
     }
@@ -419,10 +421,11 @@ export const useLuceneSearchInfinite = (
 
   const apiLuceneParams = { ...luceneParams };
 
-  if (facetFilters) {
+  if (facetFilters && Object.keys(facetFilters).length !== 0) {
     apiLuceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
       (filters, [filterKey, filterValue]) => {
-        const k = filterKey[0].toLocaleLowerCase() + filterKey.substring(1);
+        const k =
+          filterKey[0].toLowerCase() + filterKey.substring(1).toLowerCase();
         filters[k] = filterValue;
         return filters;
       },

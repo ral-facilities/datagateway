@@ -74,13 +74,13 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
         maxCount: maxNumResults,
         restrict: restrict,
         facets: {
-          DatafileParameter: {
+          'DatafileParameter.type.name': {
             terms: {
               field: 'datafileparameter.type.name',
               show_term_doc_count_error: true,
             },
           },
-          InvestigationInstrument: {
+          'InvestigationInstrument.instrument.name': {
             terms: {
               field: 'investigationinstrument.instrument.name',
               show_term_doc_count_error: true,

@@ -82,13 +82,13 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
         maxCount: maxNumResults,
         restrict,
         facets: {
-          DatasetParameter: {
+          'DatasetParameter.type.name': {
             terms: {
               field: 'datasetparameter.type.name',
               show_term_doc_count_error: true,
             },
           },
-          InvestigationInstrument: {
+          'InvestigationInstrument.instrument.name': {
             terms: {
               field: 'investigationinstrument.instrument.name',
               show_term_doc_count_error: true,
