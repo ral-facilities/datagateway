@@ -223,8 +223,7 @@ const handleLuceneError = (error: AxiosError<LuceneError>): void => {
   }
 };
 
-// Rename to query builder or something
-const urlParamsBuilder = (
+const elasticQueryBuilder = (
   datasearchtype: DatasearchType,
   params: LuceneSearchParams
 ): ElasticsearchQuery => {
@@ -267,6 +266,17 @@ const urlParamsBuilder = (
     }
   }
 
+  if (params.restrict) {
+    const user = readSciGatewayToken().username;
+    if (user !== null) {
+      const user_filter: FilterQuery = {};
+      user_filter.terms = {
+        'user.name': [user],
+      };
+      filter_query.push(user_filter);
+    }
+  }
+
   const query: ElasticsearchQuery = {
     target: datasearchtype,
     query: {
@@ -290,7 +300,7 @@ const urlParamsBuilder = (
     }
   }
 
-  if (search.query_string !== undefined) {
+  if (search.query_string.query !== '') {
     if (query.query) {
       query.query.bool.must = search;
     }
@@ -316,7 +326,7 @@ export const fetchLuceneData = async (
   queryParams.append('sessionId', readSciGatewayToken().sessionId ?? '');
   queryParams.append(
     'query',
-    JSON.stringify(urlParamsBuilder(datasearchType, params))
+    JSON.stringify(elasticQueryBuilder(datasearchType, params))
   );
   // if (params.sort && Object.keys(params.sort).length > 0)
   //   queryParams.append('sort', JSON.stringify(params.sort));

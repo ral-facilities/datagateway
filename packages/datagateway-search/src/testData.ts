@@ -21,9 +21,9 @@ const mockSearchResponses: SearchResponse[] = [
   {
     results: [
       {
-        score: 1,
-        id: 1,
-        source: {
+        _score: 1,
+        _id: 1,
+        _source: {
           id: 1,
           name: 'Datafile test name',
           location: '/datafiletest',
@@ -44,9 +44,9 @@ const mockSearchResponses: SearchResponse[] = [
         },
       },
       {
-        id: 596,
-        score: 269,
-        source: {
+        _id: 596,
+        _score: 269,
+        _source: {
           id: 749,
           name: 'source 1',
         },
@@ -56,9 +56,9 @@ const mockSearchResponses: SearchResponse[] = [
   {
     results: [
       {
-        id: 916,
-        score: 160,
-        source: {
+        _id: 916,
+        _score: 160,
+        _source: {
           id: 143,
           name: 'source 3',
         },

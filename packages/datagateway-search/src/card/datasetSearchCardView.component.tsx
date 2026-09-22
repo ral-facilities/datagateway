@@ -93,17 +93,20 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Dataset' },
-          {
-            target: 'DatasetParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          'DatasetParameter.type.name': {
+            terms: {
+              field: 'datasetparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+          'InvestigationInstrument.instrument.name': {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+        },
       },
       currentTab === 'dataset' ? filters : {},
       {
@@ -158,11 +161,11 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._id) ?? [];
   }
 
   const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {
