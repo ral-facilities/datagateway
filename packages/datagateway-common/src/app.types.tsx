@@ -474,7 +474,7 @@ export interface NestedFilter {
 
 export type SearchFilter = NestedFilter | RangeFilter | TermFilter | string;
 
-export type Filter = SearchFilter[] | TextFilter | DateFilter;
+export type Filter = SearchFilter[] | TextFilter | DateFilter | string;
 
 export type Order = 'asc' | 'desc';
 
