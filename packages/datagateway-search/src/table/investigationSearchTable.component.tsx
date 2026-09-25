@@ -98,7 +98,10 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
           },
           {
             target: 'InvestigationInstrument',
-            dimensions: [{ dimension: 'instrument.name' }],
+            dimensions: [
+              { dimension: 'instrument.name' },
+              { dimension: 'instrument.fullName' },
+            ],
           },
         ],
       },

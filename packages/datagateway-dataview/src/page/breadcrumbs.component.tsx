@@ -71,7 +71,7 @@ const fetchEntityInformation = async (
     })
     .then((response) => {
       // Return the property in the data received.
-      return response.data[entityField];
+      return response.data[entityField] ?? response.data['name'];
     });
 
   return entityName;
@@ -116,8 +116,10 @@ const useEntityInformation = (
           entity === 'investigation'
             ? 'title'
             : entity === 'dataPublication'
-            ? 'title'
-            : 'name';
+              ? 'title'
+              : entity === 'instrument'
+                ? 'fullName'
+                : 'name';
 
         // this is the field we use to lookup the relevant entity in ICAT - it's usually ID
         // but for DLS proposals this will be name

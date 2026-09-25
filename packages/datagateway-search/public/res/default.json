@@ -168,6 +168,7 @@
     "InvestigationParameter.type.name": "Parameter name",
     "Sample.sample.type.name": "Sample",
     "InvestigationInstrument.instrument.name": "Instrument",
+    "InvestigationInstrument.instrument.fullName": "Instrument",
     "Dataset.type.name": "Type",
     "Dataset.sample.type.name": "Sample",
     "DatasetParameter.type.name": "Parameter name",
