@@ -182,8 +182,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
   );
-
-  const isSessionDOI = data?.type?.name === 'Investigation';
+  const doiType = data?.type?.name;
+  const isSessionDOI = doiType === 'Investigation';
   const isConceptDOI = !isVersionDOI && !isSessionDOI;
 
   const pid = data?.pid;
@@ -592,7 +592,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
                 {isSessionDOI &&
                   !data?.publicationDate &&
-                  data.users?.some(
+                  data?.users?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
                       user.orderKey === '0'
@@ -790,6 +790,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <TabPanel value={currentTab} index="content">
             <DLSDataPublicationContentTable
               dataPublicationId={dataPublicationId}
+              doiType={doiType}
             />
           </TabPanel>
         </Grid>

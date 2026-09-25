@@ -32,13 +32,13 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 
 interface DLSDataPublicationContentTableProps {
   dataPublicationId: string;
+  doiType?: string;
 }
 
 const DLSDataPublicationContentTable = (
   props: DLSDataPublicationContentTableProps
 ): React.ReactElement => {
-  const { dataPublicationId } = props;
-
+  const { dataPublicationId, doiType } = props;
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
   >('investigation');
@@ -282,12 +282,16 @@ const DLSDataPublicationContentTable = (
         indicatorColor="secondary"
         textColor="secondary"
       >
-        <Tab
-          label={t('breadcrumbs.investigation_other')}
-          value="investigation"
-        />
+        {!doiType?.includes('User-defined') && (
+          <Tab
+            label={t('breadcrumbs.investigation_other')}
+            value="investigation"
+          />
+        )}
         <Tab label={t('breadcrumbs.dataset_other')} value="dataset" />
-        <Tab label={t('breadcrumbs.datafile_other')} value="datafile" />
+        {doiType !== 'Investigation' && (
+          <Tab label={t('breadcrumbs.datafile_other')} value="datafile" />
+        )}
       </Tabs>
       {/* add a div just so we can set the height of the table correctly */}
       <div
