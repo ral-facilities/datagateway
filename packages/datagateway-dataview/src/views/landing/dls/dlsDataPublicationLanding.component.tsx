@@ -178,6 +178,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       ) ?? [[], [], []],
     [dataciteData?.attributes.subjects]
   );
+  const funders =
+    dataciteData?.attributes.fundingReferences.map((fr) => fr.funderName) ?? [];
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
@@ -682,6 +684,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {t('datapublications.details.subjects')}
                     </Subheading>
                     {subjects.join(', ')}
+                  </div>
+                )}
+                {funders.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-funders-label"
+                    >
+                      {t('datapublications.details.funders')}
+                    </Subheading>
+                    {funders.join(', ')}
                   </div>
                 )}
 
