@@ -208,7 +208,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                 {t('DOIGenerationForm.add_creator')}
               </Button>
             </Grid>
-            {disableContributors === false && (
+            {disableContributors !== true && (
               <Grid item>
                 <Button
                   variant="contained"
@@ -236,7 +236,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                   {t('DOIGenerationForm.creator_affiliation')}
                 </TableCell>
                 <TableCell>{t('DOIGenerationForm.creator_email')}</TableCell>
-                {disableContributors === false && (
+                {disableContributors !== true && (
                   <TableCell>{t('DOIGenerationForm.creator_type')}</TableCell>
                 )}
                 <TableCell>{t('DOIGenerationForm.creator_action')}</TableCell>
@@ -262,7 +262,7 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
                     </TableCell>
                     <TableCell>{user?.affiliation}</TableCell>
                     <TableCell>{user?.email}</TableCell>
-                    {disableContributors === false && (
+                    {disableContributors !== true && (
                       <TableCell>
                         {user.contributor_type === ContributorType.Creator ? (
                           user.contributor_type
