@@ -179,13 +179,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [dataciteData?.attributes.subjects]
   );
   const funders =
-    dataciteData?.attributes.fundingReferences.reduce(
-      (result: string[], element) => {
-        result.push(element.funderName);
-        return result;
-      },
-      []
-    ) ?? [];
+    dataciteData?.attributes.fundingReferences.map((fr) => fr.funderName) ?? [];
+
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
   );
