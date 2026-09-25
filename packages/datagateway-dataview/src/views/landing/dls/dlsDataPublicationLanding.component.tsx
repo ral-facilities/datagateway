@@ -592,7 +592,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
                 {isSessionDOI &&
                   !data?.publicationDate &&
-                  data.users?.some(
+                  data?.users?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
                       user.orderKey === '0'
