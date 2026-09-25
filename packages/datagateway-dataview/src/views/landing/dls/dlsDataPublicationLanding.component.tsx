@@ -182,9 +182,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
   );
-
-  const isSessionDOI = data?.type?.name === 'Investigation';
-  const doitype = data?.type?.name;
+  const doiType = data?.type?.name;
+  const isSessionDOI = doiType === 'Investigation';
   const isConceptDOI = !isVersionDOI && !isSessionDOI;
 
   const pid = data?.pid;
@@ -791,7 +790,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <TabPanel value={currentTab} index="content">
             <DLSDataPublicationContentTable
               dataPublicationId={dataPublicationId}
-              doitype={doitype}
+              doiType={doiType}
             />
           </TabPanel>
         </Grid>
