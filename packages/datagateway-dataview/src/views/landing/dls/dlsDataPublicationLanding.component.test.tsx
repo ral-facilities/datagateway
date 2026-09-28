@@ -745,6 +745,7 @@ describe('DLS Data Publication Landing page', () => {
   });
 
   it('displays content table when tab is clicked', async () => {
+    initialData.type = undefined;
     renderComponent();
 
     await user.click(
