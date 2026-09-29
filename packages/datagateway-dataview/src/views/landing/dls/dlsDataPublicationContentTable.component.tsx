@@ -41,7 +41,12 @@ const DLSDataPublicationContentTable = (
   const { dataPublicationId, doiType } = props;
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
-  >('investigation');
+  >(() => {
+    if (doiType?.includes('User-defined')) {
+      return 'dataset';
+    }
+    return 'investigation';
+  });
 
   const handleTabChange = (
     _event: React.SyntheticEvent,
