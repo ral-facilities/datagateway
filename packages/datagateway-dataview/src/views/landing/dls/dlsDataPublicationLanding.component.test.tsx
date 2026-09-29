@@ -305,6 +305,10 @@ describe('DLS Data Publication Landing page', () => {
           return Promise.resolve({
             data: [],
           });
+        } else if (/\/datasets$/.test(url)) {
+          return Promise.resolve({
+            data: [],
+          });
         } else if (/\/count$/.test(url)) {
           return Promise.resolve({
             data: 0,
