@@ -943,7 +943,9 @@ describe('DOI generation form component', () => {
       screen.getByRole('button', { name: 'DOIGenerationForm.add_creator' })
     ).toBeDisabled();
     expect(
-      screen.getByRole('button', { name: 'DOIGenerationForm.add_contributor' })
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_contributor',
+      })
     ).toBeDisabled();
   }, 60_000);
 
@@ -1069,5 +1071,17 @@ describe('DOI generation form component', () => {
         })
       ).toBeInTheDocument();
     });
+  });
+
+  it('should not show the add contributor button if the feature is disabled', async () => {
+    mockedSettings.uiFeatures.disableContributors = true;
+    renderComponent();
+    // accept data policy
+    await user.click(
+      screen.getByRole('button', { name: 'acceptDataPolicy.accept' })
+    );
+    expect(
+      screen.queryByText(`DOIGenerationForm.add_contributor`)
+    ).not.toBeInTheDocument();
   });
 });

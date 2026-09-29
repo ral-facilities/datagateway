@@ -28,6 +28,9 @@ export const initialState: DGDataViewState = {
   datafilePreviewer: datafilePreviewerInitialState,
   PIRole: 'PI',
   localContactRole: 'local_contact|DataCollector',
+  features: {
+    disableContributors: false,
+  },
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {

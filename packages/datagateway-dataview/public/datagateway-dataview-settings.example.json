@@ -4,7 +4,8 @@
   "landingPageLogo": "STFC",
   "features": {
     "disableAnonDownload": false,
-    "disableSelectAll": false
+    "disableSelectAll": false,
+    "disableContributors": false
   },
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",

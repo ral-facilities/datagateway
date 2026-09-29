@@ -105,6 +105,7 @@ describe('Download Status Table', () => {
       ...mockedSettings,
       uiFeatures: {
         downloadProgress: true,
+        disableContributors: true,
       },
     };
 
@@ -461,6 +462,7 @@ describe('Download Status Table', () => {
         ...mockedSettings,
         uiFeatures: {
           downloadProgress: true,
+          disableContributors: true,
         },
       },
     });
