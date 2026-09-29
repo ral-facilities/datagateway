@@ -46,9 +46,9 @@ describe('SearchTabs', () => {
             },
             results: [
               {
-                score: 1,
-                id: 1,
-                source: {
+                _score: 1,
+                _id: 1,
+                _source: {
                   id: 1,
                   title: 'Test title 1',
                   name: 'Test name 1',
@@ -77,9 +77,9 @@ describe('SearchTabs', () => {
           searchResponse = {
             results: [
               {
-                score: 1,
-                id: 1,
-                source: {
+                _score: 1,
+                _id: 1,
+                _source: {
                   id: 1,
                   name: 'Dataset test name',
                   startDate: 1563922800000,
@@ -106,9 +106,9 @@ describe('SearchTabs', () => {
           searchResponse = {
             results: [
               {
-                score: 1,
-                id: 1,
-                source: {
+                _score: 1,
+                _id: 1,
+                _source: {
                   id: 1,
                   name: 'Datafile test name',
                   location: '/datafiletest',

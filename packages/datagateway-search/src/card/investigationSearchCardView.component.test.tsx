@@ -92,9 +92,9 @@ describe('Investigation - Card View', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: cardData,
+      _score: 1,
+      _id: 1,
+      _source: cardData,
     };
     searchResponse = {
       results: [searchResult],

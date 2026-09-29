@@ -37,9 +37,9 @@ import DatasetSearchTable from './datasetSearchTable.component';
 
 const mockSearchResults: SearchResult[] = [
   {
-    score: 1,
-    id: 1,
-    source: {
+    _score: 1,
+    _id: 1,
+    _source: {
       id: 1,
       name: 'Dataset test name',
       startDate: 1563940800000,
@@ -73,7 +73,9 @@ const mockLuceneSearchParams: LuceneSearchParams = {
   minCount: 10,
   maxCount: 100,
   restrict: true,
-  facets: [{ target: 'Dataset' }],
+  facets: {
+    Dataset: { terms: { field: 'Dataset', show_term_doc_count_error: true } },
+  },
   filters: {},
 };
 
@@ -749,7 +751,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: {
+          _source: {
             id: 1,
             name: 'test',
           },
@@ -794,12 +796,12 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    const { investigationinstrument, ...data } = mockSearchResults[0].source;
+    const { investigationinstrument, ...data } = mockSearchResults[0]._source;
     searchResponse = {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -816,12 +818,13 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    const { investigationfacilitycycle, ...data } = mockSearchResults[0].source;
+    const { investigationfacilitycycle, ...data } =
+      mockSearchResults[0]._source;
     searchResponse = {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -837,7 +840,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no generic investigation to link to', async () => {
-    const data = { ...mockSearchResults[0].source };
+    const data = { ...mockSearchResults[0]._source };
     delete data['investigation.id'];
     delete data['investigation.name'];
     delete data['investigation.title'];
@@ -846,7 +849,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -862,7 +865,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no DLS investigation to link to', async () => {
-    const data = { ...mockSearchResults[0].source };
+    const data = { ...mockSearchResults[0]._source };
     delete data['investigation.id'];
     delete data['investigation.name'];
     delete data['investigation.title'];
@@ -871,7 +874,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -892,7 +895,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    const data = { ...mockSearchResults[0].source };
+    const data = { ...mockSearchResults[0]._source };
     delete data['investigation.id'];
     delete data['investigation.name'];
     delete data['investigation.title'];
@@ -901,7 +904,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };

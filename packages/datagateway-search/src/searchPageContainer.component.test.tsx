@@ -46,18 +46,13 @@ vi.mock('datagateway-common', async () => {
 function generateURLSearchParams({
   sessionId = '',
   query = {},
-  minCount = '10',
-  maxCount = '100',
-  restrict = 'false',
   token = '',
 }): URLSearchParams {
   const params = new URLSearchParams();
   params.append('sessionId', sessionId);
   params.append('query', JSON.stringify(query));
-  params.append('minCount', minCount);
-  params.append('maxCount', maxCount);
-  params.append('restrict', restrict);
   params.append('JWT', token);
+  console.log(`Dev params:\n${params.toString()}`);
   return params;
 }
 
@@ -389,20 +384,37 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Datafile',
-            lower: '201311110000',
-            upper: '201611112359',
-            text: 'hello',
-            facets: [
-              { target: 'Datafile' },
-              {
-                target: 'DatafileParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        gte: 1384128000000,
+                        lt: 1478822400000,
+                      },
+                    },
+                  },
+                ],
+                must: { query_string: { query: 'hello' } },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+            },
+            size: 10,
+            facets: {
+              'DatafileParameter.type.name': {
+                terms: {
+                  field: 'datafileparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
+              },
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -426,22 +438,37 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Dataset',
-            lower: '201311110000',
-            upper: '201611112359',
-            text: 'hello',
-            facets: [
-              {
-                target: 'Dataset',
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        gte: 1384128000000,
+                        lt: 1478822400000,
+                      },
+                    },
+                  },
+                ],
+                must: { query_string: { query: 'hello' } },
               },
-              {
-                target: 'DatasetParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            },
+            size: 10,
+            facets: {
+              'DatasetParameter.type.name': {
+                terms: {
+                  field: 'datasetparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -466,24 +493,47 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Investigation',
-            lower: '201311110000',
-            upper: '201611112359',
-            text: 'hello',
-            facets: [
-              { target: 'Investigation' },
-              {
-                target: 'InvestigationParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        gte: 1384128000000,
+                        lt: 1478822400000,
+                      },
+                    },
+                  },
+                ],
+                must: {
+                  query_string: {
+                    query: 'hello',
+                  },
+                },
               },
-              {
-                target: 'Sample',
-                dimensions: [{ dimension: 'sample.type.name' }],
+            },
+            size: 10,
+            facets: {
+              'InvestigationParameter.type.name': {
+                terms: {
+                  field: 'investigationparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'Sample.sample.type.name': {
+                terms: {
+                  field: 'sample.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
+              },
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -507,19 +557,35 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Datafile',
-            lower: '201311110000',
-            upper: '9000012312359',
-            facets: [
-              { target: 'Datafile' },
-              {
-                target: 'DatafileParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        gte: 1384128000000,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+            },
+            size: 10,
+            facets: {
+              'DatafileParameter.type.name': {
+                terms: {
+                  field: 'datafileparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
+              },
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -528,7 +594,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('builds correct parameters for dataset request if only start date is in use', async () => {
     history.replace(
-      '/search/data?searchText=test&datafile=false&investigation=false&startDate=2013-11-11'
+      '/search/data?searchText=&datafile=false&investigation=false&startDate=2013-11-11'
     );
 
     renderComponent();
@@ -543,22 +609,35 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Dataset',
-            lower: '201311110000',
-            upper: '9000012312359',
-            text: 'test',
-            facets: [
-              {
-                target: 'Dataset',
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        gte: 1384128000000,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                target: 'DatasetParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            },
+            size: 10,
+            facets: {
+              'DatasetParameter.type.name': {
+                terms: {
+                  field: 'datasetparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -567,7 +646,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('builds correct parameters for investigation request if only start date is in use', async () => {
     history.replace(
-      '/search/data?searchText=test&dataset=false&datafile=false&startDate=2013-11-11'
+      '/search/data?searchText=&dataset=false&datafile=false&startDate=2013-11-11'
     );
 
     renderComponent();
@@ -583,24 +662,41 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Investigation',
-            lower: '201311110000',
-            upper: '9000012312359',
-            text: 'test',
-            facets: [
-              { target: 'Investigation' },
-              {
-                target: 'InvestigationParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        gte: 1384128000000,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                target: 'Sample',
-                dimensions: [{ dimension: 'sample.type.name' }],
+            },
+            size: 10,
+            facets: {
+              'InvestigationParameter.type.name': {
+                terms: {
+                  field: 'investigationparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'Sample.sample.type.name': {
+                terms: {
+                  field: 'sample.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
+              },
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -629,19 +725,35 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Datafile',
-            lower: '0000001010000',
-            upper: '201611112359',
-            facets: [
-              { target: 'Datafile' },
-              {
-                target: 'DatafileParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        lt: 1478822400000,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+            },
+            size: 10,
+            facets: {
+              'DatafileParameter.type.name': {
+                terms: {
+                  field: 'datafileparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
+              },
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -650,7 +762,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('builds correct parameters for dataset request if only end date is in use', async () => {
     history.replace(
-      '/search/data?searchText=test&datafile=false&investigation=false&endDate=2016-11-11'
+      '/search/data?searchText=&datafile=false&investigation=false&endDate=2016-11-11'
     );
 
     renderComponent();
@@ -665,22 +777,35 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Dataset',
-            lower: '0000001010000',
-            upper: '201611112359',
-            text: 'test',
-            facets: [
-              {
-                target: 'Dataset',
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        lt: 1478822400000,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                target: 'DatasetParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            },
+            size: 10,
+            facets: {
+              'DatasetParameter.type.name': {
+                terms: {
+                  field: 'datasetparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -689,7 +814,7 @@ describe('SearchPageContainer - Tests', () => {
 
   it('builds correct parameters for investigation request if only end date is in use', async () => {
     history.replace(
-      '/search/data?searchText=test&dataset=false&datafile=false&endDate=2016-11-11'
+      '/search/data?searchText=&dataset=false&datafile=false&endDate=2016-11-11'
     );
 
     renderComponent();
@@ -704,24 +829,41 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Investigation',
-            lower: '0000001010000',
-            upper: '201611112359',
-            text: 'test',
-            facets: [
-              { target: 'Investigation' },
-              {
-                target: 'InvestigationParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {
+                filter: [
+                  {
+                    range: {
+                      date: {
+                        lt: 1478822400000,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                target: 'Sample',
-                dimensions: [{ dimension: 'sample.type.name' }],
+            },
+            size: 10,
+            facets: {
+              'InvestigationParameter.type.name': {
+                terms: {
+                  field: 'investigationparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'Sample.sample.type.name': {
+                terms: {
+                  field: 'sample.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
+              },
+            },
+            sort: [{}, { id: 'desc' }],
           },
         }),
       }
@@ -747,21 +889,26 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Datafile',
-            facets: [
-              {
-                target: 'Datafile',
+            query: {
+              bool: {},
+            },
+            size: 10,
+            facets: {
+              'DatafileParameter.type.name': {
+                terms: {
+                  field: 'datafileparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'DatafileParameter',
-                dimensions: [{ dimension: 'type.name' }],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
-              },
-            ],
+            },
+            sort: [{}, { id: 'desc' }],
           },
-          restrict: 'true',
         }),
       }
     );
@@ -784,21 +931,26 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Dataset',
-            facets: [
-              {
-                target: 'Dataset',
+            query: {
+              bool: {},
+            },
+            size: 10,
+            facets: {
+              'DatasetParameter.type.name': {
+                terms: {
+                  field: 'datasetparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'DatasetParameter',
-                dimensions: [{ dimension: 'type.name' }],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
-              },
-            ],
+            },
+            sort: [{}, { id: 'desc' }],
           },
-          restrict: 'true',
         }),
       }
     );
@@ -821,23 +973,32 @@ describe('SearchPageContainer - Tests', () => {
         params: generateURLSearchParams({
           query: {
             target: 'Investigation',
-            facets: [
-              { target: 'Investigation' },
-              {
-                target: 'InvestigationParameter',
-                dimensions: [{ dimension: 'type.name' }],
+            query: {
+              bool: {},
+            },
+            size: 10,
+            facets: {
+              'InvestigationParameter.type.name': {
+                terms: {
+                  field: 'investigationparameter.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'Sample',
-                dimensions: [{ dimension: 'sample.type.name' }],
+              'Sample.sample.type.name': {
+                terms: {
+                  field: 'sample.type.name',
+                  show_term_doc_count_error: true,
+                },
               },
-              {
-                target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+              'InvestigationInstrument.instrument.name': {
+                terms: {
+                  field: 'investigationinstrument.instrument.name',
+                  show_term_doc_count_error: true,
+                },
               },
-            ],
+            },
+            sort: [{}, { id: 'desc' }],
           },
-          restrict: 'true',
         }),
       }
     );

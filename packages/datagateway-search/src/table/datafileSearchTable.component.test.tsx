@@ -162,9 +162,9 @@ describe('Datafile search table component', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     axios.get = vi.fn().mockImplementation(mockAxiosGet);
@@ -821,9 +821,9 @@ describe('Datafile search table component', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     renderComponent('data');
@@ -874,9 +874,9 @@ describe('Datafile search table component', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     renderComponent('dls');
@@ -920,9 +920,9 @@ describe('Datafile search table component', () => {
       'investigation.startDate': 1560121200000,
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     renderComponent('isis');

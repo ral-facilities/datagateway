@@ -35,7 +35,14 @@ describe('Lucene actions', () => {
         searchText: 'test',
         startDate: null,
         endDate: null,
-        facets: [{ target: 'Dataset' }],
+        facets: {
+          'DatasetParameter.type.name': {
+            terms: {
+              field: 'datasetparameter.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+        },
         sort: { size: 'desc' },
       };
 
@@ -52,29 +59,47 @@ describe('Lucene actions', () => {
         'query',
         JSON.stringify({
           target: 'Dataset',
-          filter: {
-            'dataset.type.name': ['dataset name'],
-            'investigationInstrument.instrument.name': ['instrument name'],
+          query: {
+            bool: {
+              filter: [
+                {
+                  terms: {
+                    'dataset.type.name': ['dataset name'],
+                  },
+                },
+                {
+                  terms: {
+                    'investigationinstrument.instrument.name': [
+                      'instrument name',
+                    ],
+                  },
+                },
+              ],
+              must: {
+                query_string: {
+                  query: 'test',
+                },
+              },
+            },
           },
-          text: 'test',
-          facets: [{ target: 'Dataset' }],
+          size: 10,
+          facets: {
+            'DatasetParameter.type.name': {
+              terms: {
+                field: 'datasetparameter.type.name',
+                show_term_doc_count_error: true,
+              },
+            },
+          },
+          sort: [{ size: 'desc' }, { id: 'desc' }],
         })
       );
-      params.append(
-        'sort',
-        JSON.stringify({
-          size: 'desc',
-        })
-      );
-      params.append('minCount', '10');
-      params.append('maxCount', '100');
-      params.append('restrict', 'false');
       params.append('JWT', '');
 
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
-          params,
+          params: params,
         }
       );
       expect(result.current.data?.pages[0]).toEqual({ results: [{ id: 1 }] });
@@ -107,15 +132,31 @@ describe('Lucene actions', () => {
         'query',
         JSON.stringify({
           target: 'Datafile',
-          lower: '200001010000',
-          upper: '9000012312359',
-          text: 'test',
+          query: {
+            bool: {
+              filter: [
+                {
+                  range: {
+                    date: {
+                      gte: 946684800000,
+                    },
+                  },
+                },
+              ],
+              must: {
+                query_string: {
+                  query: 'test',
+                },
+              },
+            },
+          },
+          size: 300,
+          facets: {},
+          sort: [{ _score: 'desc' }],
         })
       );
-      params.append('minCount', '10');
-      params.append('maxCount', '300');
-      params.append('restrict', 'false');
       params.append('JWT', '');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
@@ -152,15 +193,31 @@ describe('Lucene actions', () => {
         'query',
         JSON.stringify({
           target: 'Datafile',
-          lower: '0000001010000',
-          upper: '202012312359',
-          text: 'test',
+          query: {
+            bool: {
+              filter: [
+                {
+                  range: {
+                    date: {
+                      lt: 1609372800000,
+                    },
+                  },
+                },
+              ],
+              must: {
+                query_string: {
+                  query: 'test',
+                },
+              },
+            },
+          },
+          size: 300,
+          facets: {},
+          sort: [{ _score: 'desc' }],
         })
       );
-      params.append('minCount', '10');
-      params.append('maxCount', '300');
-      params.append('restrict', 'false');
       params.append('JWT', '');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
@@ -193,14 +250,26 @@ describe('Lucene actions', () => {
         'query',
         JSON.stringify({
           target: 'Investigation',
-          lower: '0000001010000',
-          upper: '202012312359',
+          query: {
+            bool: {
+              filter: [
+                {
+                  range: {
+                    date: {
+                      lt: 1609372800000,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          size: 300,
+          facets: {},
+          sort: [{ _score: 'desc' }],
         })
       );
-      params.append('minCount', '10');
-      params.append('maxCount', '300');
-      params.append('restrict', 'false');
       params.append('JWT', '');
+
       expect(axios.get).toHaveBeenCalledWith(
         'https://example.com/icat/search/documents',
         {
@@ -242,13 +311,22 @@ describe('Lucene actions', () => {
         'query',
         JSON.stringify({
           target: 'Investigation',
+          query: {
+            bool: {},
+          },
+          size: 10,
+          facets: {},
+          sort: [{ _score: 'desc' }],
+          search_after: { doc: 5 },
         })
       );
-      params.append('search_after', JSON.stringify({ doc: 5 }));
-      params.append('minCount', '10');
-      params.append('maxCount', '100');
-      params.append('restrict', 'false');
+      // params.append('search_after', JSON.stringify({ doc: 5 }));
+      // params.append('minCount', '10');
+      // params.append('maxCount', '100');
+      // params.append('restrict', 'false');
       params.append('JWT', '');
+
+      console.log(params.toString());
 
       // second call is the fetch next page call
       expect(axios.get).toHaveBeenNthCalledWith(
