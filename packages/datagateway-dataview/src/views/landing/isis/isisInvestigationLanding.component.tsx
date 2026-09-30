@@ -293,7 +293,9 @@ const CommonLandingPage = (
           icon: <Business sx={shortInfoIconStyle} />,
         },
         {
-          content: () => data.investigationInstruments?.[0]?.instrument?.name,
+          content: () =>
+            data.investigationInstruments?.[0]?.instrument?.fullName ??
+            data.investigationInstruments?.[0]?.instrument?.name,
           label: t('investigations.instrument'),
           icon: <Assessment sx={shortInfoIconStyle} />,
         },

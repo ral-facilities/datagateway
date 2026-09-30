@@ -18,7 +18,7 @@ describe('SearchBoxContainer Component', () => {
     cy.get('#search-entities-menu').should('exist');
 
     cy.get('[aria-label="Submit search"]').should('exist');
-    cy.findByRole('button', { name: 'search options' }).should('exist');
+    cy.findByRole('button', { name: 'advanced search tips' }).should('exist');
 
     cy.get('#search-entities-menu').click();
     cy.get('[aria-label="Investigation checkbox"]').should('exist');
@@ -79,7 +79,7 @@ describe('SearchBoxContainer Component', () => {
   });
 
   it('should display advanced help dialog when advanced button is clicked', () => {
-    cy.findByRole('button', { name: 'search options' }).click();
+    cy.findByRole('button', { name: 'advanced search tips' }).click();
 
     cy.get('[aria-labelledby="advanced-search-dialog-title"')
       .contains('Advanced Search Tips')
@@ -92,7 +92,7 @@ describe('SearchBoxContainer Component', () => {
     );
 
     //Should be able to click on one of the links
-    cy.findByRole('button', { name: 'search options' }).click();
+    cy.findByRole('button', { name: 'advanced search tips' }).click();
 
     cy.get('[aria-labelledby="advanced-search-dialog-title"').contains(
       'Advanced Search Tips'
