@@ -16,10 +16,13 @@ import {
   ContributorType,
   ContributorUser,
   DOIConfirmDialog,
+  DOIFundingReference,
   DOIMetadataConfirmation,
   DOIMetadataForm,
+  NO_FUNDER_OPTION_FUNDINGIDENTIFIER,
   RelatedIdentifier,
   readSciGatewayToken,
+  useFunders,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -47,6 +50,9 @@ const DOIGenerationForm: React.FC = () => {
   const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
   const [samples, setSamples] = React.useState<string[]>([]);
   const [subjects, setSubjects] = React.useState<string[]>([]);
+  const [fundingReferences, setFundingReferences] = React.useState<
+    DOIFundingReference[]
+  >([]);
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
   >('investigation');
@@ -57,6 +63,7 @@ const DOIGenerationForm: React.FC = () => {
     dataCiteUrl,
     bioportalUrl,
     doiHandleUrl,
+    rorApiUrl,
     localContactRole,
     uiFeatures,
   } = React.useContext(DownloadSettingsContext);
@@ -87,6 +94,12 @@ const DOIGenerationForm: React.FC = () => {
 
   const { mutateAsync: deleteDraft, status: deleteDraftStatus } =
     useDeleteDraft();
+
+  const { data: fundersList } = useFunders(
+    import.meta.env.VITE_DOWNLOAD_BUILD_DIRECTORY
+      ? import.meta.env.VITE_DOWNLOAD_BUILD_DIRECTORY + 'funders.json'
+      : '/funders.json'
+  );
 
   React.useEffect(() => {
     if (users)
@@ -151,6 +164,11 @@ const DOIGenerationForm: React.FC = () => {
               valueUri: t['@id'],
             })),
           ],
+          funding_references:
+            fundingReferences[0].funderIdentifier !==
+            NO_FUNDER_OPTION_FUNDINGIDENTIFIER
+              ? fundingReferences
+              : undefined,
         },
       }).then(() => {
         setShowMetadataConfirmation(true);
@@ -159,6 +177,7 @@ const DOIGenerationForm: React.FC = () => {
   }, [
     cart,
     description,
+    fundingReferences,
     mintDraftCart,
     relatedIdentifiers,
     samples,
@@ -308,6 +327,7 @@ const DOIGenerationForm: React.FC = () => {
                     doiMinterUrl={doiMinterUrl}
                     bioportalUrl={bioportalUrl}
                     doiHandleUrl={doiHandleUrl}
+                    rorApiUrl={rorApiUrl}
                     title={title}
                     setTitle={setTitle}
                     description={description}
@@ -322,6 +342,9 @@ const DOIGenerationForm: React.FC = () => {
                     setSamples={setSamples}
                     subjects={subjects}
                     setSubjects={setSubjects}
+                    fundingReferences={fundingReferences}
+                    setFundingReferences={setFundingReferences}
+                    fundersList={fundersList ?? []}
                     disableMintButton={
                       typeof cart === 'undefined' || cart.length === 0
                     }

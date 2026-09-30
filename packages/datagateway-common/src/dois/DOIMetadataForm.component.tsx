@@ -3,10 +3,15 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { BioPortalTerm, RelatedIdentifier } from '../app.types';
+import {
+  BioPortalTerm,
+  DOIFundingReference,
+  RelatedIdentifier,
+} from '../app.types';
 import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
+import FundingReferences from './fundingReferences.component';
 import RelatedIdentifiers from './relatedIdentifiers.component';
 import TechniquesSamplesSubjects from './techniquesSamplesSubjects.component';
 
@@ -27,6 +32,7 @@ type DOIMetadataFormProps = {
   doiMinterUrl: string | undefined; // this is because since it loads from settings it is technically undefined at some point
   dataCiteUrl: string | undefined;
   bioportalUrl: string | undefined;
+  rorApiUrl: string | undefined;
   doiHandleUrl: string;
   localContactRole: string;
   disableContributors: boolean;
@@ -36,6 +42,11 @@ type DOIMetadataFormProps = {
   setSamples: React.Dispatch<React.SetStateAction<string[]>>;
   subjects: string[];
   setSubjects: React.Dispatch<React.SetStateAction<string[]>>;
+  fundingReferences: DOIFundingReference[];
+  setFundingReferences: React.Dispatch<
+    React.SetStateAction<DOIFundingReference[]>
+  >;
+  fundersList: DOIFundingReference[];
 } & React.ComponentProps<typeof Grid>;
 
 const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
@@ -54,12 +65,16 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     setSamples,
     subjects,
     setSubjects,
+    fundingReferences,
+    setFundingReferences,
+    fundersList,
     disableMintButton,
     onMintClick,
     doiMinterUrl,
     dataCiteUrl,
     bioportalUrl,
     doiHandleUrl,
+    rorApiUrl,
     mintLoading,
     localContactRole,
     disableContributors,
@@ -82,6 +97,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
   const subjectError = subjects.length === 0;
   const techniqueError = techniques.length === 0;
   const sampleError = samples.length === 0;
+  const fundingReferencesError = fundingReferences.length === 0;
 
   const validationError =
     titleError ||
@@ -90,7 +106,8 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     relatedIdentifiersError ||
     subjectError ||
     techniqueError ||
-    sampleError;
+    sampleError ||
+    fundingReferencesError;
 
   return (
     <Grid
@@ -124,7 +141,7 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           label={t('DOIGenerationForm.description')}
           required
           multiline
-          rows={4}
+          rows={3}
           fullWidth
           color="secondary"
           error={showErrors && descriptionError}
@@ -146,6 +163,16 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
           subjectError={showErrors && subjectError}
           disabled={mintLoading}
           bioportalUrl={bioportalUrl}
+        />
+      </Grid>
+      <Grid item>
+        <FundingReferences
+          fundingReferences={fundingReferences}
+          changeFundingReferences={setFundingReferences}
+          fundersList={fundersList}
+          disabled={mintLoading}
+          fundingReferencesError={showErrors && fundingReferencesError}
+          rorApiUrl={rorApiUrl}
         />
       </Grid>
       <Grid item>
