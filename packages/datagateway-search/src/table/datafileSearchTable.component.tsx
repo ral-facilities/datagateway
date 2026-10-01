@@ -41,6 +41,10 @@ interface DatafileSearchTableProps {
 const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   const { hierarchy } = props;
 
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const location = useLocation();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -48,6 +52,11 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   );
   const { startDate, endDate, sort, filters, restrict, datafile, currentTab } =
     queryParams;
+
+  const datafileSearchable: boolean = searchableEntities.includes('datafile')
+    ? datafile
+    : false;
+
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const disableSelectAll = useSelector(
@@ -90,7 +99,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
       },
       currentTab === 'datafile' ? filters : {},
       {
-        enabled: datafile,
+        enabled: datafileSearchable,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({

@@ -42,6 +42,11 @@ interface DatasetTableProps {
 
 const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const location = useLocation();
+
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const { push } = useHistory();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -57,6 +62,10 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     dataset,
     currentTab,
   } = queryParams;
+
+  const datasetSearchable: boolean = searchableEntities.includes('dataset')
+    ? dataset
+    : false;
 
   const disableSelectAll = useSelector(
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
@@ -98,7 +107,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
       },
       currentTab === 'dataset' ? filters : {},
       {
-        enabled: dataset,
+        enabled: datasetSearchable,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({

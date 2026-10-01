@@ -52,7 +52,6 @@ function generateURLSearchParams({
   params.append('sessionId', sessionId);
   params.append('query', JSON.stringify(query));
   params.append('JWT', token);
-  console.log(`Dev params:\n${params.toString()}`);
   return params;
 }
 

@@ -40,6 +40,10 @@ interface InvestigationTableProps {
 const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   const { hierarchy } = props;
 
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const location = useLocation();
   const { push } = useHistory();
   const queryParams = React.useMemo(
@@ -55,6 +59,13 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     investigation,
     currentTab,
   } = queryParams;
+
+  const investigationSearchable: boolean = searchableEntities.includes(
+    'investigation'
+  )
+    ? investigation
+    : false;
+
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const disableSelectAll = useSelector(
@@ -109,7 +120,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
       },
       currentTab === 'investigation' ? filters : {},
 
-      { enabled: investigation }
+      { enabled: investigationSearchable }
     );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =

@@ -64,6 +64,10 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
   const location = useLocation();
   const { push } = useHistory();
 
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -79,6 +83,11 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     investigation,
     currentTab,
   } = queryParams;
+  const investigationSearchable: boolean = searchableEntities.includes(
+    'investigation'
+  )
+    ? investigation
+    : false;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const handleSort = useSort();
@@ -131,7 +140,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
         },
       },
       currentTab === 'investigation' ? filters : {},
-      { enabled: investigation }
+      { enabled: investigationSearchable }
     );
 
   function mapSource(response: SearchResponse): SearchResultSource[] {

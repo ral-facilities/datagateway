@@ -320,10 +320,6 @@ describe('Lucene actions', () => {
           search_after: { doc: 5 },
         })
       );
-      // params.append('search_after', JSON.stringify({ doc: 5 }));
-      // params.append('minCount', '10');
-      // params.append('maxCount', '100');
-      // params.append('restrict', 'false');
       params.append('JWT', '');
 
       console.log(params.toString());

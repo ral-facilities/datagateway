@@ -310,7 +310,6 @@ const elasticQueryBuilder = (
     query.search_after = params.search_after;
   }
 
-  // return query.
   return query;
 };
 
@@ -321,20 +320,12 @@ export const fetchLuceneData = async (
     icatUrl: string;
   }
 ): Promise<SearchResponse> => {
-  // Query params.
   const queryParams = new URLSearchParams();
   queryParams.append('sessionId', readSciGatewayToken().sessionId ?? '');
   queryParams.append(
     'query',
     JSON.stringify(elasticQueryBuilder(datasearchType, params))
   );
-  // if (params.sort && Object.keys(params.sort).length > 0)
-  //   queryParams.append('sort', JSON.stringify(params.sort));
-  if (params.search_after)
-    queryParams.append('search_after', JSON.stringify(params.search_after));
-  queryParams.append('minCount', `${params.minCount ? params.minCount : 10}`);
-  queryParams.append('maxCount', `${params.maxCount ? params.maxCount : 100}`);
-  queryParams.append('restrict', `${!!params.restrict}`);
   queryParams.append('JWT', readSciGatewayToken().token ?? '');
 
   return axios

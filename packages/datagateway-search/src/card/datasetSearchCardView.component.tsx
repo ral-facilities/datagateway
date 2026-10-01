@@ -57,6 +57,11 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
 
   const location = useLocation();
   const { push } = useHistory();
+
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -73,6 +78,9 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
     currentTab,
   } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
+  const datasetSearchable: boolean = searchableEntities.includes('dataset')
+    ? dataset
+    : false;
 
   const minNumResults = useSelector(
     (state: StateType) => state.dgsearch.minNumResults
@@ -110,7 +118,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
       },
       currentTab === 'dataset' ? filters : {},
       {
-        enabled: dataset,
+        enabled: datasetSearchable,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({
