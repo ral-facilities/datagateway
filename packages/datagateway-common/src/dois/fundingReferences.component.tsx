@@ -24,7 +24,7 @@ type FundingReferencesProps = {
   changeFundingReferences: React.Dispatch<
     React.SetStateAction<DOIFundingReference[]>
   >;
-  fundersList: DOIFundingReference[];
+  fundersList: DOIFundingReference[] | undefined;
   rorApiUrl: string | undefined;
   disabled: boolean;
   fundingReferencesError: boolean;
@@ -187,6 +187,29 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
   } = props;
   const [t] = useTranslation();
 
+  // can remove after upgrading from MUIv5 which removes the Autocomplete value not in option list warning
+  const [options, setOptions] = React.useState([
+    ...(fundersList ?? []),
+    {
+      funderName: t('DOIGenerationForm.no_funder_option'),
+      funderIdentifier: NO_FUNDER_OPTION_FUNDINGIDENTIFIER,
+      awardNumber: ':unas',
+    },
+  ]);
+
+  React.useEffect(() => {
+    if (fundersList) {
+      setOptions([
+        ...fundersList,
+        {
+          funderName: t('DOIGenerationForm.no_funder_option'),
+          funderIdentifier: NO_FUNDER_OPTION_FUNDINGIDENTIFIER,
+          awardNumber: ':unas',
+        },
+      ]);
+    }
+  }, [fundersList, t]);
+
   const [isRORDialogOpen, setIsRORDialogOpen] = React.useState(false);
 
   return (
@@ -234,8 +257,30 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
               multiple
               fullWidth
               filterSelectedOptions
+              autoHighlight
               value={fundingReferences}
-              onChange={(_e, value) => changeFundingReferences(value)}
+              onChange={(_e, value, reason, details) => {
+                // remove any ROR added options from the options list
+                if (reason === 'removeOption') {
+                  const removed = details?.option;
+                  if (
+                    removed &&
+                    !fundersList?.some(
+                      (fr) =>
+                        fr.funderIdentifier === removed.funderIdentifier ||
+                        fr.funderName === removed.funderName
+                    )
+                  )
+                    setOptions((oldOptions) =>
+                      oldOptions.filter(
+                        (fr) =>
+                          fr.funderIdentifier !== removed.funderIdentifier &&
+                          fr.funderName !== removed.funderName
+                      )
+                    );
+                }
+                changeFundingReferences(value);
+              }}
               getOptionLabel={(fr) => fr.funderName}
               renderInput={(params) => (
                 <TextField
@@ -264,14 +309,7 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
                   NO_FUNDER_OPTION_FUNDINGIDENTIFIER &&
                   fundingReferences.length !== 0)
               }
-              options={[
-                ...fundersList,
-                {
-                  funderName: t('DOIGenerationForm.no_funder_option'),
-                  funderIdentifier: NO_FUNDER_OPTION_FUNDINGIDENTIFIER,
-                  awardNumber: ':unas',
-                },
-              ]}
+              options={options}
               disabled={disabled}
             />
           </Grid>
@@ -293,28 +331,30 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
               open={isRORDialogOpen}
               changeOpen={setIsRORDialogOpen}
               addRORFunder={(ror: ROR) => {
+                const rorName = (
+                  ror.names.find((name) =>
+                    name.types.includes('ror_display')
+                  ) ?? ror.names[0]
+                ).value;
+                const rorFundingReference = {
+                  funderName: rorName,
+                  funderIdentifier: ror.id,
+                  funderIdentifierType: 'ROR',
+                  awardNumber: ':unas',
+                };
                 changeFundingReferences((existingFunders) => {
-                  const rorName = (
-                    ror.names.find((name) =>
-                      name.types.includes('ror_display')
-                    ) ?? ror.names[0]
-                  ).value;
                   return existingFunders.some(
                     (fr) =>
-                      fr.funderName === rorName ||
-                      fr.funderIdentifier === ror.id
+                      fr.funderIdentifier === ror.id ||
+                      fr.funderName === rorName
                   )
                     ? existingFunders
-                    : [
-                        ...existingFunders,
-                        {
-                          funderName: rorName,
-                          funderIdentifier: ror.id,
-                          funderIdentifierType: 'ROR',
-                          awardNumber: ':unas',
-                        },
-                      ];
+                    : [...existingFunders, rorFundingReference];
                 });
+                setOptions((oldOptions) => [
+                  ...oldOptions,
+                  rorFundingReference,
+                ]);
               }}
               rorApiUrl={rorApiUrl}
             />

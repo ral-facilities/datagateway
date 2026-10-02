@@ -485,7 +485,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   setSubjects={setSubjects}
                   fundingReferences={fundingReferences}
                   setFundingReferences={setFundingReferences}
-                  fundersList={fundersList ?? []}
+                  fundersList={fundersList}
                   disableMintButton={false}
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}

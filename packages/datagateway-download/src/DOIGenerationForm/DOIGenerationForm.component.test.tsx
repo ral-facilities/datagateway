@@ -14,6 +14,7 @@ import {
   DOIRelationType,
   DOIResourceType,
   DataCiteDOI,
+  ROR,
   User,
   fetchDownloadCart,
 } from 'datagateway-common';
@@ -90,6 +91,21 @@ describe('DOI generation form component', () => {
   let mockUser: User;
   let mockDOIResponse: { data: DataCiteDOI };
   let mockDraftResponse: Awaited<ReturnType<typeof mintDraftCart>>;
+  let mockROR: ROR;
+  const fundersList = [
+    {
+      funderName: 'Funder 1',
+      awardNumber: ':unas',
+      funderIdentifier: 'ror.1',
+      funderIdentifierType: 'ROR',
+    },
+    {
+      funderName: 'Funder 2',
+      awardNumber: ':unas',
+      funderIdentifier: 'ror.2',
+      funderIdentifierType: 'ROR',
+    },
+  ];
 
   beforeEach(() => {
     user = userEvent.setup();
@@ -179,6 +195,10 @@ describe('DOI generation form component', () => {
         },
       },
     };
+    mockROR = {
+      id: 'ror.5',
+      names: [{ types: ['ror_display'], value: 'Funder 5' }],
+    };
 
     vi.mocked(fetchDownloadCart).mockResolvedValue(mockCartItems);
 
@@ -209,6 +229,14 @@ describe('DOI generation form component', () => {
         } else if (/\/dois\/.*/.test(url)) {
           return Promise.resolve({
             data: mockDOIResponse,
+          });
+        } else if (/\/organizations/.test(url)) {
+          return Promise.resolve({
+            data: mockROR,
+          });
+        } else if (/\/funders.json$/.test(url)) {
+          return Promise.resolve({
+            data: fundersList,
           });
         } else if (/\/search.*/.test(url)) {
           return Promise.resolve({
@@ -348,6 +376,19 @@ describe('DOI generation form component', () => {
       })
     );
 
+    // funding references
+    await user.type(
+      await screen.findByRole('combobox', {
+        name: 'DOIGenerationForm.funding_reference_autocomplete',
+      }),
+      'no{enter}'
+    );
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.no_funder_option',
+      })
+    ).toBeInTheDocument();
+
     await user.click(
       await screen.findByRole('button', {
         name: 'DOIGenerationForm.review_metadata_button',
@@ -357,6 +398,29 @@ describe('DOI generation form component', () => {
     // expect confirmation page to appear, confirm submission
 
     await screen.findByText('DOIGenerationForm.review_metadata');
+
+    expect(mintDraftCart).toHaveBeenCalledWith(
+      mockCartItems,
+      {
+        title: 't',
+        description: 'd',
+        creators: [{ username: '1', contributor_type: 'Creator' }],
+        related_items: [],
+        subjects: [
+          { subject: 'subject' },
+          { subject: 'sample:sample' },
+          {
+            subject: 'technique1',
+            schemeUri: 'http://purl.org/pan-science/PaNET/',
+            valueUri: 'http://purl.org/pan-science/PaNET/1',
+            subjectScheme:
+              'Photon and Neutron Experimental Techniques (PaNET) ontology',
+          },
+        ],
+        funding_references: undefined,
+      },
+      expect.any(Object)
+    );
 
     await user.click(
       screen.getByRole('button', { name: 'DOIGenerationForm.generate_DOI' })
@@ -561,6 +625,20 @@ describe('DOI generation form component', () => {
       's{enter}'
     );
 
+    // missing funding references
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    ).toBeDisabled();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.funding_reference_autocomplete',
+      }),
+      '1{enter}'
+    );
+
     await user.click(
       screen.getByRole('button', {
         name: 'DOIGenerationForm.review_metadata_button',
@@ -600,6 +678,7 @@ describe('DOI generation form component', () => {
               'Photon and Neutron Experimental Techniques (PaNET) ontology',
           },
         ],
+        funding_references: [fundersList[0]],
       },
       expect.any(Object)
     );
@@ -645,6 +724,14 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.samples',
       }),
       'sample{enter}'
+    );
+
+    // funding references
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.funding_reference_autocomplete',
+      }),
+      'no{enter}'
     );
 
     // technique selector

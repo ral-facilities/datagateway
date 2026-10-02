@@ -46,7 +46,7 @@ type DOIMetadataFormProps = {
   setFundingReferences: React.Dispatch<
     React.SetStateAction<DOIFundingReference[]>
   >;
-  fundersList: DOIFundingReference[];
+  fundersList: DOIFundingReference[] | undefined;
 } & React.ComponentProps<typeof Grid>;
 
 const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {

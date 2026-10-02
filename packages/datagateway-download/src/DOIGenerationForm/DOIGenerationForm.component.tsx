@@ -344,7 +344,7 @@ const DOIGenerationForm: React.FC = () => {
                     setSubjects={setSubjects}
                     fundingReferences={fundingReferences}
                     setFundingReferences={setFundingReferences}
-                    fundersList={fundersList ?? []}
+                    fundersList={fundersList}
                     disableMintButton={
                       typeof cart === 'undefined' || cart.length === 0
                     }
