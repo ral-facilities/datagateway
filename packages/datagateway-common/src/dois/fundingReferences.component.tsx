@@ -265,6 +265,8 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
                   const removed = details?.option;
                   if (
                     removed &&
+                    removed.funderIdentifier !==
+                      NO_FUNDER_OPTION_FUNDINGIDENTIFIER &&
                     !fundersList?.some(
                       (fr) =>
                         fr.funderIdentifier === removed.funderIdentifier ||
@@ -298,6 +300,7 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
                 />
               )}
               isOptionEqualToValue={(option, value) =>
+                option.funderIdentifier === value.funderIdentifier ||
                 option.funderName === value.funderName
               }
               getOptionDisabled={(option) =>
