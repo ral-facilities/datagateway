@@ -107,6 +107,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           doiMinterUrl: settingsResult['doiMinterUrl'],
           dataCiteUrl: settingsResult['dataCiteUrl'],
           doiHandleUrl: settingsResult['doiHandleUrl'] ?? 'https://doi.org',
+          rorApiUrl: settingsResult['rorApiUrl'],
           bioportalUrl: settingsResult['bioportalUrl'],
         })
       );

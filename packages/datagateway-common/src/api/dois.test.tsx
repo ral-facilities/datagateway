@@ -3,10 +3,12 @@ import axios, { AxiosError, AxiosHeaders } from 'axios';
 import log from 'loglevel';
 import {
   handleDOIAPIError,
+  useCheckROR,
   useCheckUser,
   useDOI,
   useDeleteDraftVersion,
   useDraftVersionDOI,
+  useFunders,
   useGetDescendantTechniques,
   useIsCartMintable,
   useOpenDataPublication,
@@ -771,6 +773,141 @@ describe('useDOI', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(axios.get).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('useCheckROR', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('fetches ROR info from ROR api given an ROR', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: { id: 'ror', names: [] },
+    });
+
+    const { result } = renderHook(
+      () => useCheckROR('ror', 'https://api.ror.org/v2/organizations'),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://api.ror.org/v2/organizations/ror'
+    );
+    expect(result.current.data).toEqual({ id: 'ror', names: [] });
+  });
+
+  it('does not retry 404 errors', async () => {
+    const error = {
+      message: 'Test error message',
+      response: {
+        status: 404,
+      },
+    };
+    axios.get = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(
+      () => useCheckROR('ror', 'https://api.ror.org/v2/organizations'),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(axios.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('should retry other errors', async () => {
+    const error = {
+      message: 'Test error message',
+      response: {
+        status: 400,
+      },
+    };
+    axios.get = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(
+      () => useCheckROR('ror', 'https://api.ror.org/v2/organizations'),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(axios.get).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('useFunders', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('fetches a funding list from the specified URL and transforms the result correctly', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: [
+        'Funder 1',
+        {
+          funderName: 'Funder 2',
+          funderIdentifier: 'ror.2',
+          funderIdentifierType: 'ROR',
+        },
+        {
+          funderName: 'Funder 3',
+          awardNumber: ':unas',
+          funderIdentifier: 'ror.3',
+          funderIdentifierType: 'ROR',
+        },
+      ],
+    });
+
+    const { result } = renderHook(
+      () => useFunders('https://example.com/funders.json'),
+      {
+        wrapper: createReactQueryWrapper(),
+      }
+    );
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(axios.get).toHaveBeenCalledWith('https://example.com/funders.json');
+    expect(result.current.data).toEqual([
+      {
+        funderName: 'Funder 1',
+        awardNumber: ':unas',
+      },
+      {
+        funderName: 'Funder 2',
+        awardNumber: ':unas',
+        funderIdentifier: 'ror.2',
+        funderIdentifierType: 'ROR',
+      },
+      {
+        funderName: 'Funder 3',
+        awardNumber: ':unas',
+        funderIdentifier: 'ror.3',
+        funderIdentifierType: 'ROR',
+      },
+    ]);
   });
 });
 

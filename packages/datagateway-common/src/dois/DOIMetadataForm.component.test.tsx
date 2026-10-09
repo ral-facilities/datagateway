@@ -54,6 +54,29 @@ describe('DOI generation form component', () => {
       techniques: [createBioPortalTerm(1, ['1']), createBioPortalTerm(2)],
       setTechniques: vi.fn(),
       setRelatedIdentifiers: vi.fn(),
+      fundingReferences: [
+        {
+          funderName: 'Funder 1',
+          awardNumber: ':unas',
+          funderIdentifier: 'ror.1',
+          funderIdentifierType: 'ROR',
+        },
+      ],
+      setFundingReferences: vi.fn(),
+      fundersList: [
+        {
+          funderName: 'Funder 1',
+          awardNumber: ':unas',
+          funderIdentifier: 'ror.1',
+          funderIdentifierType: 'ROR',
+        },
+        {
+          funderName: 'Funder 2',
+          awardNumber: ':unas',
+          funderIdentifier: 'ror.2',
+          funderIdentifierType: 'ROR',
+        },
+      ],
       disableMintButton: false,
       onMintClick: vi.fn(),
       mintLoading: false,
@@ -61,6 +84,7 @@ describe('DOI generation form component', () => {
       dataCiteUrl: 'https://example.com/datacite',
       bioportalUrl: 'https://example.com/bioportal',
       doiHandleUrl: 'https://doi.org',
+      rorApiUrl: 'https://api.ror.org/v2/organizations',
       localContactRole: 'local_contact|DataCollector',
     };
   });
@@ -204,7 +228,7 @@ describe('DOI generation form component', () => {
       })
     ).toBeDisabled();
 
-    // disableMintButton is set to true
+    // empty funders
     props.relatedIdentifiers = [
       {
         title: 'DOI Title',
@@ -214,7 +238,18 @@ describe('DOI generation form component', () => {
         relationType: DOIRelationType.Cites,
       },
     ];
+    props.fundingReferences = [];
+    rerender(<DOIMetadataForm {...props} />);
+
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    ).toBeDisabled();
+
+    // disableMintButton is set to true
     props.disableMintButton = true;
+    props.fundingReferences = [props.fundersList![0]];
     rerender(<DOIMetadataForm {...props} />);
 
     expect(
@@ -255,7 +290,7 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.review_metadata_button',
       })
     ).toBeDisabled();
-  }, 30_000);
+  }, 60_000);
 
   it('should disable mint button & all form fields when mintLoading is true', () => {
     props.mintLoading = true;
@@ -292,6 +327,16 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', {
         name: 'DOIGenerationForm.add_related_other',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.funding_reference_autocomplete',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_by_ror',
       })
     ).toBeDisabled();
 

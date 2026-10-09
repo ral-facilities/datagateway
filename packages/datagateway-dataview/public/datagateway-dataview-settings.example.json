@@ -12,6 +12,8 @@
   "downloadApiUrl": "example.download.api.url",
   "doiMinterUrl": null,
   "dataCiteUrl": null,
+  "rorApiUrl": "https://api.ror.org/v2/organizations",
+  "doiHandleUrl": "https://doi.org",
   "bioportalUrl": "/bioportal",
   "anonUserName": "anon/anon",
   "PIRole": "PI",
