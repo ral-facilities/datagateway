@@ -53,6 +53,7 @@ const RORDialog: React.FC<{
     // reset
     setRORText('');
     setROR(null);
+    setRORError('');
   }, [changeOpen]);
 
   return (
@@ -82,37 +83,22 @@ const RORDialog: React.FC<{
               />
             </Typography>
           </Grid>
-          <Grid
-            container
-            item
-            alignItems="center"
-            spacing={1}
-            sx={{
-              marginBottom: rorError.length > 0 ? 2 : 0,
-            }}
-          >
+          <Grid container item alignItems="center" spacing={1}>
             <Grid item xs>
               <TextField
                 label={t('DOIGenerationForm.ror')}
                 fullWidth
-                error={rorError.length > 0}
-                helperText={rorError.length > 0 ? rorError : ''}
+                error={rorError !== ''}
+                helperText={rorError}
                 value={rorText}
                 onChange={(event) => {
                   setRORText(event.target.value);
                   setRORError('');
                 }}
                 color="secondary"
-                sx={{
-                  // this CSS makes it so that the helperText doesn't mess with the button alignment
-                  '& .MuiFormHelperText-root': {
-                    position: 'absolute',
-                    bottom: '-1.5rem',
-                  },
-                }}
               />
             </Grid>
-            <Grid item xs="auto">
+            <Grid item xs="auto" alignSelf="start" mt={1.25}>
               <Button
                 variant="contained"
                 disabled={rorText.length <= 0}

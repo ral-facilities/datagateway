@@ -288,6 +288,26 @@ describe('Funding references form component', () => {
         name: 'Funder 3',
       })
     ).not.toBeInTheDocument();
+
+    // expect ROR to be cleared on close/open dialogue
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'DOIGenerationForm.add_by_ror',
+      })
+    );
+
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'DOIGenerationForm.ror_dialog_title',
+      })
+    ).toBeVisible();
+
+    expect(
+      screen.queryByText(
+        'DOIGenerationForm.confirm_ror_text {rorName:Funder 3}'
+      )
+    ).not.toBeInTheDocument();
   });
 
   it('handles errors from ror api correctly', async () => {
@@ -328,6 +348,34 @@ describe('Funding references form component', () => {
         'DOIGenerationForm.confirm_ror_text {rorName:Funder 3}'
       )
     ).not.toBeInTheDocument();
+
+    // expect input text & error text to be cleared on close/open dialogue
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.ror_dialog_close_aria_label',
+      })
+    );
+
+    await user.click(
+      await screen.findByRole('button', {
+        name: 'DOIGenerationForm.add_by_ror',
+      })
+    );
+
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'DOIGenerationForm.ror_dialog_title',
+      })
+    ).toBeVisible();
+
+    expect(
+      screen.queryByRole('textbox', {
+        name: 'DOIGenerationForm.ror',
+      })
+    ).toHaveValue('');
+
+    expect(screen.queryByText('Test error')).not.toBeInTheDocument();
   });
 
   it('handles duplicates from ror api correctly', async () => {
