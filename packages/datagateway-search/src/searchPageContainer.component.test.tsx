@@ -1,29 +1,34 @@
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
-import { StateType } from './state/app.types';
-import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  type RenderResult,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
 import {
   dGCommonInitialState,
-  readSciGatewayToken,
-  type DownloadCartItem,
-  useCart,
   parseSearchToQuery,
+  readSciGatewayToken,
+  useCart,
+  type DownloadCartItem,
 } from 'datagateway-common';
 import { createMemoryHistory, createPath, type History } from 'history';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
+import type { DeepPartial } from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { MockInstance } from 'vitest';
 import SearchPageContainer, {
   usePushCurrentTab,
 } from './searchPageContainer.component';
-import { Provider } from 'react-redux';
-import axios from 'axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, type RenderResult, screen, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import type { DeepPartial } from 'redux';
-import { applyMiddleware, compose, createStore } from 'redux';
+import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
-import { renderHook } from '@testing-library/react';
-import type { MockInstance } from 'vitest';
+import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.reducer';
 
 vi.mock('loglevel');
 
@@ -400,7 +405,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -439,7 +447,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -481,7 +492,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -517,7 +531,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -556,7 +573,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -598,7 +618,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -639,7 +662,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -678,7 +704,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -719,7 +748,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -757,7 +789,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -794,7 +829,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -833,7 +871,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -1031,7 +1072,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -1066,7 +1110,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -1108,7 +1155,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -1133,7 +1183,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -1192,7 +1245,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
@@ -1323,7 +1379,10 @@ describe('SearchPageContainer - Tests', () => {
               },
               {
                 target: 'InvestigationInstrument',
-                dimensions: [{ dimension: 'instrument.name' }],
+                dimensions: [
+                  { dimension: 'instrument.name' },
+                  { dimension: 'instrument.fullName' },
+                ],
               },
             ],
           },
