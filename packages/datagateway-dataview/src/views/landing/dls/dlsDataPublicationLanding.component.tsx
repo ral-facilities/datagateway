@@ -158,30 +158,34 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   );
   const { data: dataciteData } = useDOI(data?.pid);
 
-  const [techniques, subjects] = React.useMemo(
+  const [techniques, samples, subjects] = React.useMemo(
     () =>
       dataciteData?.attributes.subjects.reduce(
-        (result: [BioPortalTerm[], string[]], element) => {
+        (result: [BioPortalTerm[], string[], string[]], element) => {
           if (element.valueUri && element.subjectScheme?.includes('PaNET'))
             result[0].push({
               '@id': element.valueUri,
               prefLabel: element.subject,
               links: { descendants: '' }, // just put empty string here - it's not needed for display
             });
-          else result[1].push(element.subject);
+          else if (element.subject.startsWith('sample:'))
+            result[1].push(element.subject.replace('sample:', ''));
+          else result[2].push(element.subject);
 
           return result;
         },
-        [[], []]
-      ) ?? [[], []],
+        [[], [], []]
+      ) ?? [[], [], []],
     [dataciteData?.attributes.subjects]
   );
+  const funders =
+    dataciteData?.attributes.fundingReferences.map((fr) => fr.funderName) ?? [];
 
   const isVersionDOI = data?.relatedItems?.some(
     (relatedItem) => relatedItem.relationType === DOIRelationType.IsVersionOf
   );
-
-  const isSessionDOI = data?.type?.name === 'Investigation';
+  const doiType = data?.type?.name;
+  const isSessionDOI = doiType === 'Investigation';
   const isConceptDOI = !isVersionDOI && !isSessionDOI;
 
   const pid = data?.pid;
@@ -256,6 +260,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
         description: description,
         keywords: [
           ...subjects,
+          ...samples.map((sample) => sample.replace('sample:', '')),
           ...techniques.map((technique) => ({
             name: technique.prefLabel,
             identifier: technique['@id'],
@@ -375,6 +380,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     subjects,
     techniques,
     doiHandleUrl,
+    samples,
   ]);
 
   const instruments = dataciteData
@@ -588,7 +594,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 {/* Only let PIs publish DOIs & only if it's an unopened session DOI */}
                 {isSessionDOI &&
                   !data?.publicationDate &&
-                  data.users?.some(
+                  data?.users?.some(
                     (user) =>
                       user.user?.name === readSciGatewayToken().username &&
                       user.orderKey === '0'
@@ -657,6 +663,18 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   </div>
                 )}
 
+                {samples.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-samples-label"
+                    >
+                      {t('datapublications.details.samples')}
+                    </Subheading>
+                    {samples.join(', ')}
+                  </div>
+                )}
+
                 {subjects.length > 0 && (
                   <div>
                     <Subheading
@@ -666,6 +684,17 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                       {t('datapublications.details.subjects')}
                     </Subheading>
                     {subjects.join(', ')}
+                  </div>
+                )}
+                {funders.length > 0 && (
+                  <div>
+                    <Subheading
+                      variant="h6"
+                      data-testid="landing-dataPublication-funders-label"
+                    >
+                      {t('datapublications.details.funders')}
+                    </Subheading>
+                    {funders.join(', ')}
                   </div>
                 )}
 
@@ -774,6 +803,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
           <TabPanel value={currentTab} index="content">
             <DLSDataPublicationContentTable
               dataPublicationId={dataPublicationId}
+              doiType={doiType}
             />
           </TabPanel>
         </Grid>

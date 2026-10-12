@@ -45,6 +45,7 @@ const DOIGenerationForm: React.FC = () => {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
+  const [samples, setSamples] = React.useState<string[]>([]);
   const [subjects, setSubjects] = React.useState<string[]>([]);
   const [currentTab, setCurrentTab] = React.useState<
     'investigation' | 'dataset' | 'datafile'
@@ -57,6 +58,7 @@ const DOIGenerationForm: React.FC = () => {
     bioportalUrl,
     doiHandleUrl,
     localContactRole,
+    uiFeatures,
   } = React.useContext(DownloadSettingsContext);
 
   const handleTabChange = (
@@ -137,10 +139,9 @@ const DOIGenerationForm: React.FC = () => {
           subjects: [
             ...subjects.map((s) => ({
               subject: s,
-              subjectScheme: null,
-              schemeUri: null,
-              valueUri: null,
-              classificationCode: null,
+            })),
+            ...samples.map((s) => ({
+              subject: `sample:${s}`,
             })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
@@ -148,7 +149,6 @@ const DOIGenerationForm: React.FC = () => {
                 'Photon and Neutron Experimental Techniques (PaNET) ontology',
               schemeUri: 'http://purl.org/pan-science/PaNET/',
               valueUri: t['@id'],
-              classificationCode: null,
             })),
           ],
         },
@@ -161,6 +161,7 @@ const DOIGenerationForm: React.FC = () => {
     description,
     mintDraftCart,
     relatedIdentifiers,
+    samples,
     selectedUsers,
     subjects,
     techniques,
@@ -317,6 +318,8 @@ const DOIGenerationForm: React.FC = () => {
                     setRelatedIdentifiers={setRelatedIdentifiers}
                     techniques={techniques}
                     setTechniques={setTechniques}
+                    samples={samples}
+                    setSamples={setSamples}
                     subjects={subjects}
                     setSubjects={setSubjects}
                     disableMintButton={
@@ -325,6 +328,7 @@ const DOIGenerationForm: React.FC = () => {
                     mintLoading={mintingDraftStatus === 'loading'}
                     onMintClick={handleMintClick}
                     localContactRole={localContactRole}
+                    disableContributors={uiFeatures.disableContributors}
                   />
                 </Grid>
               </Paper>

@@ -19,6 +19,7 @@ const parseJwt = (token: string): string => {
 export interface SciGatewayToken {
   sessionId: string | null;
   username: string | null;
+  token: string | null;
 }
 
 export const readSciGatewayToken = (): SciGatewayToken => {
@@ -34,5 +35,6 @@ export const readSciGatewayToken = (): SciGatewayToken => {
   return {
     sessionId,
     username,
+    token,
   };
 };

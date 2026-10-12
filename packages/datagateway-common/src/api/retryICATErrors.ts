@@ -19,7 +19,7 @@ const baseRetryICATErrors = (
   if (
     error.response?.status === 403 ||
     // TopCAT doesn't set 403 for session ID failure, so detect by looking at the message
-    message.toUpperCase().includes('SESSION') ||
+    message?.toUpperCase().includes('SESSION') ||
     failureCount >= retries
   )
     return false;
@@ -37,9 +37,9 @@ export const useRetryICATErrors = (): ((
     typeof opts.queries?.retry === 'number'
       ? opts.queries.retry
       : // explicitly handle boolean case as we set this in tests
-      opts.queries?.retry === false
-      ? 0
-      : 3;
+        opts.queries?.retry === false
+        ? 0
+        : 3;
 
   return createRetryICATErrors(retries);
 };

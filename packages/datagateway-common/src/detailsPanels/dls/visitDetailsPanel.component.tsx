@@ -1,5 +1,5 @@
 import { Divider, Grid, styled, Tab, Tabs, Typography } from '@mui/material';
-import { format, parse } from 'date-fns';
+import { format, isValid, isMatch, parse } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -85,8 +85,14 @@ const VisitDetailsPanel = (
   }, [data, selectedTab, changeTab]);
 
   function formatParameterDateTimeValue(dateTime: string): string {
-    const date = parse(dateTime, 'yyyy-MM-dd HH:mm:ssXXX', new Date());
-    return format(date, 'yyyy-MM-dd');
+    const formatWithoutSubseconds = 'yyyy-MM-dd HH:mm:ssXXX';
+    const formatWithSubseconds = 'yyyy-MM-dd HH:mm:ss.SSSSSSXXX';
+
+    const date = isMatch(dateTime, formatWithSubseconds)
+      ? parse(dateTime, formatWithSubseconds, new Date())
+      : parse(dateTime, formatWithoutSubseconds, new Date());
+
+    return isValid(date) ? format(date, 'yyyy-MM-dd') : date.toString();
   }
 
   const dedupedInvestigationUsers = investigationData.investigationUsers

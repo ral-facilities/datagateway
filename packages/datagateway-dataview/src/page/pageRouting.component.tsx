@@ -384,29 +384,44 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
 
         {/* My Data routes */}
 
-        <Route exact path={paths.myData.dls}>
-          {this.props.loggedInAnonymously === true ? (
-            <Redirect to={'/login'} />
-          ) : (
-            <DLSMyDataTable />
-          )}
-        </Route>
+        <Route
+          exact
+          path={paths.myData.dls}
+          render={() => {
+            if (this.props.loggedInAnonymously === true) {
+              sessionStorage.setItem('referrer', this.props.location.pathname);
+              return <Redirect to={'/login'} />;
+            } else {
+              return <DLSMyDataTable />;
+            }
+          }}
+        />
 
-        <Route exact path={paths.myData.isis}>
-          {this.props.loggedInAnonymously === true ? (
-            <Redirect to={'/login'} />
-          ) : (
-            <ISISMyDataTable />
-          )}
-        </Route>
+        <Route
+          exact
+          path={paths.myData.isis}
+          render={() => {
+            if (this.props.loggedInAnonymously === true) {
+              sessionStorage.setItem('referrer', this.props.location.pathname);
+              return <Redirect to={'/login'} />;
+            } else {
+              return <ISISMyDataTable />;
+            }
+          }}
+        />
 
-        <Route exact path={paths.dataPublications.dls.myDOIs}>
-          {this.props.loggedInAnonymously === true ? (
-            <Redirect to={'/login'} />
-          ) : (
-            <DLSMyDOIsTable />
-          )}
-        </Route>
+        <Route
+          exact
+          path={paths.dataPublications.dls.myDOIs}
+          render={() => {
+            if (this.props.loggedInAnonymously === true) {
+              sessionStorage.setItem('referrer', this.props.location.pathname);
+              return <Redirect to={'/login'} />;
+            } else {
+              return <DLSMyDOIsTable />;
+            }
+          }}
+        />
 
         <Route exact path={paths.dataPublications.dls.allDOIs}>
           <DLSAllDOIsTable />

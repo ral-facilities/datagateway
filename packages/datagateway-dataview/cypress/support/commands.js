@@ -123,42 +123,45 @@ Cypress.Commands.add('isScrolledTo', { prevSubject: true }, (element) => {
   });
 });
 
-Cypress.Commands.add('seedUserGeneratedDataPublication', (title) => {
-  return cy.request('datagateway-dataview-settings.json').then((response) => {
-    const settings = response.body;
-    return cy
-      .request({
-        method: 'POST',
-        url: `${settings.doiMinterUrl}/draft`,
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
-        },
-        body: {
-          metadata: {
-            title: title ?? 'Test DOI title',
-            description: 'Test DOI description',
-            creators: [],
-            related_items: [],
-            subjects: [],
-            resource_type: 'Collection',
-          },
-          // these ids are specifically mintable by the Chris481 user
-          investigation_ids: [],
-          dataset_ids: [15],
-          datafile_ids: [74, 193],
-        },
-      })
-      .then((response) => {
-        return cy.request({
-          method: 'PUT',
-          url: `${settings.doiMinterUrl}/draft/${response.body.concept.data_publication_id}/publish`,
+Cypress.Commands.add(
+  'seedUserGeneratedDataPublication',
+  (title, creators, dataset_ids, datafile_ids) => {
+    return cy.request('datagateway-dataview-settings.json').then((response) => {
+      const settings = response.body;
+      return cy
+        .request({
+          method: 'POST',
+          url: `${settings.doiMinterUrl}/draft`,
           headers: {
             Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
+          body: {
+            metadata: {
+              title: title ?? 'Test DOI title',
+              description: 'Test DOI description',
+              creators: creators ?? [],
+              related_items: [],
+              subjects: [],
+              resource_type: 'Collection',
+            },
+            // these ids are specifically mintable by the Chris481 user
+            investigation_ids: [],
+            dataset_ids: dataset_ids ?? [15],
+            datafile_ids: datafile_ids ?? [74, 193],
+          },
+        })
+        .then((response) => {
+          return cy.request({
+            method: 'PUT',
+            url: `${settings.doiMinterUrl}/draft/${response.body.concept.data_publication_id}/publish`,
+            headers: {
+              Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+            },
+          });
         });
-      });
-  });
-});
+    });
+  }
+);
 
 Cypress.Commands.add('clearDataPublications', (ids) => {
   return cy.request('datagateway-dataview-settings.json').then((response) => {

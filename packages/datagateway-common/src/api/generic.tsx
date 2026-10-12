@@ -4,6 +4,7 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import {
   Datafile,
@@ -31,7 +32,8 @@ export function useEntity(
   options?: UseQueryOptions<
     Investigation | Dataset | Datafile,
     AxiosError | Error
-  >
+  >,
+  suppressErrors?: boolean
 ): UseQueryResult<Investigation, AxiosError>;
 export function useEntity(
   entityName: 'dataset',
@@ -44,7 +46,8 @@ export function useEntity(
   options?: UseQueryOptions<
     Investigation | Dataset | Datafile,
     AxiosError | Error
-  >
+  >,
+  suppressErrors?: boolean
 ): UseQueryResult<Dataset, AxiosError>;
 export function useEntity(
   entityName: 'datafile',
@@ -57,7 +60,8 @@ export function useEntity(
   options?: UseQueryOptions<
     Investigation | Dataset | Datafile,
     AxiosError | Error
-  >
+  >,
+  suppressErrors?: boolean
 ): UseQueryResult<Datafile, AxiosError>;
 export function useEntity(
   entityName: 'investigation' | 'dataset' | 'datafile',
@@ -70,7 +74,8 @@ export function useEntity(
   options?: UseQueryOptions<
     Investigation | Dataset | Datafile,
     AxiosError | Error
-  >
+  >,
+  suppressErrors?: boolean
 ): UseQueryResult<Investigation | Dataset | Datafile, AxiosError | Error>;
 export function useEntity(
   entityName: 'investigation' | 'dataset' | 'datafile',
@@ -83,7 +88,8 @@ export function useEntity(
   options?: UseQueryOptions<
     Investigation | Dataset | Datafile,
     AxiosError | Error
-  >
+  >,
+  suppressErrors?: boolean
 ): UseQueryResult<Investigation | Dataset | Datafile, AxiosError | Error> {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
   const retryICATErrors = useRetryICATErrors();
@@ -156,19 +162,21 @@ export function useEntity(
     {
       onError: (error) => {
         // only handle an ICAT error for axios errors aka not the "not found" errors we list above
-        if (axios.isAxiosError(error)) handleICATError(error);
+        if (axios.isAxiosError(error)) handleICATError(error, !suppressErrors);
         else {
-          document.dispatchEvent(
-            new CustomEvent(MicroFrontendId, {
-              detail: {
-                type: NotificationType,
-                payload: {
-                  severity: 'error',
-                  message: error.message,
+          log.error(error.message);
+          if (!suppressErrors)
+            document.dispatchEvent(
+              new CustomEvent(MicroFrontendId, {
+                detail: {
+                  type: NotificationType,
+                  payload: {
+                    severity: 'error',
+                    message: error.message,
+                  },
                 },
-              },
-            })
-          );
+              })
+            );
         }
       },
       retry: (failureCount, error) => {

@@ -186,7 +186,7 @@ describe('DLS - All DOIs Table', () => {
     cy.get('[aria-rowcount="1"]').should('exist');
     cy.contains('78: Across').should('exist');
 
-    cy.contains('User-created DOIs').click();
+    cy.contains('User-defined DOIs').click();
 
     cy.get('[aria-rowcount="2"]').should('exist');
     cy.contains('Test DOI Title 1').should('exist');

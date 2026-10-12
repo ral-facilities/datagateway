@@ -35,7 +35,7 @@ describe('SearchPageContainer Component', () => {
       .should('exist');
     cy.get('[aria-label="Search table"]')
       .contains('Datafile')
-      .contains('36')
+      .contains('42')
       .should('exist');
   });
 

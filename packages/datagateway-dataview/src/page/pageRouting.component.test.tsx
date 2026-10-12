@@ -168,6 +168,7 @@ describe('PageTable', () => {
 
   afterEach(() => {
     vi.resetAllMocks();
+    sessionStorage.clear();
   });
 
   describe('Generic', () => {
@@ -409,6 +410,7 @@ describe('PageTable', () => {
         }
       );
 
+      expect(sessionStorage.getItem('referrer')).toBe(ISISRoutes['mydata']);
       expect(history.location.pathname).toBe('/login');
     });
 
@@ -1231,6 +1233,7 @@ describe('PageTable', () => {
         { wrapper: Wrapper }
       );
 
+      expect(sessionStorage.getItem('referrer')).toBe(DLSRoutes.mydata);
       expect(history.location.pathname).toBe('/login');
     });
 
@@ -1292,6 +1295,7 @@ describe('PageTable', () => {
         { wrapper: Wrapper }
       );
 
+      expect(sessionStorage.getItem('referrer')).toBe(DLSRoutes.mydois);
       expect(history.location.pathname).toBe('/login');
     });
 

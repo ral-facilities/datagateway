@@ -8,11 +8,11 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import React from 'react';
-import CitationFormatter from './citationFormatter.component';
 import { StateType, dGCommonReducer } from 'datagateway-common';
+import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
+import { combineReducers, createStore } from 'redux';
+import CitationFormatter from './citationFormatter.component';
 
 describe('Citation formatter component tests', () => {
   let queryClient: QueryClient;
@@ -147,9 +147,11 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
-      params.toString()
-    );
+    expect(
+      (
+        vi.mocked(axios.get).mock.calls[0][1]?.params as URLSearchParams
+      ).toString()
+    ).toBe(params.toString());
 
     expect(await screen.findByText('This is a test')).toBeInTheDocument();
     expect(
@@ -218,9 +220,11 @@ describe('Citation formatter component tests', () => {
         params,
       })
     );
-    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
-      params.toString()
-    );
+    expect(
+      (
+        vi.mocked(axios.get).mock.calls[0][1]?.params as URLSearchParams
+      ).toString()
+    ).toBe(params.toString());
 
     expect(
       await screen.findByText(

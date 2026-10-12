@@ -3,11 +3,11 @@ import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import {
-  dGCommonInitialState,
   InvestigationUser,
+  StateType,
+  dGCommonInitialState,
   parseSearchToQuery,
   readSciGatewayToken,
-  StateType,
   usePushFilter,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
@@ -106,9 +106,11 @@ describe('Role Selector', () => {
         params,
       })
     );
-    expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
-      params.toString()
-    );
+    expect(
+      (
+        vi.mocked(axios.get).mock.calls[0][1]?.params as URLSearchParams
+      ).toString()
+    ).toBe(params.toString());
 
     await user.click(
       await screen.findByRole('combobox', {

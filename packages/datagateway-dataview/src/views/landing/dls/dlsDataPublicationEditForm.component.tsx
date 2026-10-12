@@ -47,6 +47,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   const [description, setDescription] = React.useState('');
   const [techniques, setTechniques] = React.useState<BioPortalTerm[]>([]);
   const [subjects, setSubjects] = React.useState<string[]>([]);
+  const [samples, setSamples] = React.useState<string[]>([]);
 
   const [showMintConfirmation, setShowMintConfirmation] = React.useState(false);
   const [showMetadataConfirmation, setShowMetadataConfirmation] =
@@ -66,6 +67,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
   );
   const localContactRole = useSelector(
     (state: StateType) => state.dgdataview.localContactRole
+  );
+  const disableContributors = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableContributors ?? false
   );
 
   const { data: dataPublication } = useDataPublication(
@@ -150,6 +154,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
           ) ?? []
       );
       const originalSubjects: string[] = [];
+      const originalSamples: string[] = [];
       const originalTechniques: BioPortalTerm[] = [];
       dataciteData.attributes.subjects.forEach((s) => {
         if (s.valueUri && s.subjectScheme?.includes('PaNET')) {
@@ -158,11 +163,14 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             prefLabel: s.subject,
             links: { descendants: '' }, // just put empty string here - it's not needed once it's selected
           });
+        } else if (s.subject.startsWith('sample:')) {
+          originalSamples.push(s.subject.replace('sample:', ''));
         } else {
           originalSubjects.push(s.subject);
         }
       });
       setSubjects(originalSubjects);
+      setSamples(originalSamples);
       setTechniques(originalTechniques);
     }
   }, [dataciteData]);
@@ -325,6 +333,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             ...subjects.map((s) => ({
               subject: s,
             })),
+            ...samples.map((s) => ({
+              subject: `sample:${s}`,
+            })),
             ...techniques.map((t) => ({
               subject: t.prefLabel,
               subjectScheme:
@@ -345,6 +356,7 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
     description,
     mintDraftVersionDOI,
     relatedIdentifiers,
+    samples,
     selectedUsers,
     subjects,
     techniques,
@@ -402,6 +414,9 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
             <Typography variant="h5" component="h2" color="textPrimary">
               {t('DOIGenerationForm.page_header')}
             </Typography>
+            <Typography variant="body1" component="p" color="textPrimary">
+              {t('DOIGenerationForm.page_description')}
+            </Typography>
             <Paper sx={{ padding: 1 }}>
               {/* use row-reverse, justifyContent start and the "wrong" order of components to make overflow layout nice
                   i.e. data summary presented at top before DOI form, but in non-overflow
@@ -441,12 +456,15 @@ const DLSDataPublicationEditForm: React.FC<DLSDataPublicationEditFormProps> = (
                   setRelatedIdentifiers={setRelatedIdentifiers}
                   techniques={techniques}
                   setTechniques={setTechniques}
+                  samples={samples}
+                  setSamples={setSamples}
                   subjects={subjects}
                   setSubjects={setSubjects}
                   disableMintButton={false}
                   mintLoading={mintDraftVersionStatus === 'loading'}
                   onMintClick={handleMintClick}
                   localContactRole={localContactRole}
+                  disableContributors={disableContributors}
                 />
               </Grid>
             </Paper>

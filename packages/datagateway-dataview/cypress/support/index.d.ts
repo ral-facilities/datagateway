@@ -11,7 +11,10 @@ declare namespace Cypress {
     clearDownloadCart(): Cypress.Chainable<Cypress.Response>;
     seedDownloadCart(cartItems: string[]): Cypress.Chainable<Cypress.Response>;
     seedUserGeneratedDataPublication(
-      title?: string
+      title?: string,
+      creators?: string[],
+      dataset_ids?: number[],
+      datafile_ids?: number[]
     ): Cypress.Chainable<Cypress.Response>;
     clearDataPublications(ids: string[]): Cypress.Chainable<Cypress.Response>;
     seedSessionDataPublication(params?: {

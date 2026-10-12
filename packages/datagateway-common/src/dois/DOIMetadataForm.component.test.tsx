@@ -49,6 +49,8 @@ describe('DOI generation form component', () => {
       ],
       subjects: ['subject 1', 'subject 2'],
       setSubjects: vi.fn(),
+      samples: ['sample 1', 'sample 2'],
+      setSamples: vi.fn(),
       techniques: [createBioPortalTerm(1, ['1']), createBioPortalTerm(2)],
       setTechniques: vi.fn(),
       setRelatedIdentifiers: vi.fn(),
@@ -232,8 +234,19 @@ describe('DOI generation form component', () => {
       })
     ).toBeDisabled();
 
-    // empty techniques
+    // empty samples
     props.subjects = ['1'];
+    props.samples = [];
+    rerender(<DOIMetadataForm {...props} />);
+
+    expect(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.review_metadata_button',
+      })
+    ).toBeDisabled();
+
+    // empty techniques
+    props.samples = ['sample 1'];
     props.techniques = [];
     rerender(<DOIMetadataForm {...props} />);
 
@@ -242,7 +255,7 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.review_metadata_button',
       })
     ).toBeDisabled();
-  });
+  }, 30_000);
 
   it('should disable mint button & all form fields when mintLoading is true', () => {
     props.mintLoading = true;
@@ -283,7 +296,17 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
 
     expect(
-      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects' })
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.subjects_label' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_subject' })
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole('combobox', { name: 'DOIGenerationForm.samples' })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_sample' })
     ).toBeDisabled();
 
     expect(

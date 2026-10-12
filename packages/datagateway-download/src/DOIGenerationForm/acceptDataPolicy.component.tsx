@@ -26,7 +26,7 @@ const AcceptDataPolicy: React.FC<AcceptDataPolicyProps> = (props) => {
       >
         <Grid container flexDirection="column">
           <Grid item>
-            <Typography variant="body2">
+            <Typography variant="body2" align="left">
               <Trans
                 i18nKey="acceptDataPolicy.data_policy"
                 components={{

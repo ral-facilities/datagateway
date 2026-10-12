@@ -366,6 +366,8 @@ const CommonLandingPage = (
         {
           content: () =>
             data?.content?.dataCollectionInvestigations?.[0]?.investigation
+              ?.investigationInstruments?.[0]?.instrument?.fullName ??
+            data?.content?.dataCollectionInvestigations?.[0]?.investigation
               ?.investigationInstruments?.[0]?.instrument?.name,
           label: t('investigations.instrument'),
           icon: <Assessment sx={shortInfoIconStyle} />,
