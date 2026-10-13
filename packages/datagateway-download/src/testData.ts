@@ -338,6 +338,7 @@ export const mockedSettings: DownloadSettings = {
   doiMinterUrl: 'https://example.com/doiMinter',
   doiHandleUrl: 'https://doi.org',
   dataCiteUrl: 'https://example.com/dataCite',
+  rorApiUrl: 'https://api.ror.org/v2/organizations',
   bioportalUrl: 'https://example.com/bioPortal',
   fileCountMax: 5000,
   totalSizeMax: 1000000000000,

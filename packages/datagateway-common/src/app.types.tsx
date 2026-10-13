@@ -33,6 +33,7 @@ export interface DOISettings {
   dataCiteUrl?: string;
   doiHandleUrl?: string;
   bioportalUrl?: string;
+  rorApiUrl?: string;
 }
 
 export type DataviewSearchCommonSettings = CommonSettings & {
@@ -240,6 +241,20 @@ export interface DataPublication {
   type?: DataPublicationType;
   relatedItems?: RelatedItem[];
   dates?: DataPublicationDate[];
+  fundingReferences?: DataPublicationFunding[];
+}
+
+export interface DataPublicationFunding {
+  dataPublication: DataPublication;
+  funding: FundingReference;
+}
+
+export interface FundingReference {
+  funderName: string;
+  funderIdentifier?: string;
+  awardTitle?: string;
+  awardNumber: string;
+  acknowledgement?: string;
 }
 
 /** The related identifier type that gets used in the related identifier picker component & what is sent to the doi minter api */
@@ -514,6 +529,13 @@ export interface QueryParams {
   doiType: { view: DOIViewType; open?: boolean; pi?: boolean } | null;
 }
 
+export interface ROR {
+  id: string;
+  names: [
+    { value: string; types: ('acronym' | 'alias' | 'label' | 'ror_display')[] },
+  ];
+}
+
 export enum ContributorType {
   Creator = 'Creator',
   ContactPerson = 'ContactPerson',
@@ -637,6 +659,7 @@ export interface DOIMetadata {
   creators?: { username: string; contributor_type: ContributorType }[];
   related_items: RelatedIdentifier[];
   subjects: DOISubject[];
+  funding_references?: DOIFundingReference[];
 }
 
 export interface DOICreator {
@@ -690,6 +713,16 @@ export interface DOISubject {
   classificationCode?: string | null;
 }
 
+export interface DOIFundingReference {
+  funderName: string;
+  funderIdentifier?: string | null;
+  funderIdentifierType?: string | null;
+  schemeUri?: string | null;
+  awardUri?: string | null;
+  awardTitle?: string | null;
+  awardNumber: string;
+}
+
 export interface DataCiteDOI {
   id: string;
   type: string;
@@ -732,15 +765,7 @@ export interface DataciteMetadata {
       pointLongitude: number | null;
     };
   }[];
-  fundingReferences: {
-    funderName: string;
-    funderIdentifier: string | null;
-    funderIdentifierType: string | null;
-    schemeUri: string | null;
-    awardUri: string | null;
-    awardTitle: string | null;
-    awardNumber: string;
-  }[];
+  fundingReferences: DOIFundingReference[];
   url: string;
   identifiers: {
     identifier: string;

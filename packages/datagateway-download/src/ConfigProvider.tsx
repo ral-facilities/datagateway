@@ -28,6 +28,7 @@ const initialConfiguration: DownloadSettings = {
   idsUrl: '',
   doiMinterUrl: '',
   doiHandleUrl: 'https://doi.org',
+  rorApiUrl: '',
   fileCountMax: undefined,
   totalSizeMax: undefined,
   localContactRole: 'local_contact|DataCollector',

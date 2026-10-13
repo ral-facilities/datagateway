@@ -97,31 +97,14 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
             </Tooltip>
           </Grid>
         </Grid>
-        <Grid
-          container
-          item
-          spacing={1}
-          alignItems="center"
-          sx={{
-            marginBottom: relatedIdentifierError.length > 0 ? 2 : 0,
-          }}
-        >
+        <Grid container item spacing={1} alignItems="center">
           <Grid item xs>
             <TextField
               label={t('DOIGenerationForm.related_identifier')}
               fullWidth
-              error={relatedIdentifierError.length > 0}
-              helperText={
-                relatedIdentifierError.length > 0 ? relatedIdentifierError : ''
-              }
+              error={relatedIdentifierError !== ''}
+              helperText={relatedIdentifierError}
               color="secondary"
-              sx={{
-                // this CSS makes it so that the helperText doesn't mess with the button alignment
-                '& .MuiFormHelperText-root': {
-                  position: 'absolute',
-                  bottom: '-1.5rem',
-                },
-              }}
               InputProps={{
                 sx: {
                   backgroundColor: 'background.default',
@@ -135,7 +118,14 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
               disabled={disabled}
             />
           </Grid>
-          <Grid container item spacing={1} xs="auto">
+          <Grid
+            container
+            item
+            spacing={1}
+            xs="auto"
+            alignSelf="start"
+            mt={0.25}
+          >
             <Grid item>
               <Button
                 variant="contained"
