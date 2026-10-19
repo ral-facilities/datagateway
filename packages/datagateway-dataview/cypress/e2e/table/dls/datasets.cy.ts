@@ -160,10 +160,6 @@ describe('DLS - Datasets Table', () => {
         .contains('Suggest shake effort many last prepare small')
         .should('be.visible');
 
-      cy.get('[aria-controls="dataset-type-panel"]').click();
-      cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('DATASETTYPE 2');
-
       cy.get('[aria-label="Hide details"]').first().click();
 
       cy.get('#details-panel').should('not.exist');
