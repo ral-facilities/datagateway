@@ -103,6 +103,18 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
               show_term_doc_count_error: true,
             },
           },
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
         },
       },
       currentTab === 'dataset' ? filters : {},

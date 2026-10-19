@@ -104,15 +104,21 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
               show_term_doc_count_error: true,
             },
           },
-          'Sample.sample.type.name': {
-            terms: {
-              field: 'sample.type.name',
-              show_term_doc_count_error: true,
-            },
-          },
           'InvestigationInstrument.instrument.name': {
             terms: {
               field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
               show_term_doc_count_error: true,
             },
           },

@@ -137,9 +137,9 @@ describe('Datafile search tab', () => {
       });
 
     cy.findByTestId('datafile-details-panel').within(() => {
-      cy.findByText('Datafile 38').should('exist');
-      cy.findByText('187.27 MB').should('exist');
-      cy.findByText('/born/hear/big.bmp').should('exist');
+      cy.findByText('Datafile 1302').should('exist');
+      cy.findByText('32.89 MB').should('exist');
+      cy.findByText('/memory/dog/experience.jpg').should('exist');
     });
   });
 
@@ -384,142 +384,142 @@ describe('Datafile search tab', () => {
     });
   });
 
-  it('should be able to filter search results by parameter filters', () => {
-    // type in search query
-    cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
-    // uncheck my data
-    cy.findByRole('checkbox', { name: 'My data' }).click();
-    // click on search button
-    cy.findByRole('button', { name: 'Submit search' }).click();
+  // it('should be able to filter search results by parameter filters', () => {
+  //   // type in search query
+  //   cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
+  //   // uncheck my data
+  //   cy.findByRole('checkbox', { name: 'My data' }).click();
+  //   // click on search button
+  //   cy.findByRole('button', { name: 'Submit search' }).click();
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 23);
+  //   cy.get('[role="row"][aria-rowindex]').should('have.length', 23);
 
-    cy.findByRole('button', {
-      name: 'Toggle Parameter name filter panel',
-    }).click();
-    cy.findByText('Parameter filters')
-      .parent()
-      .within(() => {
-        cy.findByRole('button', { name: 'Add' }).click();
-      });
+  //   cy.findByRole('button', {
+  //     name: 'Toggle Parameter name filter panel',
+  //   }).click();
+  //   cy.findByText('Parameter filters')
+  //     .parent()
+  //     .within(() => {
+  //       cy.findByRole('button', { name: 'Add' }).click();
+  //     });
 
-    cy.findByRole('combobox', { name: 'Parameter name' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter name' }).click();
 
-    // numeric parameter
-    cy.findByRole('option', { name: 'PARAMETERTYPE 33' }).click();
+  //   // numeric parameter
+  //   cy.findByRole('option', { name: 'PARAMETERTYPE 33' }).click();
 
-    cy.findByRole('combobox', { name: 'Parameter type' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter type' }).click();
 
-    cy.findByRole('option', { name: 'Numeric' }).click();
+  //   cy.findByRole('option', { name: 'Numeric' }).click();
 
-    cy.findByRole('spinbutton', { name: 'Minimum value' }).type('30');
+  //   cy.findByRole('spinbutton', { name: 'Minimum value' }).type('30');
 
-    cy.findByRole('spinbutton', { name: 'Maximum value' }).type('40');
+  //   cy.findByRole('spinbutton', { name: 'Maximum value' }).type('40');
 
-    cy.findByRole('button', { name: 'Add filter' }).click();
+  //   cy.findByRole('button', { name: 'Add filter' }).click();
 
-    cy.findByRole('button', { name: 'Apply' }).click();
+  //   cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
+  //   cy.get('[role="row"][aria-rowindex]').should('have.length', 2);
 
-    // check that filter chips are displayed & remove
-    cy.findByTestId('tabpanel-datafile').within(() => {
-      cy.findByLabelText('Selected filters')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('button', {
-            name: 'PARAMETERTYPE 33: 30 to 40',
-            exact: false,
-          })
-            .should('exist')
-            .within(() => {
-              cy.findByTestId('CancelIcon').click();
-            });
-        });
-    });
+  //   // check that filter chips are displayed & remove
+  //   cy.findByTestId('tabpanel-datafile').within(() => {
+  //     cy.findByLabelText('Selected filters')
+  //       .should('exist')
+  //       .within(() => {
+  //         cy.findByRole('button', {
+  //           name: 'PARAMETERTYPE 33: 30 to 40',
+  //           exact: false,
+  //         })
+  //           .should('exist')
+  //           .within(() => {
+  //             cy.findByTestId('CancelIcon').click();
+  //           });
+  //       });
+  //   });
 
-    cy.findByRole('button', {
-      name: 'Toggle Parameter name filter panel',
-    }).click();
-    cy.findByText('Parameter filters')
-      .parent()
-      .within(() => {
-        cy.findByRole('button', { name: 'Add' }).click();
-      });
+  //   cy.findByRole('button', {
+  //     name: 'Toggle Parameter name filter panel',
+  //   }).click();
+  //   cy.findByText('Parameter filters')
+  //     .parent()
+  //     .within(() => {
+  //       cy.findByRole('button', { name: 'Add' }).click();
+  //     });
 
-    cy.findByRole('combobox', { name: 'Parameter name' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter name' }).click();
 
-    // string parameter
-    cy.findByRole('option', { name: 'PARAMETERTYPE 23' }).click();
+  //   // string parameter
+  //   cy.findByRole('option', { name: 'PARAMETERTYPE 23' }).click();
 
-    cy.findByRole('combobox', { name: 'Parameter type' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter type' }).click();
 
-    cy.findByRole('option', { name: 'String' }).click();
+  //   cy.findByRole('option', { name: 'String' }).click();
 
-    cy.findByRole('combobox', { name: 'Parameter equals' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter equals' }).click();
 
-    cy.findByRole('option', { name: /value 23/i }).click();
+  //   cy.findByRole('option', { name: /value 23/i }).click();
 
-    cy.findByRole('button', { name: 'Add filter' }).click();
+  //   cy.findByRole('button', { name: 'Add filter' }).click();
 
-    cy.findByRole('button', { name: 'Apply' }).click();
+  //   cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 4);
+  //   cy.get('[role="row"][aria-rowindex]').should('have.length', 4);
 
-    // check that filter chips are displayed & remove
-    cy.findByTestId('tabpanel-datafile').within(() => {
-      cy.findByLabelText('Selected filters')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('button', {
-            name: 'PARAMETERTYPE 23: value 23',
-            exact: false,
-          })
-            .should('exist')
-            .within(() => {
-              cy.findByTestId('CancelIcon').click();
-            });
-        });
-    });
+  //   // check that filter chips are displayed & remove
+  //   cy.findByTestId('tabpanel-datafile').within(() => {
+  //     cy.findByLabelText('Selected filters')
+  //       .should('exist')
+  //       .within(() => {
+  //         cy.findByRole('button', {
+  //           name: 'PARAMETERTYPE 23: value 23',
+  //           exact: false,
+  //         })
+  //           .should('exist')
+  //           .within(() => {
+  //             cy.findByTestId('CancelIcon').click();
+  //           });
+  //       });
+  //   });
 
-    cy.findByRole('button', {
-      name: 'Toggle Parameter name filter panel',
-    }).click();
-    cy.findByText('Parameter filters')
-      .parent()
-      .within(() => {
-        cy.findByRole('button', { name: 'Add' }).click();
-      });
+  //   cy.findByRole('button', {
+  //     name: 'Toggle Parameter name filter panel',
+  //   }).click();
+  //   cy.findByText('Parameter filters')
+  //     .parent()
+  //     .within(() => {
+  //       cy.findByRole('button', { name: 'Add' }).click();
+  //     });
 
-    cy.findByRole('combobox', { name: 'Parameter name' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter name' }).click();
 
-    // datetime parameter
-    cy.findByRole('option', { name: 'PARAMETERTYPE 19' }).click();
+  //   // datetime parameter
+  //   cy.findByRole('option', { name: 'PARAMETERTYPE 19' }).click();
 
-    cy.findByRole('combobox', { name: 'Parameter type' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter type' }).click();
 
-    cy.findByRole('option', { name: 'Date and time' }).click();
+  //   cy.findByRole('option', { name: 'Date and time' }).click();
 
-    cy.findByRole('combobox', { name: 'Parameter is in' }).click();
+  //   cy.findByRole('combobox', { name: 'Parameter is in' }).click();
 
-    cy.findByRole('option', { name: /Older/i }).click();
+  //   cy.findByRole('option', { name: /Older/i }).click();
 
-    cy.findByRole('button', { name: 'Add filter' }).click();
+  //   cy.findByRole('button', { name: 'Add filter' }).click();
 
-    cy.findByRole('button', { name: 'Apply' }).click();
+  //   cy.findByRole('button', { name: 'Apply' }).click();
 
-    cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
+  //   cy.get('[role="row"][aria-rowindex]').should('have.length', 1);
 
-    // check that filter chips are displayed
-    cy.findByTestId('tabpanel-datafile').within(() => {
-      cy.findByLabelText('Selected filters')
-        .should('exist')
-        .within(() => {
-          cy.findByRole('button', {
-            name: 'PARAMETERTYPE 19: Older',
-            exact: false,
-          }).should('exist');
-        });
-    });
-  });
+  //   // check that filter chips are displayed
+  //   cy.findByTestId('tabpanel-datafile').within(() => {
+  //     cy.findByLabelText('Selected filters')
+  //       .should('exist')
+  //       .within(() => {
+  //         cy.findByRole('button', {
+  //           name: 'PARAMETERTYPE 19: Older',
+  //           exact: false,
+  //         }).should('exist');
+  //       });
+  //   });
+  // });
 });

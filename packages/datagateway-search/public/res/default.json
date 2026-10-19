@@ -168,12 +168,12 @@
     "InvestigationParameter.type.name": "Parameter name",
     "Sample.sample.type.name": "Sample",
     "InvestigationInstrument.instrument.name": "Instrument",
-    "Dataset.type.name": "Type",
+    "type.name": "Type",
     "Dataset.sample.type.name": "Sample",
     "DatasetParameter.type.name": "Parameter name",
-    "Datafile.datafileFormat.name": "Format",
+    "datafileFormat.name": "Format",
     "DatafileParameter.type.name": "Parameter name",
-    "Datafile.sample.type.name": "Sample"
+    "sample.type.name": "Sample"
   },
   "parameterFilters": {
     "title": "Parameter filters",
@@ -277,22 +277,48 @@
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
     "icons": {
-      "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "Name"],
-      "public": ["DOI"],
-      "confirmation_number": ["Dataset Count", " Datafile Count"],
-      "assessment": ["Instrument", "Beamline"],
+      "title": [
+        "Title",
+        "Name",
+        "Type"
+      ],
+      "fingerprint": [
+        "Visit ID",
+        "Name"
+      ],
+      "public": [
+        "DOI"
+      ],
+      "confirmation_number": [
+        "Dataset Count",
+        " Datafile Count"
+      ],
+      "assessment": [
+        "Instrument",
+        "Beamline"
+      ],
       "calendar_today": [
         "Start Date",
         "End Date",
         "Create Time",
         "Modified Time"
       ],
-      "explore": ["Location"],
-      "save": ["Size"],
-      "description": ["Description", "Summary"],
-      "link": ["URL"],
-      "person": ["Principal Investigator"]
+      "explore": [
+        "Location"
+      ],
+      "save": [
+        "Size"
+      ],
+      "description": [
+        "Description",
+        "Summary"
+      ],
+      "link": [
+        "URL"
+      ],
+      "person": [
+        "Principal Investigator"
+      ]
     }
   },
   "entity_card": {

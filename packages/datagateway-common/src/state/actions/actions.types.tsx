@@ -75,6 +75,7 @@ export interface URLs {
   apiUrl: string;
   downloadApiUrl: string;
   icatUrl: string;
+  searchUrl: string;
   doiMinterUrl?: string;
   dataCiteUrl?: string;
   doiHandleUrl: string;

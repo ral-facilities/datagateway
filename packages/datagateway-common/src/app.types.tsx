@@ -22,6 +22,7 @@ export interface CommonSettings {
   downloadApiUrl: string;
   idsUrl: string;
   icatUrl: string;
+  searchUrl: string;
   routes: PluginRoute[];
   helpSteps?: { target: string; content: string }[];
   pluginHost?: string;

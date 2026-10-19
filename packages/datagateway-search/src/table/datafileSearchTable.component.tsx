@@ -95,6 +95,18 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
               show_term_doc_count_error: true,
             },
           },
+          'datafileFormat.name': {
+            terms: {
+              field: 'datafileformat.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
         },
       },
       currentTab === 'datafile' ? filters : {},

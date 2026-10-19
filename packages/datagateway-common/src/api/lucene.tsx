@@ -23,7 +23,7 @@ import { useRetryICATErrors } from './retryICATErrors';
 export type DatasearchType = 'Investigation' | 'Dataset' | 'Datafile';
 
 export type LuceneSearchParams = UrlBuilderParameters & {
-  sort?: SortType;
+  sort: SortType;
   search_after?: SearchAfter;
   minCount?: number;
   maxCount?: number;
@@ -285,7 +285,7 @@ const elasticQueryBuilder = (
     size: params.maxCount ?? 10,
     facets: facets,
     sort:
-      params.sort !== undefined
+      Object.keys(params.sort).length !== 0
         ? [params.sort, { id: 'desc' }]
         : [{ _score: 'desc' }],
   };
@@ -317,7 +317,7 @@ export const fetchLuceneData = async (
   datasearchType: DatasearchType,
   params: LuceneSearchParams,
   settings: {
-    icatUrl: string;
+    searchUrl: string;
   }
 ): Promise<SearchResponse> => {
   const queryParams = new URLSearchParams();
@@ -329,7 +329,7 @@ export const fetchLuceneData = async (
   queryParams.append('JWT', readSciGatewayToken().token ?? '');
 
   return axios
-    .get(`${settings.icatUrl}/search/documents`, {
+    .get(`${settings.searchUrl}/search/documents`, {
       params: queryParams,
     })
     .then((response) => {
@@ -416,8 +416,8 @@ export const useLuceneSearchInfinite = (
     [string, DatasearchType, LuceneSearchParams]
   >
 ): UseInfiniteQueryResult<SearchResponse, AxiosError<LuceneError>> => {
-  const icatUrl = useSelector(
-    (state: StateType) => state.dgcommon.urls.icatUrl
+  const searchUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.searchUrl
   );
 
   const apiLuceneParams = { ...luceneParams };
@@ -425,8 +425,7 @@ export const useLuceneSearchInfinite = (
   if (facetFilters && Object.keys(facetFilters).length !== 0) {
     apiLuceneParams.filters = Object.entries(facetFilters).reduce<FiltersType>(
       (filters, [filterKey, filterValue]) => {
-        const k =
-          filterKey[0].toLowerCase() + filterKey.substring(1).toLowerCase();
+        const k = filterKey.toLowerCase();
         filters[k] = filterValue;
         return filters;
       },
@@ -441,7 +440,7 @@ export const useLuceneSearchInfinite = (
       fetchLuceneData(
         datasearchType,
         { ...apiLuceneParams, search_after: pageParam },
-        { icatUrl }
+        { searchUrl }
       ),
     {
       onError: (error: AxiosError<LuceneError>) => {

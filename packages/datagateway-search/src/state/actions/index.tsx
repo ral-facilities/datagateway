@@ -61,6 +61,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           apiUrl: settingsResult['apiUrl'],
           downloadApiUrl: settingsResult['downloadApiUrl'],
           icatUrl: settingsResult['icatUrl'],
+          searchUrl: settingsResult['searchUrl'],
           doiHandleUrl: settingsResult['doiHandleUrl'] ?? 'https://doi.org',
         })
       );
