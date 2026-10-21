@@ -71,6 +71,10 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Datafile',
@@ -110,6 +114,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
         },
       },
       currentTab === 'datafile' ? filters : {},
+      searchFields,
       {
         enabled: datafileSearchable,
         // this select removes the facet count for the InvestigationInstrument.instrument.name

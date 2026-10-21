@@ -10,6 +10,8 @@ export const ConfigureMinNumResultsType =
   'datagateway_search:configure_min_num_results';
 export const ConfigureMaxNumResultsType =
   'datagateway_search:configure_max_num_results';
+export const ConfigureSearchFieldsType =
+  'datagateway_search:configure_search_fields';
 
 export interface TogglePayload {
   toggleOption: boolean;
@@ -25,4 +27,8 @@ export interface ConfigureMinNumResultsPayload {
 
 export interface ConfigureMaxNumResultsPayload {
   maxNumResults: number;
+}
+
+export interface ConfigureSearchFieldsPayload {
+  searchFields: string[];
 }

@@ -84,6 +84,10 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
 
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const [t] = useTranslation();
 
   const { fetchNextPage, data, hasNextPage, isFetching } =
@@ -125,7 +129,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
         },
       },
       currentTab === 'investigation' ? filters : {},
-
+      searchFields,
       { enabled: investigationSearchable }
     );
   const { data: cartItems, isLoading: cartLoading } = useCart();

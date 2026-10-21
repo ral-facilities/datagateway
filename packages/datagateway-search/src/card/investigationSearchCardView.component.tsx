@@ -103,6 +103,10 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const doiHandleUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
@@ -125,21 +129,28 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
               show_term_doc_count_error: true,
             },
           },
-          'Sample.sample.type.name': {
-            terms: {
-              field: 'sample.type.name',
-              show_term_doc_count_error: true,
-            },
-          },
           'InvestigationInstrument.instrument.name': {
             terms: {
               field: 'investigationinstrument.instrument.name',
               show_term_doc_count_error: true,
             },
           },
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
         },
       },
       currentTab === 'investigation' ? filters : {},
+      searchFields,
       { enabled: investigationSearchable }
     );
 

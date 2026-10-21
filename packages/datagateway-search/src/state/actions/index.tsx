@@ -15,6 +15,8 @@ import {
   ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesPayload,
   ConfigureSearchableEntitiesType,
+  ConfigureSearchFieldsPayload,
+  ConfigureSearchFieldsType,
   SettingsLoadedType,
 } from './actions.types';
 
@@ -46,6 +48,15 @@ export const loadMinNumResults = (
   type: ConfigureMinNumResultsType,
   payload: {
     minNumResults: minNumResults,
+  },
+});
+
+export const loadSearchFields = (
+  searchFields: string[]
+): ActionType<ConfigureSearchFieldsPayload> => ({
+  type: ConfigureSearchFieldsType,
+  payload: {
+    searchFields: searchFields,
   },
 });
 
@@ -89,6 +100,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
       if (settingsResult?.['maxNumResults'] !== undefined) {
         dispatch(loadMaxNumResults(settingsResult['maxNumResults']));
+      }
+
+      if (settingsResult?.['searchFields'] !== undefined) {
+        dispatch(loadSearchFields(settingsResult['searchFields']));
       }
 
       dispatch(settingsLoaded());

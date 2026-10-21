@@ -225,11 +225,14 @@ const handleLuceneError = (error: AxiosError<LuceneError>): void => {
 
 const elasticQueryBuilder = (
   datasearchtype: DatasearchType,
-  params: LuceneSearchParams
+  params: LuceneSearchParams,
+  searchFields: string[]
 ): ElasticsearchQuery => {
   const dateRange: RangeFilter = {};
   const filters: FiltersType | undefined = params?.filters;
-  const search: TextQuery = { query_string: { query: '' } };
+  const search: TextQuery = {
+    query_string: { query: '', fields: searchFields },
+  };
   const facets: FacetQuery = {};
 
   if (params.startDate !== null || params.endDate !== null) {
@@ -318,13 +321,16 @@ export const fetchLuceneData = async (
   params: LuceneSearchParams,
   settings: {
     searchUrl: string;
+    searchFields: string[];
   }
 ): Promise<SearchResponse> => {
   const queryParams = new URLSearchParams();
   queryParams.append('sessionId', readSciGatewayToken().sessionId ?? '');
   queryParams.append(
     'query',
-    JSON.stringify(elasticQueryBuilder(datasearchType, params))
+    JSON.stringify(
+      elasticQueryBuilder(datasearchType, params, settings.searchFields)
+    )
   );
   queryParams.append('JWT', readSciGatewayToken().token ?? '');
 
@@ -408,6 +414,7 @@ export const useLuceneSearchInfinite = (
   datasearchType: DatasearchType,
   luceneParams: LuceneSearchParams,
   facetFilters: FiltersType,
+  searchFields: string[],
   options?: UseInfiniteQueryOptions<
     SearchResponse,
     AxiosError<LuceneError>,
@@ -440,7 +447,7 @@ export const useLuceneSearchInfinite = (
       fetchLuceneData(
         datasearchType,
         { ...apiLuceneParams, search_after: pageParam },
-        { searchUrl }
+        { searchUrl, searchFields }
       ),
     {
       onError: (error: AxiosError<LuceneError>) => {

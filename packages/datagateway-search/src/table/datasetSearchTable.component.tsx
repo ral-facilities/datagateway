@@ -79,6 +79,10 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Dataset',
@@ -118,6 +122,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
         },
       },
       currentTab === 'dataset' ? filters : {},
+      searchFields,
       {
         enabled: datasetSearchable,
         // this select removes the facet count for the InvestigationInstrument.instrument.name
