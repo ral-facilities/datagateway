@@ -54,5 +54,12 @@
       "order": 0
     }
   ],
+  "searchFields": [
+    "description",
+    "title.text_type",
+    "name.text_type",
+    "summary",
+    "location"
+  ],
   "pluginHost": "http://localhost:3000"
 }

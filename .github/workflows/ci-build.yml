@@ -514,11 +514,24 @@ jobs:
       - name: Add ICAT rules & public steps
         run: cd datagateway-api/; uv run python ../.github/add_icat_rules.py
 
-      # Recreate Lucene indexes
-      - name: Use icatadmin to reindex all indexes
-        run: ~/bin/icatadmin https://localhost:8181 simple username root password pw -- populate --delete
+      # Install elasticsearch
+      - name: Install elasticsearch
+        run: docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" -e xpack.security.enabled=false -e xpack.security.enrollment.enabled=false -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" elasticsearch:9.5.5
+
+      # Bulk index icat
+      - name: Run bulk indexer to fill elasticsearch
+        run: docker run --entrypoint "python" -v ./.github/indexer_config.yaml:/app/icat_search_indexer/config.yaml  -v ./.github/last_entity.txt:/app/icat_search_indexer/utils/last_entity.txt --name bulk-indexer harbor.stfc.ac.uk/icat/new-search-indexer:dev -m icat_search_indexer.utils.bulk_indexing
+
       - name: Let reindexes complete
         run: sleep 30
+
+      # Start search
+      - name: start search api
+        run: docker run -v ./.github/search_config.yaml:/app/icat_search/config.yaml -d --name search harbor.stfc.ac.uk/icat/new-search-api:dev
+
+      # Recreate Elastic indexes
+      # - name: Use icatadmin to reindex all indexes
+      #   run: ~/bin/icatadmin https://localhost:8181 simple username root password pw -- populate --delete
 
       - name: Start API
         run: cd datagateway-api/; nohup uv run python -m datagateway_api.main > api-output.txt &

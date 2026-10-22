@@ -1,0 +1,275 @@
+indices:
+  investigation:
+    - name: name
+      type:
+        - keyword
+        - text
+    - name: title
+      type:
+        - keyword
+        - text
+    - name: summary
+      type: text
+    - name: fileSize
+      type: long
+      db_mapping: FILESIZE
+    - name: fileCount
+      type: unsigned_long
+      db_mapping: FILECOUNT
+    - name: id
+      type: unsigned_long
+    - name: date
+      type: date
+      icat_mapping: startDate
+      db_mapping: STARTDATE
+    - name: visitId
+      type:
+        - keyword
+        - text
+      db_mapping: VISIT_ID
+    - name: doi
+      type: text
+    - name: startDate
+      type: date
+    - name: endDate
+      type: date
+    - name: investigationparameter.type.name
+      type:
+        - keyword
+        - text
+      icat_mapping: parameters.type.name
+      db_mapping: INVESTIGATIONPARAMETER.PARAMETERTYPE.NAME
+    - name: sample.type.name
+      type: keyword
+      icat_mapping: samples.type.name
+      db_mapping: SAMPLE.SAMPLETYPE.NAME
+    - name: investigationinstrument.instrument.name
+      type:
+        - keyword
+        - text
+      icat_mapping: investigationInstruments.instrument.name
+      db_mapping: INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME
+    - name: investigationinstrument.instrument.fullName
+      type:
+        - keyword
+        - text
+      icat_mapping: investigationInstruments.instrument.fullName
+      db_mapping: INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME
+    - name: investigationinstrument.instrument.id
+      type:
+        - keyword
+        - text
+      icat_mapping: investigationInstruments.instrument.id
+      db_mapping: INVESTIGATIONINSTRUMENT.INSTRUMENT.ID
+    - name: user.name
+      type: keyword
+      icat_mapping: investigationUsers.user.name
+      db_mapping: INVESTIGATIONUSER.USER.NAME
+    - name: type.name
+      type: keyword
+      icat_mapping: type.name
+      db_mapping: INVESTIGATIONTYPE.NAME
+
+  dataset:
+    - name: name
+      type:
+        - keyword
+        - text
+    - name: description
+      type: text
+    - name: fileSize
+      type: unsigned_long
+      db_mapping: FILESIZE
+    - name: fileCount
+      type: unsigned_long
+      db_mapping: FILECOUNT
+    - name: id
+      type: unsigned_long
+    - name: location
+      type: text
+      analyzer: file_analyser
+    - name: investigationinstrument.instrument.name
+      type:
+        - keyword
+        - text
+      icat_mapping: investigation.investigationInstruments.instrument.name
+      db_mapping: INVESTIGATION.INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME
+    - name: investigationinstrument.instrument.fullName
+      type:
+        - keyword
+        - text
+      icat_mapping: investigation.investigationInstruments.instrument.fullName
+      db_mapping: INVESTIGATION.INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME
+    - name: investigationinstrument.instrument.id
+      type:
+        - keyword
+        - text
+      icat_mapping: investigation.investigationInstruments.instrument.id
+      db_mapping: INVESTIGATION.INVESTIGATIONINSTRUMENT.INSTRUMENT.ID
+    - name: datasetparameter.type.name
+      type:
+        - keyword
+        - text
+      icat_mapping: parameters.type.name
+      db_mapping: DATASETPARAMETER.PARAMETERTYPE.NAME
+    - name: startDate
+      type: date
+      icat_mapping: startDate
+      db_mapping: CREATE_TIME
+    - name: endDate
+      type: date
+      icat_mapping: endDate
+      db_mapping: MOD_TIME
+    - name: date
+      type: date
+      icat_mapping: createTime
+      db_mapping: CREATE_TIME
+    - name: investigation.title
+      type:
+        - keyword
+        - text
+      icat_mapping: investigation.title
+      db_mapping: INVESTIGATION.TITLE
+    - name: investigation.id
+      type: unsigned_long
+      icat_mapping: investigation.id
+      db_mapping: INVESTIGATION.ID
+    - name: investigation.name
+      type:
+        - keyword
+        - text
+      icat_mapping: investigation.name
+    - name: investigation.summary
+      type:
+        - keyword
+        - text
+      icat_mapping: investigation.summary
+      db_mapping: INVESTIGATION.SUMMARY
+    - name: user.name
+      type:
+        - keyword
+      icat_mapping: investigation.investigationUsers.user.name
+      db_mapping: INVESTIGATION.INVESTIGATIONUSER.USER.NAME
+    - name: type.name
+      type: keyword
+      icat_mapping: type.name
+      db_mapping: DATASETTYPE.NAME
+    - name: sample.type.name
+      type: keyword
+      icat_mapping: sample.type.name
+      db_mapping: SAMPLE.SAMPLETYPE.NAME
+
+  datafile:
+    - name: name
+      type:
+        - keyword
+        - text
+    - name: fileSize
+      type: unsigned_long
+    - name: id
+      type: unsigned_long
+    - name: date
+      type: date
+      icat_mapping: createTime
+      db_mapping: DATAFILEMODTIME
+    - name: location
+      type: text
+      analyzer: file_analyser
+    - name: description
+      type: text
+    - name: sample.type.name
+      type: keyword
+      icat_mapping: dataset.sample.type.name
+      db_mapping: DATASET.SAMPLE.SAMPLETYPE.NAME
+    - name: datafileparameter.type.name
+      type:
+        - keyword
+        - text
+      icat_mapping: datafileParameter.parameterType.name
+      db_mapping: DATAFILEPARAMETER.PARAMETERTYPE.NAME
+    - name: datafileformat.name
+      type: keyword
+      icat_mapping: datafileFormat.name
+      db_mapping: DATAFILEFORMAT.NAME
+    - name: dataset.name
+      type: text
+    - name: dataset.id
+      type: unsigned_long
+      icat_mapping: dataset.id
+      db_mapping: DATASET.ID
+    - name: investigationinstrument.instrument.name
+      type:
+        - keyword
+        - text
+      icat_mapping: dataset.datasetInstruments.instrument.name
+      db_mapping: DATASET.INVESTIGATION.INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME
+    - name: investigationinstrument.instrument.fullname
+      type:
+        - keyword
+        - text
+      icat_mapping: dataset.datasetInstruments.instrument.name
+      db_mapping: DATASET.INVESTIGATION.INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME
+    - name: investigation.title
+      type:
+        - keyword
+        - text
+      icat_mapping: dataset.investigation.title
+      db_mapping: DATASET.INVESTIGATION.TITLE
+    - name: investigation.id
+      type: unsigned_long
+      icat_mapping: dataset.investigation.id
+      db_mapping: DATASET.INVESTIGATION.ID
+    - name: investigation.name
+      type:
+        - keyword
+        - text
+      icat_mapping: dataset.investigation.name
+      db_mapping: DATASET.INVESTIGATION.NAME
+    - name: user.name
+      type:
+        - keyword
+      icat_mapping: dataset.investigation.investigationUsers.user.name
+      db_mapping: DATASET.INVESTIGATION.INVESTIGATIONUSER.USER.NAME
+
+settings:
+  analysis:
+    filter:
+      science_synonyms:
+        type: synonym_graph
+        synonyms_set: science_search
+        updateable: true
+    analyzer:
+      science_analyser:
+        tokenizer: standard
+        filter:
+          - porter_stem
+          - science_synonyms
+  lifecycle:
+    name: 'default-storage-policy'
+
+messages:
+  url: 127.0.0.1
+  port: 7673
+  queue: /topic/jms_ICAT_log
+  username: test
+  password: test
+
+icat:
+  icat_url: https://host.docker.internal:8181
+  username: root
+  password: pw
+  auth: simple
+
+elastic:
+  url: http://host.docker.internal:9200
+  verify_ssl: false
+testing: true
+
+database:
+  driver: mysql+pymysql
+  host: host.docker.internal
+  port: 3306
+  username: root
+  password: pw
+  schema_name: icatdb
+  db_type: mysql
