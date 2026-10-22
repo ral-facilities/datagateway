@@ -80,7 +80,7 @@ describe('SearchPageContainer Component', () => {
     it('should be able to click clear filters button to clear filters', () => {
       cy.url().then((unfilteredUrl) => {
         cy.visit(
-          '/search/data?searchText=dog&restrict=false&filters={"Investigation.type.name":["INVESTIGATIONTYPE+2"],"InvestigationInstrument.instrument.name":["INSTRUMENT+14"]}'
+          '/search/data?searchText=dog&restrict=false&filters={"type.name":["INVESTIGATIONTYPE+2"],"InvestigationInstrument.instrument.name":["INSTRUMENT+14"]}'
         );
 
         cy.get('[aria-rowcount="1"]').should('exist');
@@ -97,7 +97,7 @@ describe('SearchPageContainer Component', () => {
     it('should be able to switch between tabs (and filters & pagination state should not be lost)', () => {
       // visit url with pre-applied filters & pagination params
       cy.visit(
-        '/search/data?view=card&page=2&results=20&searchText=&restrict=false&filters=%7B"Investigation.type.name"%3A%5B"INVESTIGATIONTYPE+3"%5D%7D'
+        '/search/data?view=card&page=2&results=20&searchText=&restrict=false&filters=%7B"type.name"%3A%5B"INVESTIGATIONTYPE+3"%5D%7D'
       );
 
       cy.findByRole('tab', { name: 'Investigation' }).contains('23');

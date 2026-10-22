@@ -85,7 +85,11 @@ export interface FilterQuery {
 export interface BoolQuery {
   bool: {
     must?: TextQuery;
-    filter?: FilterQuery[];
+    filter?: {
+      bool: {
+        must: FilterQuery[];
+      };
+    };
     minimum_should_match?: number | string;
   };
 }
@@ -289,8 +293,8 @@ const elasticQueryBuilder = (
     facets: facets,
     sort:
       Object.keys(params.sort).length !== 0
-        ? [params.sort, { id: 'desc' }]
-        : [{ _score: 'desc' }],
+        ? [params.sort, { id: 'asc' }]
+        : [{ _score: 'desc' }, { id: 'asc' }],
   };
 
   if (params.facets) {
@@ -299,7 +303,7 @@ const elasticQueryBuilder = (
 
   if (filter_query.length !== 0) {
     if (query.query) {
-      query.query.bool.filter = filter_query;
+      query.query.bool.filter = { bool: { must: filter_query } };
     }
   }
 

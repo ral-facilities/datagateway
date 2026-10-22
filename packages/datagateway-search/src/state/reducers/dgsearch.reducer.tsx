@@ -6,6 +6,8 @@ import {
   ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesPayload,
   ConfigureSearchableEntitiesType,
+  ConfigureSearchFieldsPayload,
+  ConfigureSearchFieldsType,
   SetDatafileTabType,
   SetDatasetTabType,
   SetInvestigationTabType,
@@ -104,6 +106,16 @@ export function handleConfigureMinNumResults(
   };
 }
 
+export function handleConfigureSearchFieldsResults(
+  state: DGSearchState,
+  payload: ConfigureSearchFieldsPayload
+): DGSearchState {
+  return {
+    ...state,
+    searchFields: payload.searchFields,
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
@@ -112,6 +124,7 @@ const DGSearchReducer = createReducer(initialState, {
   [ConfigureSearchableEntitiesType]: handleConfigureSearchableEntities,
   [ConfigureMaxNumResultsType]: handleConfigureMaxNumResults,
   [ConfigureMinNumResultsType]: handleConfigureMinNumResults,
+  [ConfigureSearchFieldsType]: handleConfigureSearchFieldsResults,
 });
 
 export default DGSearchReducer;

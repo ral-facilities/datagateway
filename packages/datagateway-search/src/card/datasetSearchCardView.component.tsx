@@ -190,7 +190,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result._id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {

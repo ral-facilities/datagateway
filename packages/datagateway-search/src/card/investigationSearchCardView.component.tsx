@@ -159,7 +159,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result._id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const {

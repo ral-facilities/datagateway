@@ -158,7 +158,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result._id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
