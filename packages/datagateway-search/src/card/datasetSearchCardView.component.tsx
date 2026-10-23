@@ -2,6 +2,7 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
 import Fingerprint from '@mui/icons-material/Fingerprint';
 import Save from '@mui/icons-material/Save';
+import Title from '@mui/icons-material/Title';
 import { Grid, Paper, Typography, styled } from '@mui/material';
 import {
   AddToCartButton,
@@ -275,6 +276,16 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
           formatBytes(dataset.fileSize),
         disableSort: true,
       },
+      ...(hierarchy === FACILITY_NAME.dls
+        ? [
+            {
+              icon: Title,
+              label: t('datasets.type'),
+              dataKey: 'type.name',
+              disableSort: true,
+            },
+          ]
+        : []),
       ...(hierarchy !== FACILITY_NAME.isis
         ? [
             {

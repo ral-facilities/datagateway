@@ -5,7 +5,6 @@ import {
   Investigation,
   MicroFrontendId,
 } from '../../app.types';
-import { DlsDatasetDetailsPanelTab } from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { DlsVisitDetailsPanelTab } from '../../detailsPanels/dls/visitDetailsPanel.component';
 import type { IsisDatafileDetailsPanelTab } from '../../detailsPanels/isis/datafileDetailsPanel.component';
 import type { IsisDatasetDetailsPanelTab } from '../../detailsPanels/isis/datasetDetailsPanel.component';
@@ -122,14 +121,6 @@ export interface IsisInstrumentDetailsPanelChangeTabPayload {
 export interface IsisInvestigationDetailsPanelChangeTabPayload {
   investigationId: Investigation['id'];
   newTab: IsisInvestigationDetailsPanelTab;
-}
-
-/**
- * Payload for the DLS dataset details panel change tab action.
- */
-export interface DlsDatasetDetailsPanelChangeTabPayload {
-  datasetId: Dataset['id'];
-  newTab: DlsDatasetDetailsPanelTab;
 }
 
 export interface DlsVisitDetailsPanelChangeTabPayload {

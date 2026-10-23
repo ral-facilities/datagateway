@@ -8,8 +8,6 @@ import {
   ConfigureQueryRetriesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
-  DlsDatasetDetailsPanelChangeTabPayload,
-  DlsDatasetDetailsPanelChangeTabType,
   DlsVisitDetailsPanelChangeTabPayload,
   DlsVisitDetailsPanelChangeTabType,
   FeatureSwitchesPayload,
@@ -39,7 +37,6 @@ export const initialState: DGCommonState = {
   isisInstrumentDetailsPanel: {},
   isisInvestigationDetailsPanel: {},
   dlsVisitDetailsPanel: {},
-  dlsDatasetDetailsPanel: {},
 };
 
 export function handleConfigureFacilityName(
@@ -156,22 +153,6 @@ export function changeIsisInvestigationDetailsPanelTab(
   };
 }
 
-export function changeDlsDatasetDetailsPanelTab(
-  state: DGCommonState,
-  payload: DlsDatasetDetailsPanelChangeTabPayload
-): DGCommonState {
-  return {
-    ...state,
-    dlsDatasetDetailsPanel: {
-      ...state.dlsDatasetDetailsPanel,
-      [payload.datasetId]: {
-        ...state.dlsDatasetDetailsPanel[payload.datasetId],
-        selectedTab: payload.newTab,
-      },
-    },
-  };
-}
-
 export function changeDlsVisitDetailsPanelTab(
   state: DGCommonState,
   payload: DlsVisitDetailsPanelChangeTabPayload
@@ -200,7 +181,6 @@ const dGCommonReducer = createReducer(initialState, {
     changeIsisInstrumentDetailsPanelTab,
   [IsisInvestigationDetailsPanelChangeTabType]:
     changeIsisInvestigationDetailsPanelTab,
-  [DlsDatasetDetailsPanelChangeTabType]: changeDlsDatasetDetailsPanelTab,
   [DlsVisitDetailsPanelChangeTabType]: changeDlsVisitDetailsPanelTab,
 });
 
