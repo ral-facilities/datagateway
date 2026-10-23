@@ -1,7 +1,7 @@
 elastic:
-  url: https://localhost:9200
+  url: https://host.docker.internal:9200
   timeout: 60
   verify_ssl: false
 testing: true
 token_param: JWT
-auth_url: http://localhost:8001
+auth_url: http://host.docker.internal:8001

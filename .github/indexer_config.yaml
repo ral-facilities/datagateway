@@ -255,19 +255,19 @@ messages:
   password: test
 
 icat:
-  icat_url: https://localhost:8181
+  icat_url: https://host.docker.internal:8181
   username: root
   password: pw
   auth: simple
 
 elastic:
-  url: http://localhost:9200
+  url: http://host.docker.internal:9200
   verify_ssl: false
 testing: true
 
 database:
   driver: mysql+pymysql
-  host: host.docker.internal
+  host: localhost
   port: 3306
   username: root
   password: pw

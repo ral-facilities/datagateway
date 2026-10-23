@@ -324,7 +324,7 @@ export const fetchLuceneData = async (
   datasearchType: DatasearchType,
   params: LuceneSearchParams,
   settings: {
-    searchUrl: string;
+    searchUrl: string | undefined;
     searchFields: string[];
   }
 ): Promise<SearchResponse> => {
