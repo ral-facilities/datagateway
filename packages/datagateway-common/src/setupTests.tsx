@@ -109,6 +109,7 @@ export const createReactQueryWrapper = (
       urls: {
         apiUrl: 'https://example.com/api',
         icatUrl: 'https://example.com/icat',
+        searchUrl: 'https://example.com',
         idsUrl: 'https://example.com/ids',
         downloadApiUrl: 'https://example.com/topcat',
         dataCiteUrl: 'https://example.com/datacite',

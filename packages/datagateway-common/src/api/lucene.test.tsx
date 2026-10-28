@@ -47,7 +47,7 @@ describe('Lucene actions', () => {
       };
 
       const { result } = renderHook(
-        () => useLuceneSearchInfinite('Dataset', luceneParams, filters),
+        () => useLuceneSearchInfinite('Dataset', luceneParams, filters, []),
         { wrapper: createReactQueryWrapper() }
       );
 
@@ -61,23 +61,28 @@ describe('Lucene actions', () => {
           target: 'Dataset',
           query: {
             bool: {
-              filter: [
-                {
-                  terms: {
-                    'dataset.type.name': ['dataset name'],
-                  },
+              filter: {
+                bool: {
+                  must: [
+                    {
+                      terms: {
+                        'dataset.type.name': ['dataset name'],
+                      },
+                    },
+                    {
+                      terms: {
+                        'investigationinstrument.instrument.name': [
+                          'instrument name',
+                        ],
+                      },
+                    },
+                  ],
                 },
-                {
-                  terms: {
-                    'investigationinstrument.instrument.name': [
-                      'instrument name',
-                    ],
-                  },
-                },
-              ],
+              },
               must: {
                 query_string: {
                   query: 'test',
+                  fields: [],
                 },
               },
             },
@@ -91,13 +96,13 @@ describe('Lucene actions', () => {
               },
             },
           },
-          sort: [{ size: 'desc' }, { id: 'desc' }],
+          sort: [{ size: 'desc' }, { id: 'asc' }],
         })
       );
       params.append('JWT', '');
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/icat/search/documents',
+        'https://example.com/search/documents',
         {
           params: params,
         }
@@ -115,10 +120,11 @@ describe('Lucene actions', () => {
         startDate: new Date(2000, 0, 1),
         endDate: null,
         maxCount: 300,
+        sort: { _score: 'desc' },
       };
 
       const { result } = renderHook(
-        () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
+        () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}, []),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -134,31 +140,36 @@ describe('Lucene actions', () => {
           target: 'Datafile',
           query: {
             bool: {
-              filter: [
-                {
-                  range: {
-                    date: {
-                      gte: 946684800000,
+              filter: {
+                bool: {
+                  must: [
+                    {
+                      range: {
+                        date: {
+                          gte: 946684800000,
+                        },
+                      },
                     },
-                  },
+                  ],
                 },
-              ],
+              },
               must: {
                 query_string: {
                   query: 'test',
+                  fields: [],
                 },
               },
             },
           },
           size: 300,
           facets: {},
-          sort: [{ _score: 'desc' }],
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         })
       );
       params.append('JWT', '');
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/icat/search/documents',
+        'https://example.com/search/documents',
         {
           params,
         }
@@ -176,10 +187,11 @@ describe('Lucene actions', () => {
         startDate: null,
         endDate: new Date(2020, 11, 31),
         maxCount: 300,
+        sort: { _score: 'desc' },
       };
 
       const { result } = renderHook(
-        () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}),
+        () => useLuceneSearchInfinite('Datafile', luceneSearchParams, {}, []),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -195,31 +207,36 @@ describe('Lucene actions', () => {
           target: 'Datafile',
           query: {
             bool: {
-              filter: [
-                {
-                  range: {
-                    date: {
-                      lt: 1609372800000,
+              filter: {
+                bool: {
+                  must: [
+                    {
+                      range: {
+                        date: {
+                          lt: 1609372800000,
+                        },
+                      },
                     },
-                  },
+                  ],
                 },
-              ],
+              },
               must: {
                 query_string: {
                   query: 'test',
+                  fields: [],
                 },
               },
             },
           },
           size: 300,
           facets: {},
-          sort: [{ _score: 'desc' }],
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         })
       );
       params.append('JWT', '');
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/icat/search/documents',
+        'https://example.com/search/documents',
         {
           params,
         }
@@ -233,10 +250,12 @@ describe('Lucene actions', () => {
         startDate: null,
         endDate: new Date(2020, 11, 31),
         maxCount: 300,
+        sort: { _score: 'desc' },
       };
 
       const { result } = renderHook(
-        () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
+        () =>
+          useLuceneSearchInfinite('Investigation', luceneSearchParams, {}, []),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -252,26 +271,30 @@ describe('Lucene actions', () => {
           target: 'Investigation',
           query: {
             bool: {
-              filter: [
-                {
-                  range: {
-                    date: {
-                      lt: 1609372800000,
+              filter: {
+                bool: {
+                  must: [
+                    {
+                      range: {
+                        date: {
+                          lt: 1609372800000,
+                        },
+                      },
                     },
-                  },
+                  ],
                 },
-              ],
+              },
             },
           },
           size: 300,
           facets: {},
-          sort: [{ _score: 'desc' }],
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         })
       );
       params.append('JWT', '');
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/icat/search/documents',
+        'https://example.com/search/documents',
         {
           params,
         }
@@ -283,6 +306,7 @@ describe('Lucene actions', () => {
         searchText: '',
         startDate: null,
         endDate: null,
+        sort: { _score: 'desc' },
       };
 
       vi.mocked(axios.get).mockResolvedValue({
@@ -293,7 +317,8 @@ describe('Lucene actions', () => {
       });
 
       const { result } = renderHook(
-        () => useLuceneSearchInfinite('Investigation', luceneSearchParams, {}),
+        () =>
+          useLuceneSearchInfinite('Investigation', luceneSearchParams, {}, []),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -316,18 +341,16 @@ describe('Lucene actions', () => {
           },
           size: 10,
           facets: {},
-          sort: [{ _score: 'desc' }],
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
           search_after: { doc: 5 },
         })
       );
       params.append('JWT', '');
 
-      console.log(params.toString());
-
       // second call is the fetch next page call
       expect(axios.get).toHaveBeenNthCalledWith(
         2,
-        'https://example.com/icat/search/documents',
+        'https://example.com/search/documents',
         {
           params,
         }
@@ -356,6 +379,7 @@ describe('Lucene actions', () => {
           startDate: null,
           endDate: new Date(2020, 11, 31),
           maxCount: 300,
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         };
 
         vi.mocked(axios.get).mockRejectedValue({
@@ -369,7 +393,7 @@ describe('Lucene actions', () => {
         });
 
         const { result } = renderHook(
-          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}, []),
           {
             wrapper: createReactQueryWrapper(),
           }
@@ -399,6 +423,7 @@ describe('Lucene actions', () => {
           startDate: null,
           endDate: new Date(2020, 11, 31),
           maxCount: 300,
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         };
 
         vi.mocked(axios.get).mockRejectedValue({
@@ -412,7 +437,7 @@ describe('Lucene actions', () => {
         });
 
         const { result } = renderHook(
-          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}, []),
           {
             wrapper: createReactQueryWrapper(),
           }
@@ -441,6 +466,7 @@ describe('Lucene actions', () => {
           startDate: null,
           endDate: new Date(2020, 11, 31),
           maxCount: 300,
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         };
 
         const axiosError: DeepPartial<AxiosError<LuceneError>> = {
@@ -450,7 +476,7 @@ describe('Lucene actions', () => {
         vi.mocked(axios.get).mockRejectedValue(axiosError);
 
         const { result } = renderHook(
-          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}, []),
           {
             wrapper: createReactQueryWrapper(),
           }
@@ -467,6 +493,7 @@ describe('Lucene actions', () => {
           startDate: null,
           endDate: new Date(2020, 11, 31),
           maxCount: 300,
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         };
 
         const axiosError: DeepPartial<AxiosError<LuceneError>> = {
@@ -482,7 +509,7 @@ describe('Lucene actions', () => {
         vi.mocked(axios.get).mockRejectedValue(axiosError);
 
         const { result } = renderHook(
-          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}, []),
           {
             wrapper: createReactQueryWrapper(),
           }
@@ -499,6 +526,7 @@ describe('Lucene actions', () => {
           startDate: null,
           endDate: new Date(2020, 11, 31),
           maxCount: 300,
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         };
 
         const axiosError: DeepPartial<AxiosError<LuceneError>> = {
@@ -514,7 +542,7 @@ describe('Lucene actions', () => {
         vi.mocked(axios.get).mockRejectedValue(axiosError);
 
         const { result } = renderHook(
-          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}),
+          () => useLuceneSearchInfinite('Dataset', luceneSearchParams, {}, []),
           {
             wrapper: createReactQueryWrapper(),
           }

@@ -275,13 +275,11 @@ const elasticQueryBuilder = (
 
   if (params.restrict) {
     const user = readSciGatewayToken().username;
-    if (user !== null) {
-      const user_filter: FilterQuery = {};
-      user_filter.terms = {
-        'user.name': [user],
-      };
-      filter_query.push(user_filter);
-    }
+    const user_filter: FilterQuery = {};
+    user_filter.terms = {
+      'user.name': [user ?? ''],
+    };
+    filter_query.push(user_filter);
   }
 
   const query: ElasticsearchQuery = {
@@ -316,7 +314,6 @@ const elasticQueryBuilder = (
   if (params.search_after) {
     query.search_after = params.search_after;
   }
-
   return query;
 };
 
@@ -337,7 +334,6 @@ export const fetchLuceneData = async (
     )
   );
   queryParams.append('JWT', readSciGatewayToken().token ?? '');
-
   return axios
     .get(`${settings.searchUrl}/search/documents`, {
       params: queryParams,
