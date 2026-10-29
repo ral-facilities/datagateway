@@ -520,7 +520,7 @@ jobs:
 
       # Bulk index icat
       - name: Run bulk indexer to fill elasticsearch
-        run: docker run --entrypoint "python" -v ./.github/indexer_config.yaml:/app/icat_search_indexer/config.yaml --add-host host.docker.internal:host-gateway  -v ./.github/last_entity.txt:/app/icat_search_indexer/utils/last_entity.txt --name bulk-indexer harbor.stfc.ac.uk/icat/new-search-indexer:dev -m icat_search_indexer.utils.bulk_indexing
+        run: docker run --entrypoint "python" -v ./.github/indexer_config.yaml:/app/icat_search_indexer/config.yaml --network="host" --add-host host.docker.internal:host-gateway -v ./.github/last_entity.txt:/app/icat_search_indexer/utils/last_entity.txt --name bulk-indexer harbor.stfc.ac.uk/icat/new-search-indexer:dev -m icat_search_indexer.utils.bulk_indexing
 
       - name: Let reindexes complete
         run: sleep 30

@@ -269,7 +269,7 @@ testing: true
 
 database:
   driver: mysql+pymysql
-  host: host.docker.internal
+  host: localhost
   port: 3306
   username: root
   password: pw
