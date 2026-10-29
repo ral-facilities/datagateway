@@ -257,13 +257,13 @@ messages:
   password: test
 
 icat:
-  icat_url: https://host.docker.internal:8181
+  icat_url: https://localhost:8181
   username: root
   password: pw
   auth: simple
 
 elastic:
-  url: http://host.docker.internal:9200
+  url: http://localhost:9200
   verify_ssl: false
 testing: true
 
