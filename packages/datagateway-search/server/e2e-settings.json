@@ -4,8 +4,13 @@
   "apiUrl": "http://localhost:5000/datagateway-api",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "icatUrl": "https://localhost:8181/icat",
+  "searchUrl": "https://localhost:8000",
   "selectAllSetting": true,
-  "searchableEntities": ["investigation", "dataset", "datafile"],
+  "searchableEntities": [
+    "investigation",
+    "dataset",
+    "datafile"
+  ],
   "maxNumResults": 300,
   "helpSteps": [
     {
@@ -36,5 +41,12 @@
       "displayName": "Search",
       "order": 0
     }
+  ],
+  "searchFields": [
+    "description",
+    "title.text_type",
+    "name.text_type",
+    "summary",
+    "location"
   ]
 }
