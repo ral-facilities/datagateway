@@ -244,6 +244,8 @@ settings:
         filter:
           - porter_stem
           - science_synonyms
+      file_analyser:
+        tokenizer: pattern
   lifecycle:
     name: 'default-storage-policy'
 
