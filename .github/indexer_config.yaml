@@ -258,8 +258,8 @@ messages:
 
 icat:
   icat_url: https://localhost:8181
-  username: root
-  password: pw
+  username: icatdbuser
+  password: icatdbuserpw
   auth: simple
 
 elastic:
@@ -271,7 +271,7 @@ database:
   driver: mysql+pymysql
   host: localhost
   port: 3306
-  username: root
-  password: pw
+  username: icatdbuser
+  password: icatdbuserpw
   schema_name: icatdb
   db_type: mysql
