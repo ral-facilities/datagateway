@@ -4,7 +4,7 @@
   "apiUrl": "http://localhost:5000/datagateway-api",
   "downloadApiUrl": "https://localhost:8181/topcat",
   "icatUrl": "https://localhost:8181/icat",
-  "searchUrl": "https://localhost:8000",
+  "searchUrl": "http://localhost:8000",
   "selectAllSetting": true,
   "searchableEntities": [
     "investigation",

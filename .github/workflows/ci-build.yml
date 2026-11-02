@@ -527,7 +527,7 @@ jobs:
 
       # Start search
       - name: start search api
-        run: docker run -v ./.github/search_config.yaml:/app/icat_search/config.yaml -d --add-host host.docker.internal:host-gateway --name search harbor.stfc.ac.uk/icat/new-search-api:dev
+        run: docker run -v ./.github/search_config.yaml:/app/icat_search/config.yaml -d -p 8000:8000 --add-host host.docker.internal:host-gateway --name search harbor.stfc.ac.uk/icat/new-search-api:dev
 
       # Recreate Elastic indexes
       # - name: Use icatadmin to reindex all indexes
