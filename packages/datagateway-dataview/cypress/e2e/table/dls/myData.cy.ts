@@ -44,6 +44,20 @@ describe('DLS - MyData Table', () => {
       );
     });
 
+    it('should have the correct url for the DOI link', () => {
+      cy.get('[data-testid="dls-mydata-table-doi-link"]')
+        .first()
+        .then(($doi) => {
+          const doi = $doi.text();
+
+          const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
+
+          cy.get('[data-testid="dls-mydata-table-doi-link"]')
+            .first()
+            .should('have.attr', 'href', url);
+        });
+    });
+
     it('should be able to sort by all sort directions on single and multiple columns', () => {
       //Revert the default sort
       cy.contains('[role="button"]', 'Start Date').click();

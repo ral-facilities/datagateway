@@ -3,6 +3,7 @@ import {
   DLSVisitDetailsPanel,
   Investigation,
   ConnectedTable as Table,
+  externalSiteLink,
   formatBytes,
   parseSearchToQuery,
   readSciGatewayToken,
@@ -21,14 +22,20 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import Assessment from '@mui/icons-material/Assessment';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
 import Save from '@mui/icons-material/Save';
 import Subject from '@mui/icons-material/Subject';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { StateType } from '../../../state/app.types';
 
 const DLSMyDataTable = (): React.ReactElement => {
   const [t] = useTranslation();
   const location = useLocation();
   const username = readSciGatewayToken().username || '';
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -131,6 +138,25 @@ const DLSMyDataTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
+        icon: Public,
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+
+          if (investigationData.doi) {
+            return externalSiteLink(
+              `${doiHandleUrl}/${investigationData.doi}`,
+              investigationData.doi,
+              'dls-mydata-table-doi-link'
+            );
+          } else {
+            return '';
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
         icon: Save,
         label: t('investigations.size'),
         dataKey: 'fileSize',
@@ -164,13 +190,12 @@ const DLSMyDataTable = (): React.ReactElement => {
       },
       {
         icon: CalendarToday,
-
         label: t('investigations.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,
       },
     ],
-    [t, textFilter, dateFilter, currentDate, view]
+    [t, textFilter, dateFilter, currentDate, view, doiHandleUrl]
   );
 
   return (

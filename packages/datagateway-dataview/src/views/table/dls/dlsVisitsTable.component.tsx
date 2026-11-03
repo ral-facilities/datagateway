@@ -1,12 +1,14 @@
 import Assessment from '@mui/icons-material/Assessment';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import Fingerprint from '@mui/icons-material/Fingerprint';
+import Public from '@mui/icons-material/Public';
 import Save from '@mui/icons-material/Save';
 import {
   ColumnType,
   DLSVisitDetailsPanel,
   Investigation,
   ConnectedTable as Table,
+  externalSiteLink,
   formatBytes,
   parseSearchToQuery,
   tableLink,
@@ -18,8 +20,10 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange, TableCellProps } from 'react-virtualized';
+import { StateType } from '../../../state/app.types';
 
 interface DLSVisitsTableProps {
   proposalName: string;
@@ -30,6 +34,9 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
 
   const [t] = useTranslation();
   const location = useLocation();
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -108,6 +115,25 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
+        icon: Public,
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+
+          if (investigationData.doi) {
+            return externalSiteLink(
+              `${doiHandleUrl}/${investigationData.doi}`,
+              investigationData.doi,
+              'dls-investigations-table-doi-link'
+            );
+          } else {
+            return '';
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
         icon: Save,
         label: t('investigations.size'),
         dataKey: 'fileSize',
@@ -143,7 +169,7 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [t, dateFilter, textFilter, view, proposalName]
+    [t, textFilter, dateFilter, proposalName, view, doiHandleUrl]
   );
 
   return (
