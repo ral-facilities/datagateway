@@ -1,26 +1,26 @@
-import React from 'react';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import Save from '@mui/icons-material/Save';
+import Title from '@mui/icons-material/Title';
 import {
+  AddToCartButton,
   CardView,
   CardViewDetails,
+  DLSDatasetDetailsPanel,
   Dataset,
-  tableLink,
+  formatBytes,
   parseSearchToQuery,
-  useDateFilter,
+  tableLink,
   useDatasetCount,
   useDatasetsPaginated,
+  useDateFilter,
   usePushFilter,
   usePushPage,
   usePushResults,
   useSort,
   useTextFilter,
-  AddToCartButton,
-  DLSDatasetDetailsPanel,
-  formatBytes,
 } from 'datagateway-common';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import Save from '@mui/icons-material/Save';
-
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 
@@ -71,6 +71,10 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
           'investigation.id': { eq: investigationId },
         }),
       },
+      {
+        filterType: 'include',
+        filterValue: '"type"',
+      },
     ],
     isMounted
   );
@@ -104,6 +108,12 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
 
   const information: CardViewDetails[] = React.useMemo(
     () => [
+      {
+        icon: Title,
+        label: t('datasets.type'),
+        dataKey: 'type.name',
+        filterComponent: textFilter,
+      },
       {
         icon: ConfirmationNumberIcon,
         label: t('datasets.datafile_count'),
@@ -141,7 +151,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, t]
+    [dateFilter, t, textFilter]
   );
 
   const buttons = React.useMemo(

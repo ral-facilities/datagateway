@@ -2,6 +2,7 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import ConfirmationNumber from '@mui/icons-material/ConfirmationNumber';
 import Save from '@mui/icons-material/Save';
 import Subject from '@mui/icons-material/Subject';
+import Title from '@mui/icons-material/Title';
 import {
   ColumnType,
   DLSDatasetDetailsPanel,
@@ -95,6 +96,10 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
           'investigation.id': { eq: investigationId },
         }),
       },
+      {
+        filterType: 'include',
+        filterValue: '"type"',
+      },
     ],
     isMounted
   );
@@ -132,6 +137,12 @@ const DLSDatasetsTable = (props: DLSDatasetsTableProps): React.ReactElement => {
           ),
         filterComponent: textFilter,
         defaultSort: 'asc',
+      },
+      {
+        icon: Title,
+        label: t('datasets.type'),
+        dataKey: 'type.name',
+        filterComponent: textFilter,
       },
       {
         icon: ConfirmationNumber,

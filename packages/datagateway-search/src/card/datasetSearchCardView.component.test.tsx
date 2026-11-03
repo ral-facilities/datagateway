@@ -84,6 +84,7 @@ describe('Dataset - Card View', () => {
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
       'investigation.startDate': 1560121200000,
+      'type.name': 'Type2',
     };
     searchResult = {
       score: 1,
@@ -200,6 +201,8 @@ describe('Dataset - Card View', () => {
 
     expect(within(card).getByText('10 B')).toBeInTheDocument();
     expect(within(card).getByText('9')).toBeInTheDocument();
+    expect(within(card).getByText('datasets.type:')).toBeInTheDocument();
+    expect(within(card).getByText('Type2')).toBeInTheDocument();
 
     expect(
       within(card).getByRole('button', { name: 'buttons.add_to_cart' })

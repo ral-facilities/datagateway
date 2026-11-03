@@ -61,6 +61,7 @@ const mockSearchResults: SearchResult[] = [
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
       'investigation.startDate': 1560139200000,
+      'type.name': 'Type2',
     },
   },
 ];
@@ -222,11 +223,12 @@ describe('Dataset table component', () => {
     expect(queryAllRows()).toHaveLength(0);
   });
 
-  it('renders search results correctly', async () => {
-    renderComponent();
+  it('renders search results in DLS correctly', async () => {
+    renderComponent(FACILITY_NAME.dls);
 
     // check that column headers are shown correctly.
     expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.type')).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('datasets.datafile_count')
     ).toBeInTheDocument();
@@ -285,6 +287,13 @@ describe('Dataset table component', () => {
     expect(
       within(
         findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.type'),
+        })
+      ).getByText('Type2')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
           columnIndex: await findColumnIndexByName('datasets.datafile_count'),
         })
       ).getByText('9')
@@ -320,7 +329,7 @@ describe('Dataset table component', () => {
   });
 
   it('renders search results in isis correctly', async () => {
-    renderComponent('isis');
+    renderComponent(FACILITY_NAME.isis);
 
     let rows: HTMLElement[] = [];
     await waitFor(async () => {

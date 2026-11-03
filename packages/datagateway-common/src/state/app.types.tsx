@@ -6,7 +6,6 @@ import type {
   Instrument,
   Investigation,
 } from '../app.types';
-import { DlsDatasetDetailsPanelTab } from '../detailsPanels/dls/datasetDetailsPanel.component';
 import { DlsVisitDetailsPanelTab } from '../detailsPanels/dls/visitDetailsPanel.component';
 import type { IsisDatafileDetailsPanelTab } from '../detailsPanels/isis/datafileDetailsPanel.component';
 import type { IsisDatasetDetailsPanelTab } from '../detailsPanels/isis/datasetDetailsPanel.component';
@@ -42,12 +41,6 @@ export interface DGCommonState {
     Investigation['id'],
     {
       selectedTab: IsisInvestigationDetailsPanelTab;
-    }
-  >;
-  dlsDatasetDetailsPanel: Record<
-    Dataset['id'],
-    {
-      selectedTab: DlsDatasetDetailsPanelTab;
     }
   >;
   dlsVisitDetailsPanel: Record<

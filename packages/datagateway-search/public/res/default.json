@@ -126,6 +126,7 @@
     "size": "Size",
     "description": "Description",
     "investigation": "Investigation",
+    "type": "Type",
     "details": {
       "tabs_label": "Dataset Details",
       "label": "Dataset Details",
@@ -135,13 +136,7 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "calculate": "Calculate",
-      "datafiles": "View Datafiles",
-      "type": {
-        "label": "Dataset Types",
-        "name": "Name",
-        "description": "Description",
-        "id": "Type ID"
-      }
+      "datafiles": "View Datafiles"
     }
   },
   "datafiles": {

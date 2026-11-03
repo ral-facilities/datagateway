@@ -1,6 +1,6 @@
+import { Divider, SxProps, TableCell, Typography } from '@mui/material';
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
-import { Divider, SxProps, TableCell, Typography } from '@mui/material';
 import ArrowTooltip, { getTooltipText } from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
@@ -13,11 +13,12 @@ const DataCell = React.memo((props: CellRendererProps): React.ReactElement => {
 
   // use . in dataKey name to drill down into nested row data
   // if cellContentRenderer not provided
+  // but also try using the dataKey as is if drilling down doesn't return something
   const cellContent = cellContentRenderer
     ? cellContentRenderer(props)
-    : dataKey.split('.').reduce(function (prev, curr) {
+    : (dataKey.split('.').reduce(function (prev, curr) {
         return prev ? prev[curr] : null;
-      }, rowData);
+      }, rowData) ?? rowData[dataKey]);
 
   return (
     <TableCell size="small" component="div" sx={sx} variant="body">
