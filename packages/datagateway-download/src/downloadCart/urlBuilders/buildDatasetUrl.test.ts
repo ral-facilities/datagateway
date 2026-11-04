@@ -16,35 +16,32 @@ describe('buildDatasetUrl', () => {
 
     it('should return the generic URL to it', async () => {
       const url = await buildDatasetUrl({
-        apiUrl: mockedSettings.apiUrl,
         facilityName: mockedSettings.facilityName,
         datasetId: 856,
       });
 
-      expect(url).toBe('/browse/investigation/58/dataset/856/datafile');
+      expect(url).toBe('/redirect/LILS/dataset/id/856');
     });
 
     it('should return the ISIS URL to it', async () => {
       const url = await buildDatasetUrl({
-        apiUrl: mockedSettings.apiUrl,
         facilityName: 'ISIS',
         datasetId: 856,
       });
 
       expect(url).toBe(
-        '/browse/instrument/937/facilityCycle/402/investigation/58/dataset/856/datafile'
+        '/redirect/ISIS/dataset/id/856'
       );
     });
 
     it('should return the DLS URL to it', async () => {
       const url = await buildDatasetUrl({
-        apiUrl: mockedSettings.apiUrl,
         facilityName: 'DLS',
         datasetId: 856,
       });
 
       expect(url).toBe(
-        '/browse/proposal/investigation news/investigation/58/dataset/856/datafile'
+        '/redirect/DLS/dataset/id/856'
       );
     });
   });
@@ -55,85 +52,38 @@ describe('buildDatasetUrl', () => {
     it('should return the generic URL to it', async () => {
       const url = await buildDatasetUrl({
         dataset,
-        apiUrl: mockedSettings.apiUrl,
         facilityName: mockedSettings.facilityName,
       });
 
-      expect(url).toBe('/browse/investigation/993/dataset/535/datafile');
+      expect(url).toBe('/redirect/LILS/dataset/id/535');
     });
 
     it('should return the ISIS URL to it', async () => {
       const url = await buildDatasetUrl({
         dataset,
-        apiUrl: mockedSettings.apiUrl,
         facilityName: 'ISIS',
       });
 
       expect(url).toBe(
-        '/browse/instrument/927/facilityCycle/402/investigation/993/dataset/535/datafile'
+        '/redirect/ISIS/dataset/id/535'
       );
     });
 
     it('should return the DLS URL to it', async () => {
       const url = await buildDatasetUrl({
         dataset,
-        apiUrl: mockedSettings.apiUrl,
         facilityName: 'DLS',
       });
 
       expect(url).toBe(
-        '/browse/proposal/investigation inn/investigation/993/dataset/535/datafile'
+        '/redirect/DLS/dataset/id/535'
       );
     });
   });
 
   it('should return null if neither a dataset object nor a dataset id is provided', async () => {
     const url = await buildDatasetUrl({
-      apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
-    });
-
-    expect(url).toBeNull();
-  });
-
-  it('should return null if the dataset object cannot be fetched', async () => {
-    axios.get = vi.fn().mockResolvedValue({
-      data: [],
-    });
-
-    const url = await buildDatasetUrl({
-      apiUrl: mockedSettings.apiUrl,
-      facilityName: mockedSettings.facilityName,
-      datasetId: 856,
-    });
-
-    expect(url).toBeNull();
-  });
-
-  it('should return null if the parent investigation of the dataset is not fetched', async () => {
-    const { investigation, ...dataset } = mockDatasets[0];
-
-    axios.get = vi.fn().mockResolvedValue({
-      data: [dataset],
-    });
-
-    const url = await buildDatasetUrl({
-      apiUrl: mockedSettings.apiUrl,
-      facilityName: mockedSettings.facilityName,
-      datasetId: 856,
-    });
-
-    expect(url).toBeNull();
-  });
-
-  it('should return null if the parent investigation URL cannot be constructed', async () => {
-    const dataset = { ...mockDatasets[0] };
-    delete dataset.investigation?.investigationInstruments;
-
-    const url = await buildDatasetUrl({
-      dataset,
-      apiUrl: mockedSettings.apiUrl,
-      facilityName: 'ISIS',
     });
 
     expect(url).toBeNull();

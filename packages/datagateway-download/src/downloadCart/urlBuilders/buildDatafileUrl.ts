@@ -6,17 +6,16 @@ async function buildDatafileUrl({
   datafileId,
 }: {
   datafileId: Datafile['id'];
-  apiUrl: string;
   facilityName: string;
 }): Promise<string | null> {
-  const datafile = await fetchDatafile({ apiUrl, facilityName, datafileId });
-  const dataset = datafile?.dataset;
-  if (!dataset) return null;
 
-  return buildDatasetUrl({
+  if (!datafileId) return null;
+
+  const datasetUrl = await buildDatasetUrl({
     facilityName,
-    dataset,
+    datasetId: datafileId,
   });
+  return datasetUrl?.replace('dataset','datafile') || null;
 }
 
 export default buildDatafileUrl;

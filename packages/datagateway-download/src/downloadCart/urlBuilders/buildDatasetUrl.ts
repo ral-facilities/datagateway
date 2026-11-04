@@ -1,5 +1,4 @@
 import { Dataset } from 'datagateway-common';
-import { buildInvestigationUrl } from '../urlBuilders';
 
 async function buildDatasetUrl({
   facilityName,
@@ -20,16 +19,16 @@ async function buildDatasetUrl({
   if (providedDataset) {
     dataset = providedDataset;
   }
-
-  const investigation = dataset?.investigation;
-  if (!dataset || !investigation) return null;
-
-  const prefixUrl = await buildInvestigationUrl({
-    facilityName,
-    investigation,
-  });
-  if (!prefixUrl) return null;
-  return prefixUrl;
+  else {
+    dataset = null;
+  }
+  if (datasetId) {
+    return `/redirect/${facilityName}/dataset/id/${datasetId}`;
+  }
+  if (dataset) {
+    return `/redirect/${facilityName}/dataset/id/${dataset.id}`;
+  }
+  return null
 }
 
 export default buildDatasetUrl;
