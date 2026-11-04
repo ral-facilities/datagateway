@@ -11,49 +11,32 @@ describe('buildDatafileUrl', () => {
 
   it('should return a generic URL to the parent dataset of the datafile', async () => {
     const url = await buildDatafileUrl({
-      apiUrl: mockedSettings.apiUrl,
       facilityName: mockedSettings.facilityName,
       datafileId: 70,
     });
 
-    expect(url).toBe('/browse/investigation/58/dataset/856/datafile');
+    expect(url).toBe('/redirect/LILS/datafile/id/70');
   });
 
   it('should return an ISIS URL to the parent dataset of the datafile', async () => {
     const url = await buildDatafileUrl({
-      apiUrl: mockedSettings.apiUrl,
       facilityName: 'ISIS',
       datafileId: 70,
     });
 
     expect(url).toBe(
-      '/browse/instrument/937/facilityCycle/402/investigation/58/dataset/856/datafile'
+      '/redirect/ISIS/datafile/id/70'
     );
   });
 
   it('should return a DLS URL to the parent dataset of the datafile', async () => {
     const url = await buildDatafileUrl({
-      apiUrl: mockedSettings.apiUrl,
       facilityName: 'DLS',
       datafileId: 70,
     });
 
     expect(url).toBe(
-      '/browse/proposal/investigation news/investigation/58/dataset/856/datafile'
+      '/redirect/DLS/datafile/id/70'
     );
-  });
-
-  it('should return null if the parent dataset of the datafile cannot be fetched', async () => {
-    axios.get = vi.fn().mockResolvedValue({
-      data: [],
-    });
-
-    const url = await buildDatafileUrl({
-      apiUrl: mockedSettings.apiUrl,
-      facilityName: 'DLS',
-      datafileId: 70,
-    });
-
-    expect(url).toBeNull();
   });
 });

@@ -59,7 +59,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const {
     fileCountMax,
     totalSizeMax,
-    apiUrl,
     facilityName,
     doiMinterUrl,
     dataCiteUrl,
@@ -249,7 +248,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   cartItem={item}
                   linkBuilder={() =>
                     buildInvestigationUrl({
-                      apiUrl,
                       facilityName,
                       investigationId: item.entityId,
                     })
@@ -263,7 +261,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   cartItem={item}
                   linkBuilder={() =>
                     buildDatasetUrl({
-                      apiUrl,
                       facilityName,
                       datasetId: item.entityId,
                     })
@@ -277,7 +274,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   cartItem={item}
                   linkBuilder={() =>
                     buildDatafileUrl({
-                      apiUrl,
                       facilityName,
                       datafileId: item.entityId,
                     })
@@ -311,7 +307,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         },
       },
     ],
-    [apiUrl, facilityName, t, textFilter]
+    [facilityName, t, textFilter]
   );
   const onSort: React.ComponentProps<typeof Table>['onSort'] =
     React.useCallback(
