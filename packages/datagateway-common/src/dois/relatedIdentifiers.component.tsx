@@ -131,33 +131,45 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                 variant="contained"
                 disabled={disabled}
                 onClick={() => {
-                  return checkDOI({ throwOnError: true })
-                    .then((response) => {
-                      // add DOI
-                      if (response.data) {
-                        changeRelatedIdentifiers((dois) => [
-                          ...dois,
-                          response.data,
-                        ]);
-                        setRelatedIdentifierInputText('');
-                      }
-                    })
-                    .catch(
-                      (
-                        error: AxiosError<{
-                          errors: {
-                            status: string;
-                            title: string;
-                          }[];
-                        }>
-                      ) => {
-                        setRelatedIdentifierError(
-                          error.response?.data?.errors
-                            ? error.response.data.errors[0].title
-                            : 'Error'
-                        );
-                      }
+                  // don't let the user add duplicates
+                  if (
+                    relatedIdentifiers.every(
+                      (ri) => ri.identifier !== relatedIdentiferInputText
+                    )
+                  ) {
+                    return checkDOI({ throwOnError: true })
+                      .then((response) => {
+                        // add DOI
+                        if (response.data) {
+                          changeRelatedIdentifiers((dois) => [
+                            ...dois,
+                            response.data,
+                          ]);
+                          setRelatedIdentifierInputText('');
+                        }
+                      })
+                      .catch(
+                        (
+                          error: AxiosError<{
+                            errors: {
+                              status: string;
+                              title: string;
+                            }[];
+                          }>
+                        ) => {
+                          setRelatedIdentifierError(
+                            error.response?.data?.errors
+                              ? error.response.data.errors[0].title
+                              : 'Error'
+                          );
+                        }
+                      );
+                  } else {
+                    setRelatedIdentifierError(
+                      'Cannot add duplicate identifier'
                     );
+                    setRelatedIdentifierInputText('');
+                  }
                 }}
               >
                 {t('DOIGenerationForm.add_related_doi')}
@@ -168,14 +180,24 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                 variant="contained"
                 disabled={disabled}
                 onClick={() => {
-                  changeRelatedIdentifiers((relatedIdentifiers) => [
-                    ...relatedIdentifiers,
-                    {
-                      identifier: relatedIdentiferInputText,
-                      relatedIdentifierType: DOIIdentifierType.URL, // default to URL
-                      relationType: '',
-                    },
-                  ]);
+                  if (
+                    relatedIdentifiers.every(
+                      (ri) => ri.identifier !== relatedIdentiferInputText
+                    )
+                  ) {
+                    changeRelatedIdentifiers((relatedIdentifiers) => [
+                      ...relatedIdentifiers,
+                      {
+                        identifier: relatedIdentiferInputText,
+                        relatedIdentifierType: DOIIdentifierType.URL, // default to URL
+                        relationType: '',
+                      },
+                    ]);
+                  } else {
+                    setRelatedIdentifierError(
+                      'Cannot add duplicate identifier'
+                    );
+                  }
                   setRelatedIdentifierInputText('');
                 }}
               >

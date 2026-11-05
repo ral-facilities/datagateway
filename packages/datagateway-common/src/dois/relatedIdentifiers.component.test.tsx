@@ -126,7 +126,7 @@ describe('Related identifiers form component', () => {
     vi.clearAllMocks();
   });
 
-  it('should let the user add related dois (but not if fetchDOI fails) + lets you change the relation type + resource type', async () => {
+  it('should let the user add related dois (but not if fetchDOI fails or duplicates) + lets you change the relation type + resource type', async () => {
     renderComponent();
 
     expect(
@@ -143,7 +143,7 @@ describe('Related identifiers form component', () => {
       screen.getByRole('textbox', {
         name: 'DOIGenerationForm.related_identifier',
       }),
-      '2'
+      'related.doi.2'
     );
 
     await user.click(
@@ -195,6 +195,57 @@ describe('Related identifiers form component', () => {
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
     // check that the option is actually selected in the table even after the menu closes
     expect(screen.getByText('Journal')).toBeInTheDocument();
+
+    // test can't add duplicates
+    await user.type(
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
+      'related.doi.2'
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_related_doi' })
+    );
+    expect(
+      await screen.findByText('Cannot add duplicate identifier')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(2);
+
+    await user.type(
+      screen.getByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      }),
+      'related.doi.1'
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_related_other',
+      })
+    );
+    expect(
+      screen.getByText('Cannot add duplicate identifier')
+    ).toBeInTheDocument();
+
+    expect(
+      within(
+        screen.getByRole('table', {
+          name: 'DOIGenerationForm.related_identifiers',
+        })
+      )
+        .getAllByRole('row')
+        .slice(1) // ignores the header row
+    ).toHaveLength(2);
 
     // test errors with various API error responses
     vi.mocked(axios.get).mockRejectedValueOnce({
