@@ -1,11 +1,21 @@
 import React from 'react';
 
+import Assessment from '@mui/icons-material/Assessment';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import Public from '@mui/icons-material/Public';
+import Save from '@mui/icons-material/Save';
+import { Typography } from '@mui/material';
 import {
+  ArrowTooltip,
   CardView,
   CardViewDetails,
+  DLSVisitDetailsPanel,
   Investigation,
-  tableLink,
+  externalSiteLink,
+  formatBytes,
+  nestedValue,
   parseSearchToQuery,
+  tableLink,
   useDateFilter,
   useInvestigationCount,
   useInvestigationsPaginated,
@@ -14,17 +24,11 @@ import {
   usePushResults,
   useSort,
   useTextFilter,
-  nestedValue,
-  ArrowTooltip,
-  DLSVisitDetailsPanel,
-  formatBytes,
 } from 'datagateway-common';
-import Assessment from '@mui/icons-material/Assessment';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import Save from '@mui/icons-material/Save';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import { StateType } from '../../../state/app.types';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -35,6 +39,9 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
 
   const [t] = useTranslation();
   const location = useLocation();
+  const doiHandleUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.doiHandleUrl
+  );
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -107,6 +114,23 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
   const information: CardViewDetails[] = React.useMemo(
     () => [
       {
+        content: function doiFormat(entity: Investigation) {
+          if (entity.doi) {
+            return externalSiteLink(
+              `${doiHandleUrl}/${entity.doi}`,
+              entity.doi,
+              'dls-investigations-card-doi-link'
+            );
+          } else {
+            return '';
+          }
+        },
+        icon: Public,
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        filterComponent: textFilter,
+      },
+      {
         icon: Assessment,
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.name',
@@ -145,7 +169,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, t, textFilter]
+    [dateFilter, doiHandleUrl, t, textFilter]
   );
 
   return (
