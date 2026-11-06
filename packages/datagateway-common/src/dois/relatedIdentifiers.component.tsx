@@ -137,7 +137,7 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                       (ri) => ri.identifier !== relatedIdentiferInputText
                     )
                   ) {
-                    return checkDOI({ throwOnError: true })
+                    checkDOI({ throwOnError: true })
                       .then((response) => {
                         // add DOI
                         if (response.data) {
