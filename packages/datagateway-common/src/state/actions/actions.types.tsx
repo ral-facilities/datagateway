@@ -56,6 +56,7 @@ export interface FeatureSwitches {
   disableAnonDownload?: boolean;
   disableSelectAll?: boolean;
   disableContributors?: boolean;
+  disableParameterFilters?: boolean;
 }
 
 export interface ConfigureUrlsPayload {
