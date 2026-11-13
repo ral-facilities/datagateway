@@ -42,13 +42,6 @@ import {
 } from '../downloadApiHooks';
 
 import { downloadPreparedCart } from '../downloadApi';
-import DownloadCartItemLink from './downloadCartItemLink.component';
-import {
-  buildDatafileUrl,
-  buildDatasetUrl,
-  buildInvestigationUrl,
-} from './urlBuilders';
-
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
 }
@@ -240,50 +233,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         filterComponent: textFilter,
         cellContentRenderer: (props) => {
           const item: DownloadCartItem = props.rowData;
-
-          switch (item.entityType) {
-            case 'investigation':
-              return (
-                <DownloadCartItemLink
-                  cartItem={item}
-                  linkBuilder={() =>
-                    buildInvestigationUrl({
-                      facilityName,
-                      investigationId: item.entityId,
-                    })
-                  }
-                />
-              );
-
-            case 'dataset':
-              return (
-                <DownloadCartItemLink
-                  cartItem={item}
-                  linkBuilder={() =>
-                    buildDatasetUrl({
-                      facilityName,
-                      datasetId: item.entityId,
-                    })
-                  }
-                />
-              );
-
-            case 'datafile':
-              return (
-                <DownloadCartItemLink
-                  cartItem={item}
-                  linkBuilder={() =>
-                    buildDatafileUrl({
-                      facilityName,
-                      datafileId: item.entityId,
-                    })
-                  }
-                />
-              );
-
-            default:
-              return item.name;
-          }
+          return (
+            <Link
+              component={RouterLink}
+              to={`/redirect/${facilityName}/${item.entityType}/id/${item.entityId}`}
+            >
+              {item.name}
+            </Link>
+          );
         },
       },
       {
