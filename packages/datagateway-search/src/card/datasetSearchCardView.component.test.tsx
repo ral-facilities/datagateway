@@ -86,9 +86,9 @@ describe('Dataset - Card View', () => {
       'investigation.startDate': 1560121200000,
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: cardData,
+      _score: 1,
+      _id: 1,
+      _source: cardData,
     };
     searchResponse = {
       results: [searchResult],

@@ -149,9 +149,9 @@ describe('Investigation Search Table component', () => {
     );
     cartItems = [];
     searchResult = {
-      score: 1,
-      id: 1,
-      source: {
+      _score: 1,
+      _id: 1,
+      _source: {
         id: 1,
         title: 'Test title 1',
         name: 'Test name 1',
@@ -861,7 +861,7 @@ describe('Investigation Search Table component', () => {
       results: [
         {
           ...searchResult,
-          source: {
+          _source: {
             id: 1,
             name: 'test',
             title: 'test',
@@ -918,7 +918,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete searchResult.source.investigationinstrument;
+    delete searchResult._source.investigationinstrument;
 
     renderComponent('isis');
 
@@ -930,7 +930,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    delete searchResult.source.investigationfacilitycycle;
+    delete searchResult._source.investigationfacilitycycle;
 
     renderComponent('isis');
 

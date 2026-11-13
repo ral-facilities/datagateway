@@ -40,6 +40,10 @@ interface InvestigationTableProps {
 const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   const { hierarchy } = props;
 
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const location = useLocation();
   const { push } = useHistory();
   const queryParams = React.useMemo(
@@ -55,6 +59,13 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     investigation,
     currentTab,
   } = queryParams;
+
+  const investigationSearchable: boolean = searchableEntities.includes(
+    'investigation'
+  )
+    ? investigation
+    : false;
+
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const disableSelectAll = useSelector(
@@ -73,6 +84,10 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
 
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const [t] = useTranslation();
 
   const { fetchNextPage, data, hasNextPage, isFetching } =
@@ -86,28 +101,36 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Investigation' },
-          {
-            target: 'InvestigationParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          'InvestigationParameter.type.name': {
+            terms: {
+              field: 'investigationparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'Sample',
-            dimensions: [{ dimension: 'sample.type.name' }],
+          'InvestigationInstrument.instrument.name': {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [
-              { dimension: 'instrument.name' },
-              { dimension: 'instrument.fullName' },
-            ],
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+        },
       },
       currentTab === 'investigation' ? filters : {},
-
-      { enabled: investigation }
+      searchFields,
+      { enabled: investigationSearchable }
     );
   const { data: cartItems, isLoading: cartLoading } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } =
@@ -131,11 +154,11 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {

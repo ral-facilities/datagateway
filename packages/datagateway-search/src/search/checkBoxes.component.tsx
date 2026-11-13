@@ -43,9 +43,10 @@ const CheckboxesGroup = (props: CheckBoxStoreProps): React.ReactElement => {
   const [t] = useTranslation();
   const { searchableEntities } = props;
 
-  const investigationSearchable = searchableEntities.includes('investigation');
-  const datasetSearchable = searchableEntities.includes('dataset');
-  const datafileSearchable = searchableEntities.includes('datafile');
+  const investigationSearchable: boolean =
+    searchableEntities.includes('investigation');
+  const datasetSearchable: boolean = searchableEntities.includes('dataset');
+  const datafileSearchable: boolean = searchableEntities.includes('datafile');
 
   const location = useLocation();
   const { dataset, datafile, investigation } = React.useMemo(

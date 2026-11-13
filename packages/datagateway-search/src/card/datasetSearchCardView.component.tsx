@@ -57,6 +57,15 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
 
   const location = useLocation();
   const { push } = useHistory();
+
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -73,6 +82,9 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
     currentTab,
   } = queryParams;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
+  const datasetSearchable: boolean = searchableEntities.includes('dataset')
+    ? dataset
+    : false;
 
   const minNumResults = useSelector(
     (state: StateType) => state.dgsearch.minNumResults
@@ -93,26 +105,39 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Dataset' },
-          {
-            target: 'DatasetParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          'DatasetParameter.type.name': {
+            terms: {
+              field: 'datasetparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [
-              { dimension: 'instrument.name' },
-              { dimension: 'instrument.fullName' },
-            ],
+          'InvestigationInstrument.instrument.name': {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+        },
       },
       currentTab === 'dataset' ? filters : {},
+      searchFields,
       {
-        enabled: dataset,
-        // this select removes the facet count for the InvestigationInstrument.instrument.name/fullName
-        // facet since the number is confusing for datasets
+        enabled: datasetSearchable,
+        // this select removes the facet count for the InvestigationInstrument.instrument.name
+        // facet since the number is confusing for datafiles
         select: (data) => ({
           ...data,
           pages: data.pages.map((searchResponse) => ({
@@ -181,11 +206,11 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const { paginatedSource, aggregatedIds, aborted } = React.useMemo(() => {

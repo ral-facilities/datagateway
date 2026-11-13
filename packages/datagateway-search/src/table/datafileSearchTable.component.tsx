@@ -41,6 +41,10 @@ interface DatafileSearchTableProps {
 const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   const { hierarchy } = props;
 
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const location = useLocation();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -48,6 +52,11 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   );
   const { startDate, endDate, sort, filters, restrict, datafile, currentTab } =
     queryParams;
+
+  const datafileSearchable: boolean = searchableEntities.includes('datafile')
+    ? datafile
+    : false;
+
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const disableSelectAll = useSelector(
@@ -62,36 +71,53 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
     (state: StateType) => state.dgsearch.maxNumResults
   );
 
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
+  );
+
   const { fetchNextPage, data, hasNextPage, isFetching } =
     useLuceneSearchInfinite(
       'Datafile',
       {
-        searchText,
-        startDate,
-        endDate,
-        sort,
+        searchText: searchText,
+        startDate: startDate,
+        endDate: endDate,
+        sort: sort,
         minCount: minNumResults,
         maxCount: maxNumResults,
-        restrict,
-        facets: [
-          { target: 'Datafile' },
-          {
-            target: 'DatafileParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        restrict: restrict,
+        facets: {
+          'DatafileParameter.type.name': {
+            terms: {
+              field: 'datafileparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [
-              { dimension: 'instrument.name' },
-              { dimension: 'instrument.fullName' },
-            ],
+          'InvestigationInstrument.instrument.name': {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+          'datafileFormat.name': {
+            terms: {
+              field: 'datafileformat.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+        },
       },
       currentTab === 'datafile' ? filters : {},
+      searchFields,
       {
-        enabled: datafile,
-        // this select removes the facet count for the InvestigationInstrument.instrument.name/fullName
+        enabled: datafileSearchable,
+        // this select removes the facet count for the InvestigationInstrument.instrument.name
         // facet since the number is confusing for datafiles
         select: (data) => ({
           ...data,
@@ -160,11 +186,11 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {

@@ -64,6 +64,10 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
   const location = useLocation();
   const { push } = useHistory();
 
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
     [location.search]
@@ -79,6 +83,11 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
     investigation,
     currentTab,
   } = queryParams;
+  const investigationSearchable: boolean = searchableEntities.includes(
+    'investigation'
+  )
+    ? investigation
+    : false;
   const searchText = queryParams.searchText ? queryParams.searchText : '';
 
   const handleSort = useSort();
@@ -92,6 +101,10 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
 
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
+  );
+
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
   );
 
   const doiHandleUrl = useSelector(
@@ -109,35 +122,44 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Investigation' },
-          {
-            target: 'InvestigationParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          'InvestigationParameter.type.name': {
+            terms: {
+              field: 'investigationparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'Sample',
-            dimensions: [{ dimension: 'sample.type.name' }],
+          'InvestigationInstrument.instrument.name': {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [
-              { dimension: 'instrument.name' },
-              { dimension: 'instrument.fullName' },
-            ],
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+        },
       },
       currentTab === 'investigation' ? filters : {},
-      { enabled: investigation }
+      searchFields,
+      { enabled: investigationSearchable }
     );
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const {

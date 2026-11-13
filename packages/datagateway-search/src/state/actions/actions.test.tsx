@@ -54,6 +54,7 @@ describe('Actions', () => {
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
+      searchUrl: 'search',
       doiHandleUrl: 'doiHandleUrl',
       queryRetries: 0,
       features: {},
@@ -71,6 +72,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: 'icat',
+        searchUrl: 'search',
         doiHandleUrl: 'doiHandleUrl',
       })
     );
@@ -90,6 +92,7 @@ describe('Actions', () => {
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      searchUrl: 'search',
       icatUrl: 'icat',
     });
     const asyncAction = configureApp();
@@ -114,6 +117,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: 'icat',
+        searchUrl: 'search',
         doiHandleUrl: 'https://doi.org',
       })
     );
