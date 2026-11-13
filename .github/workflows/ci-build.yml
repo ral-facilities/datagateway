@@ -178,14 +178,14 @@ jobs:
         with:
           repository: ral-facilities/datagateway-api
           path: datagateway-api
-          ref: v12.0.0
+          ref: feature/expand-read-only-api
 
       # DataGateway API file setup
       - name: Create search_api_mapping.json
         run: cp datagateway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
 
       - name: Create config.yaml
-        run: cp datagateway-api/config.yaml.example datagateway-api/config.yaml
+        run: cp .github/datagateway-api-config.yaml datagateway-api/config.yaml
 
       - name: Create logging.ini
         run: cp datagateway-api/logging.example.ini datagateway-api/logging.ini
