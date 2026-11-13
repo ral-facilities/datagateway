@@ -5,6 +5,8 @@
   "idsUrl": "example.ids.url",
   "doiMinterUrl": null,
   "dataCiteUrl": null,
+  "rorApiUrl": "https://api.ror.org/v2/organizations",
+  "doiHandleUrl": "https://doi.org",
   "bioportalUrl": "/bioportal",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,

@@ -161,30 +161,15 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
             </Tooltip>
           </Grid>
         </Grid>
-        <Grid
-          container
-          item
-          spacing={1}
-          alignItems="center"
-          sx={{
-            marginBottom: usernameError.length > 0 ? 2 : 0,
-          }}
-        >
+        <Grid container item spacing={1} alignItems="center">
           <Grid item xs>
             <TextField
               label={t('DOIGenerationForm.username')}
               required
               fullWidth
-              error={usernameError.length > 0}
-              helperText={usernameError.length > 0 ? usernameError : ''}
+              error={usernameError !== ''}
+              helperText={usernameError}
               color="secondary"
-              sx={{
-                // this CSS makes it so that the helperText doesn't mess with the button alignment
-                '& .MuiFormHelperText-root': {
-                  position: 'absolute',
-                  bottom: '-1.5rem',
-                },
-              }}
               InputProps={{
                 sx: {
                   backgroundColor: 'background.default',
@@ -198,7 +183,14 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
               disabled={disabled}
             />
           </Grid>
-          <Grid container item spacing={1} xs="auto">
+          <Grid
+            container
+            item
+            spacing={1}
+            xs="auto"
+            alignSelf="start"
+            mt={0.25}
+          >
             <Grid item>
               <Button
                 variant="contained"

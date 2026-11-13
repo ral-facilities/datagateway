@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import {
   BioPortalTerm,
   DOIDraftVersionResponse,
+  DOIFundingReference,
   DOIIdentifierType,
   DOIMetadata,
   DOIResponse,
@@ -18,6 +19,7 @@ import {
   DataCiteResponse,
   DownloadCartItem,
   MicroFrontendId,
+  ROR,
   RelatedIdentifier,
   User,
 } from '../app.types';
@@ -221,6 +223,67 @@ export const useCheckDOI = (
     cacheTime: 0,
   });
 };
+
+/**
+ * Retrieve metadata for an ROR
+ * @param ror The ROR to fetch metadata for
+ */
+export const fetchROR = async (ror: string, rorApiUrl: string | undefined) =>
+  (await axios.get<ROR>(`${rorApiUrl}/${ror}`)).data;
+
+/**
+ * Checks whether an ROR is valid and returns the ROR metadata
+ * @param ror The ROR that we're checking
+ * @returns the ror that matches, or 404
+ */
+export const useCheckROR = (
+  ror: string,
+  rorApiUrl: string | undefined
+): UseQueryResult<ROR, AxiosError> => {
+  const queryClient = useQueryClient();
+  const opts = queryClient.getDefaultOptions();
+  const retries =
+    typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
+
+  return useQuery({
+    queryKey: ['checkROR', ror],
+    queryFn: () => fetchROR(ror, rorApiUrl),
+    retry: (failureCount: number, error: AxiosError) => {
+      if (
+        // DOI is invalid - don't retry as this is a correct response from the server
+        error.response?.status === 404 ||
+        failureCount >= retries
+      )
+        return false;
+      return true;
+    },
+    // set enabled false to only fetch on demand when the validate ror button is pressed
+    enabled: false,
+    cacheTime: 0,
+  });
+};
+
+/**
+ * Given a URL to a JSON file with a list of funder name strings or {@link DOIFundingReference}
+ * returns the list of funders as a list of {@link DOIFundingReference}, converting a string list
+ * into {@link DOIFundingReference} with awardNumber set to ":unas"
+ * @param fundersUrl The URL to query
+ * @returns a list of {@link DOIFundingReference}
+ */
+export const useFunders = (fundersUrl: string) =>
+  useQuery({
+    queryKey: ['funders'],
+    queryFn: async () =>
+      (await axios.get<(string | DOIFundingReference)[]>(fundersUrl)).data,
+    select: (data) =>
+      data.map((fundingReference) =>
+        typeof fundingReference === 'string'
+          ? { funderName: fundingReference, awardNumber: ':unas' }
+          : typeof fundingReference.awardNumber === 'undefined'
+            ? { ...fundingReference, awardNumber: ':unas' }
+            : fundingReference
+      ),
+  });
 
 /**
  * Create a draft of a new version DOI based on an existing concept DOI

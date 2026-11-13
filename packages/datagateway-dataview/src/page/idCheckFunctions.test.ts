@@ -294,9 +294,11 @@ describe('ID check functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
-        params.toString()
-      );
+      expect(
+        (
+          vi.mocked(axios.get).mock.calls[0][1]?.params as URLSearchParams
+        ).toString()
+      ).toBe(params.toString());
     });
     it('returns false on invalid instrument + study pair', async () => {
       expect.assertions(1);
@@ -358,9 +360,11 @@ describe('ID check functions', () => {
           params,
         })
       );
-      expect(vi.mocked(axios.get).mock.calls[0][1]?.params.toString()).toBe(
-        params.toString()
-      );
+      expect(
+        (
+          vi.mocked(axios.get).mock.calls[0][1]?.params as URLSearchParams
+        ).toString()
+      ).toBe(params.toString());
     });
     it('returns false on invalid study datapublication + investigation data publication pair', async () => {
       expect.assertions(1);

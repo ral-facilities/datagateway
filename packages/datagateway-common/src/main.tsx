@@ -95,6 +95,7 @@ export { default as DOIConfirmDialog } from './dois/DOIConfirmDialog.component';
 export { default as DOIMetadataConfirmation } from './dois/DOIMetadataConfirmation.component';
 export { default as DOIMetadataForm } from './dois/DOIMetadataForm.component';
 export type { ContributorUser } from './dois/creatorsAndContributors.component';
+export { NO_FUNDER_OPTION_FUNDINGIDENTIFIER } from './dois/fundingReferences.component';
 
 export { default as DialogContent } from './dialogContent.component';
 export { default as DialogTitle } from './dialogTitle.component';

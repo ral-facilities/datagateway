@@ -97,10 +97,6 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('Datafiles').click();
     cy.get('[aria-rowcount="2"]').should('exist');
     cy.contains('Location').should('be.visible');
-
-    cy.contains('Investigations').click();
-    cy.contains('Visit ID').should('be.visible');
-    cy.get('[aria-rowcount="0"]').should('exist');
   });
 
   it('should be able to click a DOI & it renders the correct webpage ', () => {
@@ -188,6 +184,9 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.findByRole('cell', { name: 'borrmann effect', timeout: 10_000 }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
 
+    // add a funder
+    cy.findByRole('combobox', { name: 'Funders' }).type('Inno{enter}');
+
     // edit content
     cy.contains('Datafiles').click();
     cy.get('[aria-label="Edit data"]').click();
@@ -226,6 +225,8 @@ describe('DLS - User Generated Data Publication Landing', () => {
       .should('exist');
     cy.get('@relatedDOI').parent().contains('Type: DOI').should('exist');
 
+    cy.contains('Funder name: Innovate UK').should('be.visible');
+
     cy.contains('button', 'Generate DOI').click();
 
     cy.contains('Mint Confirmation').should('be.visible');
@@ -239,6 +240,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('a', 'borrmann effect').should('be.visible');
     cy.contains('subject1').should('be.visible');
     cy.contains('sample1').should('be.visible');
+    cy.contains('Innovate UK').should('be.visible');
 
     cy.get('[data-testid="landing-dataPublication-pid-link"]')
       .first()

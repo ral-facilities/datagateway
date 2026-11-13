@@ -17,6 +17,7 @@ import {
   DataPublication,
   DataPublicationUser,
   DownloadCartItem,
+  ROR,
   dGCommonInitialState,
 } from 'datagateway-common';
 import { History, createMemoryHistory } from 'history';
@@ -64,6 +65,21 @@ describe('DOI edit form component', () => {
 
   let initialData: DataPublication;
   let initialDataCiteData: DataCiteDOI;
+  let initialROR: ROR;
+  const fundersList = [
+    {
+      funderName: 'Funder 1',
+      awardNumber: ':unas',
+      funderIdentifier: 'ror.1',
+      funderIdentifierType: 'ROR',
+    },
+    {
+      funderName: 'Funder 2',
+      awardNumber: ':unas',
+      funderIdentifier: 'ror.2',
+      funderIdentifierType: 'ROR',
+    },
+  ];
 
   const users = [
     {
@@ -176,7 +192,14 @@ describe('DOI edit form component', () => {
         },
         rightsList: [],
         geoLocations: [],
-        fundingReferences: [],
+        fundingReferences: [
+          {
+            funderName: 'Funder 1',
+            awardNumber: ':unas',
+            funderIdentifier: 'ror.1',
+            funderIdentifierType: 'ROR',
+          },
+        ],
         url: '',
         identifiers: [],
         creators: [],
@@ -242,6 +265,10 @@ describe('DOI edit form component', () => {
       },
       relationships: undefined,
     };
+    initialROR = {
+      id: 'ror.5',
+      names: [{ types: ['ror_display'], value: 'Funder 5' }],
+    };
 
     cartItems = [
       {
@@ -272,6 +299,7 @@ describe('DOI edit form component', () => {
             ...dGCommonInitialState.urls,
             doiMinterUrl: 'https://example.com/doi-minter',
             dataCiteUrl: 'https://example.com/datacite',
+            rorApiUrl: 'https://api.ror.org/v2/organizations',
           },
         },
       })
@@ -305,6 +333,14 @@ describe('DOI edit form component', () => {
         } else if (/\/dois/.test(url)) {
           return Promise.resolve({
             data: { data: initialDataCiteData },
+          });
+        } else if (/\/organizations/.test(url)) {
+          return Promise.resolve({
+            data: initialROR,
+          });
+        } else if (/\/funders.json$/.test(url)) {
+          return Promise.resolve({
+            data: fundersList,
           });
         } else if (/.*\/user\/cart\/.*$/.test(url)) {
           return Promise.resolve({
@@ -541,6 +577,20 @@ describe('DOI edit form component', () => {
       await screen.findByRole('option', { name: ContributorType.ProjectLeader })
     );
 
+    // editing funding references
+    expect(
+      screen.getByRole('button', { name: 'Funder 1' })
+    ).toBeInTheDocument();
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.funding_reference_autocomplete',
+      }),
+      '2{enter}'
+    );
+    expect(
+      screen.getByRole('button', { name: 'Funder 2' })
+    ).toBeInTheDocument();
+
     // editing subjects
     expect(
       screen.getByRole('button', { name: 'subject 1' })
@@ -631,6 +681,7 @@ describe('DOI edit form component', () => {
             relationType: ri.relationType,
             relatedItemType: ri.resourceTypeGeneral,
           })),
+          funding_references: [fundersList[0], fundersList[1]],
           subjects: [
             { subject: 'subject 1' },
             { subject: 'sample:sample 1' },
@@ -907,6 +958,7 @@ describe('DOI edit form component', () => {
               relationType: ri.relationType,
               relatedItemType: ri.resourceTypeGeneral,
             })),
+          funding_references: [fundersList[0]],
           subjects: [
             { subject: 'subject 1' },
             { subject: 'subject 2' },

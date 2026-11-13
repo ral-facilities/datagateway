@@ -96,6 +96,11 @@ describe('DOI Generation form', () => {
         'aria-invalid',
         'true'
       );
+      cy.findByRole('combobox', { name: 'Funders' }).should(
+        'have.attr',
+        'aria-invalid',
+        'true'
+      );
     });
 
     it('should let user generate DOI when fields are filled', () => {
@@ -126,6 +131,9 @@ describe('DOI Generation form', () => {
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('UKRI{enter}');
+
       cy.contains('button', 'Review DOI metadata').click();
 
       // expect confirmation page
@@ -142,7 +150,7 @@ describe('DOI Generation form', () => {
       // TODO: is it fine that this relationship is added after minting but not shown on the confirmation page?
       // cy.contains('Relationship: HasPart').should('be.visible');
 
-      cy.contains('button', 'Generate DOI').click({ timeout: 20000});
+      cy.contains('button', 'Generate DOI').click({ timeout: 20000 });
 
       cy.contains('Mint Confirmation').should('be.visible');
       cy.contains('Mint was successful', { timeout: 10000 }).should(
@@ -180,6 +188,8 @@ describe('DOI Generation form', () => {
         timeout: 10_000,
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       cy.contains('button', 'Review DOI metadata').click();
 
@@ -189,6 +199,8 @@ describe('DOI Generation form', () => {
         'be.visible'
       );
       cy.contains('h2', 'Generate DOI').should('not.exist');
+      // check that no funder option isn't present
+      cy.contains('Funder name: No funder').should('not.exist');
 
       cy.contains('button', 'Go back').click();
 
@@ -221,6 +233,8 @@ describe('DOI Generation form', () => {
         timeout: 10_000,
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // add a subject
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
@@ -280,6 +294,8 @@ describe('DOI Generation form', () => {
         timeout: 10_000,
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // add a sample
       cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
@@ -329,6 +345,9 @@ describe('DOI Generation form', () => {
 
       // add a sample
       cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -404,6 +423,82 @@ describe('DOI Generation form', () => {
       );
     });
 
+    it('should let user add and remove funders', () => {
+      cy.contains('DOI Title').parent().find('input').type('Test title');
+      cy.contains('DOI Description')
+        .parent()
+        .find('textarea')
+        .first()
+        .type('Test description');
+
+      // add a subject
+      cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
+
+      // add a technique
+      cy.findByRole('button', { name: 'Add technique' }).click();
+      cy.findByRole('combobox', { name: 'Select technique' }).type('x-ray');
+      cy.findByRole('option', {
+        name: 'x-ray standing wave (XSW)',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('cell', {
+        name: 'borrmann effect',
+        timeout: 10_000,
+      }).click();
+      cy.findByRole('button', { name: 'Confirm' }).click();
+      // add a sample
+      cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+
+      // add funders
+      // test that if you select no funder, you can't select other funders
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
+      cy.findByRole('button', { name: 'Add funder via ROR' }).should(
+        'be.disabled'
+      );
+      cy.findByRole('combobox', { name: 'Funders' }).click();
+      cy.findByRole('option', { name: 'UKRI' }).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      );
+      // delete no funders option
+      cy.findByRole('combobox', { name: 'Funders' }).type('{backspace}');
+      // test add by ROR
+      cy.findByRole('button', { name: 'Add funder via ROR' }).click();
+      cy.findByRole('textbox', { name: 'ROR' }).type('001aqnf71');
+      cy.findByRole('button', { name: 'Verify ROR' }).click();
+
+      cy.contains('UK Research and Innovation').should('be.visible');
+      cy.findByRole('button', { name: 'Add Funder' }).click();
+
+      cy.findByRole('combobox', { name: 'Funders' }).click();
+      // duplicates should be filtered out
+      cy.findByRole('option', { name: 'UKRI' }).should('not.exist');
+      // shouldn't be able to add no funders type if other funder is selected
+      cy.findByRole('option', { name: 'No funder' }).should(
+        'have.css',
+        'pointer-events',
+        'none'
+      );
+
+      // check that funding info displays correctly in confirmation page
+      cy.contains('button', 'Review DOI metadata').click();
+
+      cy.contains('Please review the metadata', { timeout: 10000 }).should(
+        'be.visible'
+      );
+
+      cy.contains('Funder name: UK Research and Innovation').should(
+        'be.visible'
+      );
+
+      cy.contains('button', 'Generate DOI').click();
+
+      cy.contains('Mint was successful', { timeout: 10000 }).should(
+        'be.visible'
+      );
+    });
+
     it('should let user add and remove creators', () => {
       cy.contains('DOI Title').parent().find('input').type('Test title');
       cy.contains('DOI Description')
@@ -429,6 +524,9 @@ describe('DOI Generation form', () => {
         timeout: 10_000,
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
+
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // wait for users to load
       cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
@@ -476,6 +574,9 @@ describe('DOI Generation form', () => {
       }).click();
       cy.findByRole('button', { name: 'Confirm' }).click();
 
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
+
       // wait for users to load
       cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
@@ -518,6 +619,8 @@ describe('DOI Generation form', () => {
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
       // add a sample
       cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -575,6 +678,8 @@ describe('DOI Generation form', () => {
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
       // add a sample
       cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -663,6 +768,8 @@ describe('DOI Generation form', () => {
       cy.findByRole('combobox', { name: 'Subjects' }).type('subject1{enter}');
       // add a sample
       cy.findByRole('combobox', { name: 'Samples' }).type('sample1{enter}');
+      // add a funder
+      cy.findByRole('combobox', { name: 'Funders' }).type('No f{enter}');
 
       // add a technique
       cy.findByRole('button', { name: 'Add technique' }).click();
@@ -762,6 +869,6 @@ describe('DOI Generation form', () => {
       cy.contains('button', 'Accept').click();
       cy.contains('Generate DOI').should('be.visible');
       cy.contains('Add contributor').should('not.exist');
-  });
+    });
   });
 });

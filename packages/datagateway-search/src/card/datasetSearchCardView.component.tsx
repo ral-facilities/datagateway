@@ -164,6 +164,26 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
                     ),
                   }
                 : {}),
+              ...(searchResponse.dimensions?.[
+                'InvestigationInstrument.instrument.fullName'
+              ]
+                ? {
+                    'InvestigationInstrument.instrument.fullName': Object.keys(
+                      searchResponse.dimensions?.[
+                        'InvestigationInstrument.instrument.fullName'
+                      ]
+                    ).reduce(
+                      (
+                        accumulator: { [key: string]: undefined },
+                        current: string
+                      ) => {
+                        accumulator[current] = undefined;
+                        return accumulator;
+                      },
+                      {}
+                    ),
+                  }
+                : {}),
             },
           })),
         }),

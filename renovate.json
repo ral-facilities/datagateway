@@ -17,5 +17,11 @@
     "patch": {
       "enabled": true
     }
-  }
+  },
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "patch": { "enabled": true }
+    }
+  ]
 }

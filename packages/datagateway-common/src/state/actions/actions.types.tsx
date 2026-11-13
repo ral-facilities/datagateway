@@ -81,6 +81,7 @@ export interface URLs {
   dataCiteUrl?: string;
   doiHandleUrl: string;
   bioportalUrl?: string;
+  rorApiUrl?: string;
 }
 
 export interface PluginRoute {

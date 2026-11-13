@@ -20,7 +20,9 @@ describe('ISIS - Investigation Data Publication Landing', () => {
         `${Cypress.expose('doiHandleUrl')}/0-686-22941-X`
       );
     cy.get('#investigation-details-panel')
-      .contains('INSTRUMENT 13')
+      .contains(
+        'Respond between friend wide prevent six. Sea hard prepare production view it human. Major entire by activity increase sometimes present. Learn help maybe spring.'
+      )
       .should('be.visible');
 
     cy.get('[aria-label="landing-investigation-part-label"').should(
@@ -72,7 +74,9 @@ describe('ISIS - Investigation Data Publication Landing', () => {
         `${Cypress.expose('doiHandleUrl')}/0-686-22941-X`
       );
     cy.get('#investigation-details-panel')
-      .contains('INSTRUMENT 13')
+      .contains(
+        'Respond between friend wide prevent six. Sea hard prepare production view it human. Major entire by activity increase sometimes present. Learn help maybe spring.'
+      )
       .should('not.exist');
 
     cy.get('[aria-label="landing-investigation-part-label"').should(

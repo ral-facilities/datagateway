@@ -145,6 +145,26 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
                     ),
                   }
                 : {}),
+              ...(searchResponse.dimensions?.[
+                'InvestigationInstrument.instrument.fullName'
+              ]
+                ? {
+                    'InvestigationInstrument.instrument.fullName': Object.keys(
+                      searchResponse.dimensions?.[
+                        'InvestigationInstrument.instrument.fullName'
+                      ]
+                    ).reduce(
+                      (
+                        accumulator: { [key: string]: undefined },
+                        current: string
+                      ) => {
+                        accumulator[current] = undefined;
+                        return accumulator;
+                      },
+                      {}
+                    ),
+                  }
+                : {}),
             },
           })),
         }),

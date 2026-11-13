@@ -114,6 +114,7 @@ export const createReactQueryWrapper = (
         downloadApiUrl: 'https://example.com/topcat',
         dataCiteUrl: 'https://example.com/datacite',
         doiMinterUrl: 'https://example.com/doi-minter',
+        rorApiUrl: 'https://example.com/ror',
       },
     },
   };
