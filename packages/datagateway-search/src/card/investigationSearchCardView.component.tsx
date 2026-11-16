@@ -290,12 +290,9 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
         label: t('investigations.instrument'),
         dataKey: 'investigationInstruments.instrument.name',
         content: function Content(investigation: SearchResultSource) {
-          const investigationInstrument =
-            investigation.investigationinstrument?.[0];
           const instrument =
-            investigationInstrument?.['instrument.fullName'] ??
-            investigationInstrument?.['instrument.name'] ??
-            'Unknown';
+            investigation['investigationinstrument.instrument.fullName'];
+          // return investigationInstrument;
           return (
             <ArrowTooltip title={instrument}>
               <Typography>{instrument}</Typography>

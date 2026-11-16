@@ -424,6 +424,7 @@ export interface SearchResultSource {
   'facility.name'?: string;
   'facility.id'?: number;
   'user.name'?: string[];
+  'investigationinstrument.instrument.fullName'?: string;
 }
 
 export type ICATEntity =
