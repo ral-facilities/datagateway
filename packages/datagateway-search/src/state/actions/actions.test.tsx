@@ -67,7 +67,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(7);
+    expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
