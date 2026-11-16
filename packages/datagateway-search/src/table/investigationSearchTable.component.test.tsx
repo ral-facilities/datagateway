@@ -250,6 +250,51 @@ describe('Investigation Search Table component', () => {
     expect(queryAllRows()).toHaveLength(0);
   });
 
+  it('disables search if investigation disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'dataset'];
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
   it('renders search results correctly', async () => {
     renderComponent();
 

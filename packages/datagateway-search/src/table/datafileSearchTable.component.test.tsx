@@ -249,6 +249,38 @@ describe('Datafile search table component', () => {
     expect(queryAllRows()).toHaveLength(0);
   });
 
+  it('disables the search if datafile is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['investigation', 'dataset'];
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.location')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datafiles.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.dataset')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.modified_time')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
   it('renders search results correctly', async () => {
     renderComponent();
 

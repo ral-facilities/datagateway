@@ -8,7 +8,6 @@ import {
   SearchResponse,
   SearchResult,
   SearchResultSource,
-  StateType,
   dGCommonInitialState,
 } from 'datagateway-common';
 import { MemoryHistory, createMemoryHistory } from 'history';
@@ -18,6 +17,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
+import { StateType } from '../state/app.types';
 
 describe('Investigation - Card View', () => {
   let state: StateType;
@@ -130,6 +130,29 @@ describe('Investigation - Card View', () => {
     searchParams.append('investigation', 'false');
     history.replace({ search: `?${searchParams.toString()}` });
 
+    renderComponent();
+
+    expect(
+      screen.getByTestId('investigation-search-card-view')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
+  });
+
+  it('disables the search if investigation is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'dataset'];
     renderComponent();
 
     expect(

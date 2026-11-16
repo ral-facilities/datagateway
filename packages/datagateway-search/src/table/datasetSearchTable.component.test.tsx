@@ -224,6 +224,40 @@ describe('Dataset table component', () => {
     expect(queryAllRows()).toHaveLength(0);
   });
 
+  it('disables the search if dataset is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'investigation'];
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.investigation')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.modified_time')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
   it('renders search results correctly', async () => {
     renderComponent();
 
