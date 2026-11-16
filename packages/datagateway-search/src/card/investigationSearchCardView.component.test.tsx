@@ -79,12 +79,8 @@ describe('Investigation - Card View', () => {
       title: 'Test 1',
       visitId: '1',
       doi: 'doi 1',
-      investigationinstrument: [
-        {
-          'instrument.id': 4,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 4,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -258,7 +254,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete cardData.investigationinstrument;
+    delete cardData['investigationinstrument.instrument.id'];
 
     renderComponent({ hierarchy: FACILITY_NAME.isis });
 

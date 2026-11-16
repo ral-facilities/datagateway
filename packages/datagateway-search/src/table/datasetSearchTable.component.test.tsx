@@ -46,12 +46,8 @@ const mockSearchResults: SearchResult[] = [
       endDate: 1564027200000,
       fileCount: 9,
       fileSize: 10,
-      investigationinstrument: [
-        {
-          'instrument.id': 4,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 4,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -830,15 +826,9 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    const { investigationinstrument, ...data } = mockSearchResults[0]._source;
-    searchResponse = {
-      results: [
-        {
-          ...mockSearchResults[0],
-          _source: data,
-        },
-      ],
-    };
+    delete mockSearchResults[0]._source[
+      'investigationinstrument.instrument.id'
+    ];
 
     renderComponent(FACILITY_NAME.isis);
 

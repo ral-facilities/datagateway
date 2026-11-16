@@ -272,7 +272,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
                 id: datafileData['investigation.id'],
                 name: datafileData['investigation.name'],
                 instrumentId:
-                  datafileData.investigationinstrument?.[0]?.['instrument.id'],
+                  datafileData['investigationinstrument.instrument.id'],
                 facilityCycleId:
                   datafileData.investigationfacilitycycle?.[0]?.[
                     'facilityCycle.id'
@@ -322,7 +322,7 @@ const DatafileSearchTable: React.FC<DatafileSearchTableProps> = (props) => {
               id: datafileData['investigation.id'],
               name: datafileData['investigation.name'],
               instrumentId:
-                datafileData.investigationinstrument?.[0]?.['instrument.id'],
+                datafileData['investigationinstrument.instrument.id'],
               facilityCycleId:
                 datafileData.investigationfacilitycycle?.[0]?.[
                   'facilityCycle.id'

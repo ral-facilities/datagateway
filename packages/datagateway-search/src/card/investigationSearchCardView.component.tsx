@@ -216,7 +216,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
             id: investigation.id,
             name: investigation.name,
             instrumentId:
-              investigation.investigationinstrument?.[0]?.['instrument.id'],
+              investigation['investigationinstrument.instrument.id'],
             facilityCycleId:
               investigation.investigationfacilitycycle?.[0]?.[
                 'facilityCycle.id'
@@ -337,7 +337,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
               id: investigation.id,
               name: investigation.name,
               instrumentId:
-                investigation.investigationinstrument?.[0]?.['instrument.id'],
+                investigation['investigationinstrument.instrument.id'],
               facilityCycleId:
                 investigation.investigationfacilitycycle?.[0]?.[
                   'facilityCycle.id'

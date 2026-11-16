@@ -223,9 +223,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
               id: investigationData.id,
               name: investigationData.name,
               instrumentId:
-                investigationData.investigationinstrument?.[0]?.[
-                  'instrument.id'
-                ],
+                investigationData['investigationinstrument.instrument.id'],
               facilityCycleId:
                 investigationData.investigationfacilitycycle?.[0]?.[
                   'facilityCycle.id'
@@ -321,7 +319,7 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
                 id: investigation.id,
                 name: investigation.name,
                 instrumentId:
-                  investigation.investigationinstrument?.[0]?.['instrument.id'],
+                  investigation['investigationinstrument.instrument.id'],
                 facilityCycleId:
                   investigation.investigationfacilitycycle?.[0]?.[
                     'facilityCycle.id'

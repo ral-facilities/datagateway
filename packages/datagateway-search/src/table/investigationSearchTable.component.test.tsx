@@ -160,12 +160,8 @@ describe('Investigation Search Table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        investigationinstrument: [
-          {
-            'instrument.id': 3,
-            'instrument.name': 'LARMOR',
-          },
-        ],
+        'investigationinstrument.instrument.id': 3,
+        'investigationinstrument.instrument.fullName': 'LARMOR',
         investigationfacilitycycle: [
           {
             'facilityCycle.id': 5,
@@ -963,7 +959,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete searchResult._source.investigationinstrument;
+    delete searchResult._source['investigationinstrument.instrument.id'];
 
     renderComponent('isis');
 

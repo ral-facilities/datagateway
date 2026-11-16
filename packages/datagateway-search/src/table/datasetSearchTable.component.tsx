@@ -275,7 +275,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
               id: datasetData['investigation.id'],
               name: datasetData['investigation.name'],
               instrumentId:
-                datasetData.investigationinstrument?.[0]?.['instrument.id'],
+                datasetData['investigationinstrument.instrument.id'],
               facilityCycleId:
                 datasetData.investigationfacilitycycle?.[0]?.[
                   'facilityCycle.id'
@@ -325,8 +325,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
             id: datasetData['investigation.id'],
             name: datasetData['investigation.name'],
             title: datasetData['investigation.title'],
-            instrumentId:
-              datasetData.investigationinstrument?.[0]?.['instrument.id'],
+            instrumentId: datasetData['investigationinstrument.instrument.id'],
             facilityCycleId:
               datasetData.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
           };
@@ -382,7 +381,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                   id: dataset['investigation.id'],
                   name: dataset['investigation.name'],
                   instrumentId:
-                    dataset.investigationinstrument?.[0]?.['instrument.id'],
+                    dataset['investigationinstrument.instrument.id'],
                   facilityCycleId:
                     dataset.investigationfacilitycycle?.[0]?.[
                       'facilityCycle.id'

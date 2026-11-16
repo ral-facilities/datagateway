@@ -149,12 +149,8 @@ describe('Datafile search table component', () => {
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
       'investigation.startDate': 1560139200000,
-      investigationinstrument: [
-        {
-          'instrument.id': 5,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 5,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -773,7 +769,7 @@ describe('Datafile search table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete rowData.investigationinstrument;
+    delete rowData['investigationinstrument.instrument.id'];
 
     renderComponent('isis');
 

@@ -261,8 +261,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
           investigation: {
             id: dataset['investigation.id'],
             name: dataset['investigation.name'],
-            instrumentId:
-              dataset.investigationinstrument?.[0]?.['instrument.id'],
+            instrumentId: dataset['investigationinstrument.instrument.id'],
             facilityCycleId:
               dataset.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
           },
@@ -373,8 +372,7 @@ const DatasetCardView: React.FC<DatasetCardViewProps> = (props) => {
               investigation: {
                 id: dataset['investigation.id'],
                 name: dataset['investigation.name'],
-                instrumentId:
-                  dataset.investigationinstrument?.[0]?.['instrument.id'],
+                instrumentId: dataset['investigationinstrument.instrument.id'],
                 facilityCycleId:
                   dataset.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
               },
