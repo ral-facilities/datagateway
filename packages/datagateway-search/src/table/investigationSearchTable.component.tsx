@@ -276,16 +276,12 @@ const InvestigationSearchTable: React.FC<InvestigationTableProps> = (props) => {
       },
       {
         label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments.instrument.fullName',
+        dataKey: 'investigationinstrument.instrument.fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {
           const investigationData = cellProps.rowData as SearchResultSource;
           const investigationInstrument =
-            investigationData.investigationinstrument?.[0];
-          return (
-            investigationInstrument?.['instrument.fullName'] ??
-            investigationInstrument?.['instrument.name'] ??
-            ''
-          );
+            investigationData['investigationinstrument.instrument.fullName'];
+          return investigationInstrument;
         },
         disableSort: true,
       },
