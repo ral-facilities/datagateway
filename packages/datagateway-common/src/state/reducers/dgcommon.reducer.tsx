@@ -34,6 +34,9 @@ export const initialState: DGCommonState = {
     searchUrl: '',
     doiHandleUrl: 'https://doi.org',
   },
+  features: {
+    disableParameterFilters: false,
+  },
   facilityName: '',
   isisDatafileDetailsPanel: {},
   isisDatasetDetailsPanel: {},
