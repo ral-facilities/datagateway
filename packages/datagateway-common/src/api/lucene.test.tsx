@@ -35,6 +35,7 @@ describe('Lucene actions', () => {
         searchText: 'test',
         startDate: null,
         endDate: null,
+        restrict: true,
         facets: {
           'DatasetParameter.type.name': {
             terms: {
@@ -43,7 +44,7 @@ describe('Lucene actions', () => {
             },
           },
         },
-        sort: { size: 'desc' },
+        sort: {},
       };
 
       const { result } = renderHook(
@@ -76,6 +77,11 @@ describe('Lucene actions', () => {
                         ],
                       },
                     },
+                    {
+                      terms: {
+                        'user.name': [''],
+                      },
+                    },
                   ],
                 },
               },
@@ -96,7 +102,7 @@ describe('Lucene actions', () => {
               },
             },
           },
-          sort: [{ size: 'desc' }, { id: 'asc' }],
+          sort: [{ _score: 'desc' }, { id: 'asc' }],
         })
       );
       params.append('JWT', '');
