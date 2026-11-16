@@ -73,6 +73,7 @@ const RoleSelector: React.FC = () => {
   const role =
     filters['investigationUsers.role'] &&
     !Array.isArray(filters['investigationUsers.role']) &&
+    !(typeof filters['investigationUsers.role'] === 'string') &&
     'value' in filters['investigationUsers.role'] &&
     typeof filters['investigationUsers.role'].value === 'string'
       ? filters['investigationUsers.role'].value

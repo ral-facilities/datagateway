@@ -13,6 +13,7 @@ export interface DGSearchState {
   searchableEntities: string[];
   minNumResults: number;
   maxNumResults: number;
+  searchFields: string[];
 }
 
 export type StateType = {

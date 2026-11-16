@@ -69,12 +69,8 @@ describe('Dataset - Card View', () => {
       endDate: 1564009200000,
       fileSize: 10,
       fileCount: 9,
-      investigationinstrument: [
-        {
-          'instrument.id': 4,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 4,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -86,9 +82,9 @@ describe('Dataset - Card View', () => {
       'investigation.startDate': 1560121200000,
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: cardData,
+      _score: 1,
+      _id: 1,
+      _source: cardData,
     };
     searchResponse = {
       results: [searchResult],
@@ -128,6 +124,26 @@ describe('Dataset - Card View', () => {
     searchParams.append('dataset', 'false');
     history.replace({ search: `?${searchParams.toString()}` });
 
+    renderComponent();
+
+    expect(screen.getByTestId('dataset-search-card-view')).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
+  });
+
+  it('disables the search if dataset is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'investigation'];
     renderComponent();
 
     expect(screen.getByTestId('dataset-search-card-view')).toBeInTheDocument();
@@ -225,7 +241,7 @@ describe('Dataset - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete cardData.investigationinstrument;
+    delete cardData['investigationinstrument.instrument.id'];
 
     renderComponent({ hierarchy: FACILITY_NAME.isis });
 

@@ -5,6 +5,8 @@ export type SearchSettings = DataviewSearchCommonSettings &
     searchableEntities?: string[];
     minNumResults?: number;
     maxNumResults?: number;
+    searchFields: string[];
+    searchUrl: string;
   };
 
 export let settings: Promise<SearchSettings | void>;

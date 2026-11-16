@@ -149,9 +149,9 @@ describe('Investigation Search Table component', () => {
     );
     cartItems = [];
     searchResult = {
-      score: 1,
-      id: 1,
-      source: {
+      _score: 1,
+      _id: 1,
+      _source: {
         id: 1,
         title: 'Test title 1',
         name: 'Test name 1',
@@ -160,12 +160,8 @@ describe('Investigation Search Table component', () => {
         summary: 'foo bar',
         visitId: '1',
         doi: 'doi 1',
-        investigationinstrument: [
-          {
-            'instrument.id': 3,
-            'instrument.name': 'LARMOR',
-          },
-        ],
+        'investigationinstrument.instrument.id': 3,
+        'investigationinstrument.instrument.fullName': 'LARMOR',
         investigationfacilitycycle: [
           {
             'facilityCycle.id': 5,
@@ -207,6 +203,51 @@ describe('Investigation Search Table component', () => {
     searchParams.append('investigation', 'false');
     history.replace({ search: `?${searchParams.toString()}` });
 
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(
+      await findColumnHeaderByName('investigations.title')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.visit_id')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.name')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.size')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.instrument')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.start_date')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('investigations.end_date')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
+  it('disables search if investigation disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'dataset'];
     renderComponent();
 
     // check that column headers are shown correctly.
@@ -861,7 +902,7 @@ describe('Investigation Search Table component', () => {
       results: [
         {
           ...searchResult,
-          source: {
+          _source: {
             id: 1,
             name: 'test',
             title: 'test',
@@ -918,7 +959,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete searchResult.source.investigationinstrument;
+    delete searchResult._source['investigationinstrument.instrument.id'];
 
     renderComponent('isis');
 
@@ -930,7 +971,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    delete searchResult.source.investigationfacilitycycle;
+    delete searchResult._source.investigationfacilitycycle;
 
     renderComponent('isis');
 

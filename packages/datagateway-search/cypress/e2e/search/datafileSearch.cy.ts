@@ -137,9 +137,9 @@ describe('Datafile search tab', () => {
       });
 
     cy.findByTestId('datafile-details-panel').within(() => {
-      cy.findByText('Datafile 38').should('exist');
-      cy.findByText('187.27 MB').should('exist');
-      cy.findByText('/born/hear/big.bmp').should('exist');
+      cy.findByText('Datafile 1302').should('exist');
+      cy.findByText('32.89 MB').should('exist');
+      cy.findByText('/memory/dog/experience.jpg').should('exist');
     });
   });
 
@@ -384,7 +384,8 @@ describe('Datafile search tab', () => {
     });
   });
 
-  it('should be able to filter search results by parameter filters', () => {
+  // Skipping as new API does not support parameter filters yet
+  it.skip('should be able to filter search results by parameter filters', () => {
     // type in search query
     cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
     // uncheck my data

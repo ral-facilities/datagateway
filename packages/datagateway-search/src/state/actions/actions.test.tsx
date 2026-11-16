@@ -11,6 +11,7 @@ import {
   loadMaxNumResults,
   loadMinNumResults,
   loadSearchableEntitites,
+  loadSearchFields,
   settingsLoaded,
 } from '.';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
@@ -18,6 +19,7 @@ import {
   ConfigureMaxNumResultsType,
   ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesType,
+  ConfigureSearchFieldsType,
   SettingsLoadedType,
 } from './actions.types';
 
@@ -54,16 +56,18 @@ describe('Actions', () => {
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
       icatUrl: 'icat',
+      searchUrl: 'search',
       doiHandleUrl: 'doiHandleUrl',
       queryRetries: 0,
       features: {},
       searchableEntities: ['investigation', 'dataset', 'datafile'],
       maxNumResults: 150,
+      searchFields: ['test'],
     });
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions.length).toEqual(7);
+    expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
@@ -71,6 +75,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: 'icat',
+        searchUrl: 'search',
         doiHandleUrl: 'doiHandleUrl',
       })
     );
@@ -80,6 +85,7 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(loadMaxNumResults(150));
     expect(actions).toContainEqual(loadQueryRetries(0));
+    expect(actions).toContainEqual(loadSearchFields(['test']));
 
     expect(actions).toContainEqual(settingsLoaded());
   });
@@ -90,6 +96,7 @@ describe('Actions', () => {
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      searchUrl: 'search',
       icatUrl: 'icat',
     });
     const asyncAction = configureApp();
@@ -114,6 +121,7 @@ describe('Actions', () => {
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
         icatUrl: 'icat',
+        searchUrl: 'search',
         doiHandleUrl: 'https://doi.org',
       })
     );
@@ -135,6 +143,16 @@ describe('Actions', () => {
       expect(action.type).toEqual(ConfigureMinNumResultsType);
       expect(action.payload).toEqual({
         minNumResults: 20,
+      });
+    });
+  });
+
+  describe('loadSearchFields', () => {
+    it('returns an action with type ConfigueSearchFieldsPayload and a payload with the given search fields', () => {
+      const action = loadSearchFields(['test']);
+      expect(action.type).toEqual(ConfigureSearchFieldsType);
+      expect(action.payload).toEqual({
+        searchFields: ['test'],
       });
     });
   });

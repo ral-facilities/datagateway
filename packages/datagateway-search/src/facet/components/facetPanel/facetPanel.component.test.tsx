@@ -2,7 +2,14 @@ import { render, screen, within } from '@testing-library/react';
 import FacetPanel from './facetPanel.component';
 import { FacetClassification } from '../../facet';
 import userEvent from '@testing-library/user-event';
-import { DatasearchType } from 'datagateway-common';
+import {
+  DatasearchType,
+  dGCommonInitialState,
+  StateType,
+} from 'datagateway-common';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
 
 describe('facetPanel', () => {
   const TEST_FACET_CLASSIFICATION: FacetClassification = {
@@ -15,23 +22,29 @@ describe('facetPanel', () => {
       run_number_range: 400,
     },
   };
+  const state: StateType = {
+    dgcommon: dGCommonInitialState,
+  };
   const TEST_ENTITY_NAME: DatasearchType = 'Investigation';
   const TEST_IDS = [123, 456, 789];
+  const mockStore = configureStore([thunk]);
 
   it('renders facets as list of accordions that expands to reveal filters', async () => {
     const user = userEvent.setup();
 
     render(
-      <FacetPanel
-        showApplyButton={false}
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{}}
-        onAddFilter={vi.fn()}
-        onRemoveFilter={vi.fn()}
-        onApplyFacetFilters={vi.fn()}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton={false}
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{}}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={vi.fn()}
+        />
+      </Provider>
     );
 
     expect(
@@ -135,19 +148,21 @@ describe('facetPanel', () => {
     const user = userEvent.setup();
 
     render(
-      <FacetPanel
-        showApplyButton={false}
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigation.type.name': ['experiment'],
-          'investigationparameter.type.name': ['bcat_inv_str'],
-        }}
-        onAddFilter={vi.fn()}
-        onRemoveFilter={vi.fn()}
-        onApplyFacetFilters={vi.fn()}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton={false}
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigation.type.name': ['experiment'],
+            'investigationparameter.type.name': ['bcat_inv_str'],
+          }}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={vi.fn()}
+        />
+      </Provider>
     );
 
     // open investigation type filter panel
@@ -187,19 +202,21 @@ describe('facetPanel', () => {
     const onApplyFacetFilters = vi.fn();
 
     const { rerender } = render(
-      <FacetPanel
-        showApplyButton={false}
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigation.type.name': ['experiment'],
-          'investigationparameter.type.name': ['bcat_inv_str'],
-        }}
-        onAddFilter={onAddFilter}
-        onRemoveFilter={vi.fn()}
-        onApplyFacetFilters={onApplyFacetFilters}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton={false}
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigation.type.name': ['experiment'],
+            'investigationparameter.type.name': ['bcat_inv_str'],
+          }}
+          onAddFilter={onAddFilter}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={onApplyFacetFilters}
+        />
+      </Provider>
     );
 
     // apply button should not be visible when no changes are made to filters
@@ -222,19 +239,21 @@ describe('facetPanel', () => {
     );
 
     rerender(
-      <FacetPanel
-        showApplyButton
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigation.type.name': ['experiment', 'calibration'],
-          'investigationparameter.type.name': ['bcat_inv_str'],
-        }}
-        onAddFilter={onAddFilter}
-        onRemoveFilter={vi.fn()}
-        onApplyFacetFilters={onApplyFacetFilters}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigation.type.name': ['experiment', 'calibration'],
+            'investigationparameter.type.name': ['bcat_inv_str'],
+          }}
+          onAddFilter={onAddFilter}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={onApplyFacetFilters}
+        />
+      </Provider>
     );
 
     expect(onAddFilter).toHaveBeenLastCalledWith(
@@ -269,19 +288,21 @@ describe('facetPanel', () => {
     const onApplyFacetFilters = vi.fn();
 
     const { rerender } = render(
-      <FacetPanel
-        showApplyButton={false}
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigation.type.name': ['experiment'],
-          'investigationparameter.type.name': ['bcat_inv_str'],
-        }}
-        onAddFilter={vi.fn()}
-        onRemoveFilter={onRemoveFilter}
-        onApplyFacetFilters={vi.fn()}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton={false}
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigation.type.name': ['experiment'],
+            'investigationparameter.type.name': ['bcat_inv_str'],
+          }}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={onRemoveFilter}
+          onApplyFacetFilters={vi.fn()}
+        />
+      </Provider>
     );
 
     // apply button should not be visible when no changes are made to filters
@@ -305,18 +326,20 @@ describe('facetPanel', () => {
 
     // pretend the selected filters are updated
     rerender(
-      <FacetPanel
-        showApplyButton
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigationparameter.type.name': ['bcat_inv_str'],
-        }}
-        onAddFilter={vi.fn()}
-        onRemoveFilter={onRemoveFilter}
-        onApplyFacetFilters={onApplyFacetFilters}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigationparameter.type.name': ['bcat_inv_str'],
+          }}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={onRemoveFilter}
+          onApplyFacetFilters={onApplyFacetFilters}
+        />
+      </Provider>
     );
 
     expect(onRemoveFilter).toHaveBeenLastCalledWith(
@@ -349,19 +372,21 @@ describe('facetPanel', () => {
       const user = userEvent.setup();
 
       render(
-        <FacetPanel
-          showApplyButton={false}
-          entityName="Investigation"
-          allIds={TEST_IDS}
-          facetClassification={TEST_FACET_CLASSIFICATION}
-          selectedFacetFilters={{
-            'investigation.type.name': ['experiment'],
-            'investigationparameter.type.name': ['bcat_inv_str'],
-          }}
-          onAddFilter={vi.fn()}
-          onRemoveFilter={vi.fn()}
-          onApplyFacetFilters={vi.fn()}
-        />
+        <Provider store={mockStore(state)}>
+          <FacetPanel
+            showApplyButton={false}
+            entityName="Investigation"
+            allIds={TEST_IDS}
+            facetClassification={TEST_FACET_CLASSIFICATION}
+            selectedFacetFilters={{
+              'investigation.type.name': ['experiment'],
+              'investigationparameter.type.name': ['bcat_inv_str'],
+            }}
+            onAddFilter={vi.fn()}
+            onRemoveFilter={vi.fn()}
+            onApplyFacetFilters={vi.fn()}
+          />
+        </Provider>
       );
 
       // open investigation parameter type filter panel
@@ -378,21 +403,23 @@ describe('facetPanel', () => {
       const user = userEvent.setup();
 
       render(
-        <FacetPanel
-          showApplyButton={false}
-          entityName="Dataset"
-          allIds={TEST_IDS}
-          facetClassification={{
-            'datasetparameter.type.name': {
-              bcat_inv_str: 299,
-              run_number_range: 400,
-            },
-          }}
-          selectedFacetFilters={{}}
-          onAddFilter={vi.fn()}
-          onRemoveFilter={vi.fn()}
-          onApplyFacetFilters={vi.fn()}
-        />
+        <Provider store={mockStore(state)}>
+          <FacetPanel
+            showApplyButton={false}
+            entityName="Dataset"
+            allIds={TEST_IDS}
+            facetClassification={{
+              'datasetparameter.type.name': {
+                bcat_inv_str: 299,
+                run_number_range: 400,
+              },
+            }}
+            selectedFacetFilters={{}}
+            onAddFilter={vi.fn()}
+            onRemoveFilter={vi.fn()}
+            onApplyFacetFilters={vi.fn()}
+          />
+        </Provider>
       );
 
       // open dataset parameter type filter panel
@@ -409,21 +436,23 @@ describe('facetPanel', () => {
       const user = userEvent.setup();
 
       render(
-        <FacetPanel
-          showApplyButton={false}
-          entityName="Datafile"
-          allIds={TEST_IDS}
-          facetClassification={{
-            'datafileparameter.type.name': {
-              bcat_inv_str: 299,
-              run_number_range: 400,
-            },
-          }}
-          selectedFacetFilters={{}}
-          onAddFilter={vi.fn()}
-          onRemoveFilter={vi.fn()}
-          onApplyFacetFilters={vi.fn()}
-        />
+        <Provider store={mockStore(state)}>
+          <FacetPanel
+            showApplyButton={false}
+            entityName="Datafile"
+            allIds={TEST_IDS}
+            facetClassification={{
+              'datafileparameter.type.name': {
+                bcat_inv_str: 299,
+                run_number_range: 400,
+              },
+            }}
+            selectedFacetFilters={{}}
+            onAddFilter={vi.fn()}
+            onRemoveFilter={vi.fn()}
+            onApplyFacetFilters={vi.fn()}
+          />
+        </Provider>
       );
 
       // open datafile parameter type filter panel
@@ -441,26 +470,28 @@ describe('facetPanel', () => {
     const user = userEvent.setup();
 
     render(
-      <FacetPanel
-        showApplyButton={false}
-        entityName={TEST_ENTITY_NAME}
-        allIds={TEST_IDS}
-        facetClassification={TEST_FACET_CLASSIFICATION}
-        selectedFacetFilters={{
-          'investigation.type.name': ['experiment'],
-          'investigationparameter.type.name': ['bcat_inv_str'],
-          investigationparameter: [
-            {
-              filter: [],
-              key: 'investigationparameter.type.stringValue.bcat_inv_str',
-              label: 'Test Label',
-            },
-          ],
-        }}
-        onAddFilter={vi.fn()}
-        onRemoveFilter={vi.fn()}
-        onApplyFacetFilters={vi.fn()}
-      />
+      <Provider store={mockStore(state)}>
+        <FacetPanel
+          showApplyButton={false}
+          entityName={TEST_ENTITY_NAME}
+          allIds={TEST_IDS}
+          facetClassification={TEST_FACET_CLASSIFICATION}
+          selectedFacetFilters={{
+            'investigation.type.name': ['experiment'],
+            'investigationparameter.type.name': ['bcat_inv_str'],
+            investigationparameter: [
+              {
+                filter: [],
+                key: 'investigationparameter.type.stringValue.bcat_inv_str',
+                label: 'Test Label',
+              },
+            ],
+          }}
+          onAddFilter={vi.fn()}
+          onRemoveFilter={vi.fn()}
+          onApplyFacetFilters={vi.fn()}
+        />
+      </Provider>
     );
 
     // open datafile parameter type filter panel

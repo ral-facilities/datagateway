@@ -8,7 +8,6 @@ import {
   SearchResponse,
   SearchResult,
   SearchResultSource,
-  StateType,
   dGCommonInitialState,
 } from 'datagateway-common';
 import { MemoryHistory, createMemoryHistory } from 'history';
@@ -18,6 +17,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState as dgSearchInitialState } from '../state/reducers/dgsearch.reducer';
 import InvestigationSearchCardView from './investigationSearchCardView.component';
+import { StateType } from '../state/app.types';
 
 describe('Investigation - Card View', () => {
   let state: StateType;
@@ -79,12 +79,8 @@ describe('Investigation - Card View', () => {
       title: 'Test 1',
       visitId: '1',
       doi: 'doi 1',
-      investigationinstrument: [
-        {
-          'instrument.id': 4,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 4,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -92,9 +88,9 @@ describe('Investigation - Card View', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: cardData,
+      _score: 1,
+      _id: 1,
+      _source: cardData,
     };
     searchResponse = {
       results: [searchResult],
@@ -130,6 +126,29 @@ describe('Investigation - Card View', () => {
     searchParams.append('investigation', 'false');
     history.replace({ search: `?${searchParams.toString()}` });
 
+    renderComponent();
+
+    expect(
+      screen.getByTestId('investigation-search-card-view')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Investigation'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(screen.queryAllByTestId('card')).toHaveLength(0);
+  });
+
+  it('disables the search if investigation is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'dataset'];
     renderComponent();
 
     expect(
@@ -235,7 +254,7 @@ describe('Investigation - Card View', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete cardData.investigationinstrument;
+    delete cardData['investigationinstrument.instrument.id'];
 
     renderComponent({ hierarchy: FACILITY_NAME.isis });
 

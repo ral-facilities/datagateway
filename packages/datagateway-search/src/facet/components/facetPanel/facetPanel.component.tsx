@@ -13,8 +13,14 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ToggleableFilterItem from './toggleableFilterItem.component';
 import { FacetClassification } from '../../facet';
 import { useTranslation } from 'react-i18next';
-import { DatasearchType, FiltersType, SearchFilter } from 'datagateway-common';
+import {
+  DatasearchType,
+  FiltersType,
+  SearchFilter,
+  StateType,
+} from 'datagateway-common';
 import ParameterFilters from './parameterFilters/parameterFilters.component';
+import { useSelector } from 'react-redux';
 
 const PanelContainer = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -120,6 +126,9 @@ function FacetPanel({
   entityName,
   showApplyButton,
 }: FacetPanelProps): JSX.Element {
+  const disableParameterFilters = useSelector(
+    (state: StateType) => state.dgcommon.features?.disableParameterFilters
+  );
   const [t] = useTranslation();
 
   const classifications = Object.entries(facetClassification);
@@ -189,7 +198,10 @@ function FacetPanel({
                     }
                   )}
                 </List>
-                {areParameterFiltersAvailable(dimension) && (
+                {areParameterFiltersAvailable(
+                  dimension,
+                  disableParameterFilters
+                ) && (
                   <>
                     <Divider />
                     <Box pl={2} pr={1} py={2}>
@@ -229,12 +241,16 @@ function FacetPanel({
  *
  * @see ParameterFilters
  */
-function areParameterFiltersAvailable(dimension: string): boolean {
+function areParameterFiltersAvailable(
+  dimension: string,
+  disableParameterFilters: boolean | undefined
+): boolean {
   const l = dimension.toLocaleLowerCase();
   return (
-    l === 'investigationparameter.type.name' ||
-    l === 'datasetparameter.type.name' ||
-    l === 'datafileparameter.type.name'
+    (l === 'investigationparameter.type.name' ||
+      l === 'datasetparameter.type.name' ||
+      l === 'datafileparameter.type.name') &&
+    !disableParameterFilters
   );
 }
 

@@ -364,7 +364,8 @@ describe('Investigation search tab', () => {
     });
   });
 
-  it('should be able to filter search results by parameter filters', () => {
+  // Skipping because the new search api does not support parameter filters yet.
+  it.skip('should be able to filter search results by parameter filters', () => {
     // type in search query
     cy.findByRole('searchbox', { name: 'Search text input' }).type('dog');
     // uncheck my data

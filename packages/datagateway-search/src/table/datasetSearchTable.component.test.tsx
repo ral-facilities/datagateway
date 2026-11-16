@@ -37,21 +37,17 @@ import DatasetSearchTable from './datasetSearchTable.component';
 
 const mockSearchResults: SearchResult[] = [
   {
-    score: 1,
-    id: 1,
-    source: {
+    _score: 1,
+    _id: 1,
+    _source: {
       id: 1,
       name: 'Dataset test name',
       startDate: 1563940800000,
       endDate: 1564027200000,
       fileCount: 9,
       fileSize: 10,
-      investigationinstrument: [
-        {
-          'instrument.id': 4,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 4,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -73,7 +69,9 @@ const mockLuceneSearchParams: LuceneSearchParams = {
   minCount: 10,
   maxCount: 100,
   restrict: true,
-  facets: [{ target: 'Dataset' }],
+  facets: {
+    Dataset: { terms: { field: 'Dataset', show_term_doc_count_error: true } },
+  },
   filters: {},
 };
 
@@ -190,6 +188,40 @@ describe('Dataset table component', () => {
     searchParams.append('dataset', 'false');
     history.replace({ search: `?${searchParams.toString()}` });
 
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.datafile_count')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.investigation')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.create_time')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datasets.modified_time')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Dataset'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
+  it('disables the search if dataset is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['datafile', 'investigation'];
     renderComponent();
 
     // check that column headers are shown correctly.
@@ -749,7 +781,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: {
+          _source: {
             id: 1,
             name: 'test',
           },
@@ -794,15 +826,9 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    const { investigationinstrument, ...data } = mockSearchResults[0].source;
-    searchResponse = {
-      results: [
-        {
-          ...mockSearchResults[0],
-          source: data,
-        },
-      ],
-    };
+    delete mockSearchResults[0]._source[
+      'investigationinstrument.instrument.id'
+    ];
 
     renderComponent(FACILITY_NAME.isis);
 
@@ -816,12 +842,13 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    const { investigationfacilitycycle, ...data } = mockSearchResults[0].source;
+    const { investigationfacilitycycle, ...data } =
+      mockSearchResults[0]._source;
     searchResponse = {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -837,7 +864,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no generic investigation to link to', async () => {
-    const data = { ...mockSearchResults[0].source };
+    const data = { ...mockSearchResults[0]._source };
     delete data['investigation.id'];
     delete data['investigation.name'];
     delete data['investigation.title'];
@@ -846,7 +873,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -862,7 +889,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no DLS investigation to link to', async () => {
-    const data = { ...mockSearchResults[0].source };
+    const data = { ...mockSearchResults[0]._source };
     delete data['investigation.id'];
     delete data['investigation.name'];
     delete data['investigation.title'];
@@ -871,7 +898,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };
@@ -892,7 +919,7 @@ describe('Dataset table component', () => {
   });
 
   it('displays only the dataset name when there is no ISIS investigation to link to', async () => {
-    const data = { ...mockSearchResults[0].source };
+    const data = { ...mockSearchResults[0]._source };
     delete data['investigation.id'];
     delete data['investigation.name'];
     delete data['investigation.title'];
@@ -901,7 +928,7 @@ describe('Dataset table component', () => {
       results: [
         {
           ...mockSearchResults[0],
-          source: data,
+          _source: data,
         },
       ],
     };

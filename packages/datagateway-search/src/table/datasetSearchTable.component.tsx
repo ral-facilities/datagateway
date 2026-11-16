@@ -42,6 +42,11 @@ interface DatasetTableProps {
 
 const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   const location = useLocation();
+
+  const searchableEntities = useSelector(
+    (state: StateType) => state.dgsearch.searchableEntities
+  );
+
   const { push } = useHistory();
   const queryParams = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -58,6 +63,10 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
     currentTab,
   } = queryParams;
 
+  const datasetSearchable: boolean = searchableEntities.includes('dataset')
+    ? dataset
+    : false;
+
   const disableSelectAll = useSelector(
     (state: StateType) => state.dgcommon.features?.disableSelectAll ?? false
   );
@@ -68,6 +77,10 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
 
   const maxNumResults = useSelector(
     (state: StateType) => state.dgsearch.maxNumResults
+  );
+
+  const searchFields = useSelector(
+    (state: StateType) => state.dgsearch.searchFields
   );
 
   const { fetchNextPage, data, hasNextPage, isFetching } =
@@ -81,26 +94,39 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
         minCount: minNumResults,
         maxCount: maxNumResults,
         restrict,
-        facets: [
-          { target: 'Dataset' },
-          {
-            target: 'DatasetParameter',
-            dimensions: [{ dimension: 'type.name' }],
+        facets: {
+          'DatasetParameter.type.name': {
+            terms: {
+              field: 'datasetparameter.type.name',
+              show_term_doc_count_error: true,
+            },
           },
-          {
-            target: 'InvestigationInstrument',
-            dimensions: [
-              { dimension: 'instrument.name' },
-              { dimension: 'instrument.fullName' },
-            ],
+          'InvestigationInstrument.instrument.name': {
+            terms: {
+              field: 'investigationinstrument.instrument.name',
+              show_term_doc_count_error: true,
+            },
           },
-        ],
+          'type.name': {
+            terms: {
+              field: 'type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+          'sample.type.name': {
+            terms: {
+              field: 'sample.type.name',
+              show_term_doc_count_error: true,
+            },
+          },
+        },
       },
       currentTab === 'dataset' ? filters : {},
+      searchFields,
       {
-        enabled: dataset,
-        // this select removes the facet count for the InvestigationInstrument.instrument.name/fullName
-        // facet since the number is confusing for datasets
+        enabled: datasetSearchable,
+        // this select removes the facet count for the InvestigationInstrument.instrument.name
+        // facet since the number is confusing for datafiles
         select: (data) => ({
           ...data,
           pages: data.pages.map((searchResponse) => ({
@@ -177,11 +203,11 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
   });
 
   function mapSource(response: SearchResponse): SearchResultSource[] {
-    return response.results?.map((result) => result.source) ?? [];
+    return response.results?.map((result) => result._source) ?? [];
   }
 
   function mapIds(response: SearchResponse): number[] {
-    return response.results?.map((result) => result.id) ?? [];
+    return response.results?.map((result) => result._source.id) ?? [];
   }
 
   const { aggregatedSource, aggregatedIds, aborted } = React.useMemo(() => {
@@ -249,7 +275,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
               id: datasetData['investigation.id'],
               name: datasetData['investigation.name'],
               instrumentId:
-                datasetData.investigationinstrument?.[0]?.['instrument.id'],
+                datasetData['investigationinstrument.instrument.id'],
               facilityCycleId:
                 datasetData.investigationfacilitycycle?.[0]?.[
                   'facilityCycle.id'
@@ -299,8 +325,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
             id: datasetData['investigation.id'],
             name: datasetData['investigation.name'],
             title: datasetData['investigation.title'],
-            instrumentId:
-              datasetData.investigationinstrument?.[0]?.['instrument.id'],
+            instrumentId: datasetData['investigationinstrument.instrument.id'],
             facilityCycleId:
               datasetData.investigationfacilitycycle?.[0]?.['facilityCycle.id'],
           };
@@ -356,7 +381,7 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
                   id: dataset['investigation.id'],
                   name: dataset['investigation.name'],
                   instrumentId:
-                    dataset.investigationinstrument?.[0]?.['instrument.id'],
+                    dataset['investigationinstrument.instrument.id'],
                   facilityCycleId:
                     dataset.investigationfacilitycycle?.[0]?.[
                       'facilityCycle.id'

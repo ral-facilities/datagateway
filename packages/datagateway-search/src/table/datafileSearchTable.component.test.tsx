@@ -149,12 +149,8 @@ describe('Datafile search table component', () => {
       'investigation.title': 'Investigation test title',
       'investigation.name': 'Investigation test name',
       'investigation.startDate': 1560139200000,
-      investigationinstrument: [
-        {
-          'instrument.id': 5,
-          'instrument.name': 'LARMOR',
-        },
-      ],
+      'investigationinstrument.instrument.id': 5,
+      'investigationinstrument.instrument.fullName': 'LARMOR',
       investigationfacilitycycle: [
         {
           'facilityCycle.id': 6,
@@ -162,9 +158,9 @@ describe('Datafile search table component', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     axios.get = vi.fn().mockImplementation(mockAxiosGet);
@@ -219,6 +215,38 @@ describe('Datafile search table component', () => {
     searchParams.append('datafile', 'false');
     history.replace({ search: `?${searchParams.toString()}` });
 
+    renderComponent();
+
+    // check that column headers are shown correctly.
+    expect(await findColumnHeaderByName('datafiles.name')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.location')
+    ).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datafiles.size')).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.dataset')
+    ).toBeInTheDocument();
+    expect(
+      await findColumnHeaderByName('datafiles.modified_time')
+    ).toBeInTheDocument();
+
+    // wait for queries to finish fetching
+    await waitFor(() => !queryClient.isFetching());
+
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.status
+    ).toBe('loading');
+    expect(
+      queryClient.getQueryState(['search', 'Datafile'], { exact: false })
+        ?.fetchStatus
+    ).toBe('idle');
+
+    expect(queryAllRows()).toHaveLength(0);
+  });
+
+  it('disables the search if datafile is disabled in settings', async () => {
+    state.dgsearch.searchableEntities = ['investigation', 'dataset'];
     renderComponent();
 
     // check that column headers are shown correctly.
@@ -741,7 +769,7 @@ describe('Datafile search table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', async () => {
-    delete rowData.investigationinstrument;
+    delete rowData['investigationinstrument.instrument.id'];
 
     renderComponent('isis');
 
@@ -821,9 +849,9 @@ describe('Datafile search table component', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     renderComponent('data');
@@ -874,9 +902,9 @@ describe('Datafile search table component', () => {
       ],
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     renderComponent('dls');
@@ -920,9 +948,9 @@ describe('Datafile search table component', () => {
       'investigation.startDate': 1560121200000,
     };
     searchResult = {
-      score: 1,
-      id: 1,
-      source: rowData,
+      _score: 1,
+      _id: 1,
+      _source: rowData,
     };
 
     renderComponent('isis');

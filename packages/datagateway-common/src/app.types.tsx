@@ -423,6 +423,9 @@ export interface SearchResultSource {
   'investigation.startDate'?: number;
   'facility.name'?: string;
   'facility.id'?: number;
+  'user.name'?: string[];
+  'investigationinstrument.instrument.fullName'?: string;
+  'investigationinstrument.instrument.id'?: number;
 }
 
 export type ICATEntity =
@@ -488,7 +491,7 @@ export interface NestedFilter {
 
 export type SearchFilter = NestedFilter | RangeFilter | TermFilter | string;
 
-export type Filter = SearchFilter[] | TextFilter | DateFilter;
+export type Filter = SearchFilter[] | TextFilter | DateFilter | string;
 
 export type Order = 'asc' | 'desc';
 

@@ -2,6 +2,7 @@ import {
   loadMaxNumResults,
   loadMinNumResults,
   loadSearchableEntitites,
+  loadSearchFields,
   settingsLoaded,
 } from '../actions';
 import {
@@ -86,5 +87,13 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, loadMinNumResults(20));
 
     expect(updatedState.minNumResults).toEqual(20);
+  });
+
+  it('should set searchFields property when configuring action is sent', () => {
+    expect(state.searchFields).toEqual(initialState.searchFields);
+
+    const updatedState = DGSearchReducer(state, loadSearchFields(['test']));
+
+    expect(updatedState.searchFields).toEqual(['test']);
   });
 });

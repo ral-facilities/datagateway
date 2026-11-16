@@ -15,6 +15,8 @@ import {
   ConfigureMinNumResultsType,
   ConfigureSearchableEntitiesPayload,
   ConfigureSearchableEntitiesType,
+  ConfigureSearchFieldsPayload,
+  ConfigureSearchFieldsType,
   SettingsLoadedType,
 } from './actions.types';
 
@@ -49,6 +51,15 @@ export const loadMinNumResults = (
   },
 });
 
+export const loadSearchFields = (
+  searchFields: string[]
+): ActionType<ConfigureSearchFieldsPayload> => ({
+  type: ConfigureSearchFieldsType,
+  payload: {
+    searchFields: searchFields,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async (dispatch) => {
     const settingsResult = await settings;
@@ -61,6 +72,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           apiUrl: settingsResult['apiUrl'],
           downloadApiUrl: settingsResult['downloadApiUrl'],
           icatUrl: settingsResult['icatUrl'],
+          searchUrl: settingsResult['searchUrl'],
           doiHandleUrl: settingsResult['doiHandleUrl'] ?? 'https://doi.org',
         })
       );
@@ -88,6 +100,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
       if (settingsResult?.['maxNumResults'] !== undefined) {
         dispatch(loadMaxNumResults(settingsResult['maxNumResults']));
+      }
+
+      if (settingsResult?.['searchFields'] !== undefined) {
+        dispatch(loadSearchFields(settingsResult['searchFields']));
       }
 
       dispatch(settingsLoaded());

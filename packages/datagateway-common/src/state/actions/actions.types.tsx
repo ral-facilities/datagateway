@@ -56,6 +56,7 @@ export interface FeatureSwitches {
   disableAnonDownload?: boolean;
   disableSelectAll?: boolean;
   disableContributors?: boolean;
+  disableParameterFilters?: boolean;
 }
 
 export interface ConfigureUrlsPayload {
@@ -75,6 +76,7 @@ export interface URLs {
   apiUrl: string;
   downloadApiUrl: string;
   icatUrl: string;
+  searchUrl?: string;
   doiMinterUrl?: string;
   dataCiteUrl?: string;
   doiHandleUrl: string;
