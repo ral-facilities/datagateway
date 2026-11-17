@@ -50,7 +50,7 @@ describe('Queue buttons', () => {
     permissionResponse = true;
 
     axios.get = vi.fn().mockImplementation((url: string) => {
-      if (/.*\/queue\/allowed$/.test(url)) {
+      if (/.*\/queue\/.*\/allowed$/.test(url)) {
         return Promise.resolve({
           data: permissionResponse,
         });
@@ -219,6 +219,7 @@ describe('Queue buttons', () => {
       vi.spyOn(parseTokens, 'readSciGatewayToken').mockReturnValue({
         username: 'anon',
         sessionId: 'abcdef',
+        token: null,
       });
 
       renderComponent({

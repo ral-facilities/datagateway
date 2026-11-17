@@ -415,14 +415,19 @@ export const useDownload = ({
   );
 };
 
-export const fetchQueueAllowed = (config: {
-  facilityName: string;
-  downloadApiUrl: string;
-}): Promise<boolean> => {
+export type QueueEntity = 'visit' | 'dataCollection';
+
+export const fetchQueueAllowed = (
+  entity: QueueEntity,
+  config: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+): Promise<boolean> => {
   const { facilityName, downloadApiUrl } = config;
 
   return axios
-    .get<boolean>(`${downloadApiUrl}/user/queue/allowed`, {
+    .get<boolean>(`${downloadApiUrl}/user/queue/${entity}/allowed`, {
       params: {
         sessionId: readSciGatewayToken().sessionId,
         facilityName,
@@ -431,7 +436,9 @@ export const fetchQueueAllowed = (config: {
     .then((response) => response.data);
 };
 
-export const useQueueAllowed = (): UseQueryResult<boolean, AxiosError> => {
+export const useQueueAllowed = (
+  entity: QueueEntity
+): UseQueryResult<boolean, AxiosError> => {
   const downloadApiUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.downloadApiUrl
   );
@@ -442,7 +449,7 @@ export const useQueueAllowed = (): UseQueryResult<boolean, AxiosError> => {
   return useQuery(
     ['isQueueAllowed', readSciGatewayToken().sessionId], // put session id in here to ensure we refresh if user logs out and logs in as new user
     () =>
-      fetchQueueAllowed({
+      fetchQueueAllowed(entity, {
         facilityName,
         downloadApiUrl,
       }),
@@ -456,15 +463,17 @@ export const useQueueAllowed = (): UseQueryResult<boolean, AxiosError> => {
   );
 };
 
-export const queueVisit: (
-  visitId: string,
+export const queueEntity: (
+  entity: QueueEntity,
+  entityId: string,
   transport: string,
   emailAddress: string,
   fileName: string | undefined,
   facilityName: string,
   downloadApiUrl: string
 ) => Promise<string[]> = (
-  visitId,
+  entity,
+  entityId,
   transport,
   emailAddress,
   fileName,
@@ -478,121 +487,49 @@ export const queueVisit: (
   params.append('transport', transport);
   params.append('email', emailAddress);
   if (fileName) params.append('fileName', fileName);
-  params.append('visitId', visitId);
+  if (entity === 'visit') params.append('visitId', entityId);
+  if (entity === 'dataCollection') params.append('dataCollectionId', entityId);
   params.append('facilityName', facilityName);
 
   return axios
-    .post<string[]>(`${downloadApiUrl}/user/queue/visit`, params)
+    .post<string[]>(`${downloadApiUrl}/user/queue/${entity}`, params)
     .then((response) => {
       return response.data;
     });
 };
 
-export interface QueueVisitParams
-  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
+export interface QueueEntityParams extends Pick<
+  SubmitCartParams,
+  'emailAddress' | 'transport' | 'fileName'
+> {
+  entity: QueueEntity;
   entityId: string;
 }
 
 /**
- * A React hook for submitting a visit to the queue.
+ * A React hook for submitting an entity to the queue.
  * Returns the list of download ids for the submitted visit,
  * which can then be used to query more info.
  */
-export const useQueueVisit = (
+export const useQueueEntity = (
   facilityName: string,
   downloadApiUrl: string,
   options?: UseMutationOptions<
     string[],
     AxiosError,
-    QueueVisitParams,
+    QueueEntityParams,
     RollbackFunction
   >
 ): UseMutationResult<
   string[],
   AxiosError,
-  QueueVisitParams,
+  QueueEntityParams,
   RollbackFunction
 > => {
   return useMutation(
-    ({ transport, emailAddress, fileName, entityId }) =>
-      queueVisit(
-        entityId,
-        transport,
-        emailAddress,
-        fileName,
-        facilityName,
-        downloadApiUrl
-      ),
-    {
-      onError: (error, _, rollback) => {
-        handleICATError(error);
-        if (rollback) rollback();
-      },
-      ...(options ?? {}),
-    }
-  );
-};
-
-export const queueDataCollection: (
-  dataCollectionId: string,
-  transport: string,
-  emailAddress: string,
-  fileName: string | undefined,
-  facilityName: string,
-  downloadApiUrl: string
-) => Promise<string[]> = (
-  dataCollectionId,
-  transport,
-  emailAddress,
-  fileName,
-  facilityName,
-  downloadApiUrl
-) => {
-  const params = new URLSearchParams();
-
-  // Construct the form parameters.
-  params.append('sessionId', readSciGatewayToken().sessionId || '');
-  params.append('transport', transport);
-  params.append('email', emailAddress);
-  if (fileName) params.append('fileName', fileName);
-  params.append('dataCollectionId', dataCollectionId);
-  params.append('facilityName', facilityName);
-
-  return axios
-    .post<string[]>(`${downloadApiUrl}/user/queue/dataCollection`, params)
-    .then((response) => {
-      return response.data;
-    });
-};
-
-export interface QueueDataCollectionParams
-  extends Pick<SubmitCartParams, 'emailAddress' | 'transport' | 'fileName'> {
-  entityId: string;
-}
-
-/**
- * A React hook for submitting a data collection to the queue.
- * Returns the list of download ids for the submitted data collection,
- * which can then be used to query more info.
- */
-export const useQueueDataCollection = (
-  facilityName: string,
-  downloadApiUrl: string,
-  options?: UseMutationOptions<
-    string[],
-    AxiosError,
-    QueueVisitParams,
-    RollbackFunction
-  >
-): UseMutationResult<
-  string[],
-  AxiosError,
-  QueueVisitParams,
-  RollbackFunction
-> => {
-  return useMutation(
-    ({ transport, emailAddress, fileName, entityId }) =>
-      queueDataCollection(
+    ({ entity, transport, emailAddress, fileName, entityId }) =>
+      queueEntity(
+        entity,
         entityId,
         transport,
         emailAddress,
