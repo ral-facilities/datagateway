@@ -74,7 +74,7 @@ describe('Visit details panel component', () => {
 
       if (/.*\/user\/getSize/.test(url)) return Promise.resolve({ data: 64 });
 
-      if (/.*\/queue\/allowed/.test(url))
+      if (/.*\/queue\/.*\/allowed/.test(url))
         return Promise.resolve({ data: true });
 
       if (/.*\/downloadType\/status$/.test(url)) {
