@@ -60,7 +60,7 @@ describe('Datafile search tab', () => {
             cy.findByText('1').should('exist');
           });
 
-        cy.findByRole('button', { name: 'Add PARAMETERTYPE 46 filter' })
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 36 filter' })
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
