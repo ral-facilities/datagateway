@@ -447,7 +447,7 @@ export const useQueueAllowed = (
   );
   const retryICATErrors = useRetryICATErrors();
   return useQuery(
-    ['isQueueAllowed', readSciGatewayToken().sessionId], // put session id in here to ensure we refresh if user logs out and logs in as new user
+    ['isQueueAllowed', entity, readSciGatewayToken().sessionId], // put session id in here to ensure we refresh if user logs out and logs in as new user
     () =>
       fetchQueueAllowed(entity, {
         facilityName,
