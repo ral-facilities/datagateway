@@ -10,10 +10,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
+  QueueEntity,
   useDownloadTypes,
   useQueueAllowed,
-  useQueueDataCollection,
-  useQueueVisit,
+  useQueueEntity,
 } from '../api/cart';
 import { DataCollection, Investigation } from '../app.types';
 import { StyledTooltip } from '../arrowtooltip.component';
@@ -23,14 +23,12 @@ import { StateType } from '../state/app.types';
 
 interface QueueEntityButtonProps {
   entityId: string;
+  entity: QueueEntity;
   totalSize?: number;
   label?: string;
   defaultFileNameFormat: string;
   iconButton?: boolean;
   disallowedBehaviour: 'hide' | 'disable';
-  queueHook: React.ComponentProps<
-    typeof DownloadConfirmDialog
-  >['submitDownloadHook'];
   customDisallowedConditions?: { disallowed: boolean; message: string }[];
 }
 
@@ -67,7 +65,7 @@ const BaseQueueButton: React.FC<
 const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
   const {
     entityId,
-    queueHook,
+    entity,
     totalSize,
     label,
     defaultFileNameFormat,
@@ -93,7 +91,7 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
   const { data: accessMethods, refetch: refetchDownloadTypes } =
     useDownloadTypes(facilityName, downloadApiUrl);
 
-  const { data: isQueueAllowed } = useQueueAllowed();
+  const { data: isQueueAllowed } = useQueueAllowed(entity);
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
 
@@ -154,8 +152,8 @@ const QueueEntityButton: React.FC<QueueEntityButtonProps> = (props) => {
         downloadApiUrl={downloadApiUrl}
         accessMethods={accessMethods ?? {}}
         open={showConfirmation}
-        entityId={entityId}
-        submitDownloadHook={queueHook}
+        queueEntityInfo={{ entityId, entity }}
+        submitDownloadHook={useQueueEntity}
         setClose={() => setShowConfirmation(false)}
         defaultFileNameFormat={t(defaultFileNameFormat)}
       />
@@ -173,8 +171,8 @@ export const QueueVisitButton: React.FC<QueueVisitButtonProps> = (props) => {
   return (
     <QueueEntityButton
       entityId={investigation.visitId}
+      entity="visit"
       totalSize={investigation.fileSize}
-      queueHook={useQueueVisit}
       label={'buttons.queue_visit'}
       defaultFileNameFormat={
         'downloadConfirmDialog.download_name_visit_default_format'
@@ -206,8 +204,8 @@ export const QueueDataCollectionButton: React.FC<
   return (
     <QueueEntityButton
       entityId={dataCollection.id.toString()}
+      entity="dataCollection"
       totalSize={totalSize}
-      queueHook={useQueueDataCollection}
       label={'buttons.queue_data_collection'}
       defaultFileNameFormat={
         'downloadConfirmDialog.download_name_data_collection_default_format'

@@ -81,7 +81,7 @@ describe('Investigation Search Table component', () => {
       return Promise.resolve({ data: { cartItems } });
     }
 
-    if (/.*\/user\/queue\/allowed$/.test(url)) {
+    if (/.*\/user\/queue\/.*\/allowed$/.test(url)) {
       // fetchDownloadCart
       return Promise.resolve({ data: { cartItems } });
     }
