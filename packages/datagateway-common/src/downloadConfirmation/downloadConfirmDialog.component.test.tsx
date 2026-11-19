@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
-import { getDownload, useQueueVisit, useSubmitCart } from '../api';
+import { getDownload, useQueueEntity, useSubmitCart } from '../api';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 vi.mock('../downloadApi');
@@ -399,10 +399,10 @@ describe('DownloadConfirmDialog', () => {
     });
   });
 
-  it('should show successful view when download is successful using isQueueVisit', async () => {
+  it('should show successful view when download is successful using useQueueEntity', async () => {
     props.isTwoLevel = true;
-    props.submitDownloadHook = useQueueVisit;
-    props.entityId = '1';
+    props.submitDownloadHook = useQueueEntity;
+    props.queueEntityInfo = { entityId: '1', entity: 'visit' };
     renderWrapper();
     // input an email
     await user.type(
