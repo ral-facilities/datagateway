@@ -8,6 +8,7 @@ import {
   FiltersType,
   Investigation,
   QueryParams,
+  SearchResultSource,
   SortType,
 } from '../app.types';
 import handleICATError from '../handleICATError';
@@ -83,6 +84,17 @@ describe('generic api functions', () => {
           'investigationInstruments[0].instrument.name'
         )
       ).toEqual('Instrument 1');
+    });
+
+    it('nestedValue returns correct data for non nested data with . in the dataKey', () => {
+      const investigation: SearchResultSource = {
+        id: 0,
+        name: 'test',
+        title: 'Investigation title',
+        visitId: '1',
+        'type.name': 'type',
+      };
+      expect(nestedValue(investigation, 'type.name')).toEqual('type');
     });
 
     it('nestedValue returns empty string when provided with a falsy entry', () => {

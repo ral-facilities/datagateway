@@ -79,7 +79,7 @@ describe('DLS - Datasets Table', () => {
     cy.get('[aria-sort="descending"]').should('not.exist');
     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.exist');
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 5);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 6);
     cy.get('[data-testid="ArrowUpwardIcon"]').should('not.exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
@@ -108,7 +108,7 @@ describe('DLS - Datasets Table', () => {
     cy.contains('[role="button"]', 'Name').click();
     cy.contains('[role="button"]', 'Name').click();
 
-    cy.get('[data-testid="SortIcon"]').should('have.length', 5);
+    cy.get('[data-testid="SortIcon"]').should('have.length', 6);
 
     // check icon when clicking on a column
     cy.contains('[role="button"]', 'Create Time').click();
@@ -127,7 +127,7 @@ describe('DLS - Datasets Table', () => {
 
     // check icons when shift is held
     cy.get('.App').trigger('keydown', { key: 'Shift' });
-    cy.get('[data-testid="AddIcon"]').should('have.length', 3);
+    cy.get('[data-testid="AddIcon"]').should('have.length', 4);
   });
 
   it('should be able to filter with both text & date filters on multiple columns', () => {
@@ -159,10 +159,6 @@ describe('DLS - Datasets Table', () => {
       cy.get('#details-panel')
         .contains('Suggest shake effort many last prepare small')
         .should('be.visible');
-
-      cy.get('[aria-controls="dataset-type-panel"]').click();
-      cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('DATASETTYPE 2');
 
       cy.get('[aria-label="Hide details"]').first().click();
 

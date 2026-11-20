@@ -423,6 +423,7 @@ export interface SearchResultSource {
   'investigation.startDate'?: number;
   'facility.name'?: string;
   'facility.id'?: number;
+  'type.name'?: string;
 }
 
 export type ICATEntity =

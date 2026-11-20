@@ -40,11 +40,13 @@ export * from './lucene';
 /**
  * Get the nested value from an Entity object given a dataKey
  * which drills specifies the property or array indexes.
+ * but also try using the dataKey as is if drilling down doesn't return something
  */
 export const nestedValue = (data: Entity, dataKey: string): string => {
-  const v = dataKey.split(/[.[\]]+/).reduce(function (prev, curr) {
-    return prev ? prev[curr] : null;
-  }, data);
+  const v =
+    dataKey.split(/[.[\]]+/).reduce(function (prev, curr) {
+      return prev ? prev[curr] : null;
+    }, data) ?? data[dataKey];
   if (v) {
     return v.toString();
   } else {

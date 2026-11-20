@@ -12,6 +12,7 @@ describe('Data cell component', () => {
       nested: {
         test: 'nested property',
       },
+      'non.nested': 'non nested nested property',
     },
   };
 
@@ -33,6 +34,13 @@ describe('Data cell component', () => {
   it('renders nested cell data correctly', async () => {
     const { asFragment } = render(
       <DataCell {...dataCellProps} dataKey="nested.test" />
+    );
+    expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('renders non nested nested cell data correctly', async () => {
+    const { asFragment } = render(
+      <DataCell {...dataCellProps} dataKey="non.nested" />
     );
     expect(asFragment()).toMatchSnapshot();
   });

@@ -81,6 +81,10 @@ describe('DLS Dataset table component', () => {
         name: 'Test 1',
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        type: {
+          id: 2,
+          name: 'Type2',
+        },
       },
     ];
     history = createMemoryHistory();
@@ -142,6 +146,7 @@ describe('DLS Dataset table component', () => {
     expect(rows).toHaveLength(1);
 
     expect(await findColumnHeaderByName('datasets.name')).toBeInTheDocument();
+    expect(await findColumnHeaderByName('datasets.type')).toBeInTheDocument();
     expect(
       await findColumnHeaderByName('datasets.datafile_count')
     ).toBeInTheDocument();
@@ -159,6 +164,13 @@ describe('DLS Dataset table component', () => {
           columnIndex: await findColumnIndexByName('datasets.name'),
         })
       ).getByText('Test 1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('datasets.type'),
+        })
+      ).getByText('Type2')
     ).toBeInTheDocument();
     expect(
       within(
