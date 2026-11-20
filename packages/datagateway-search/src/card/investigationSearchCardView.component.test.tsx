@@ -51,7 +51,7 @@ describe('Investigation - Card View', () => {
         data: searchResponse,
       });
     }
-    if (/\/user\/queue\/allowed$/.test(url)) {
+    if (/\/user\/queue\/.*\/allowed$/.test(url)) {
       return Promise.resolve({
         data: true,
       });

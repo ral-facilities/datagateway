@@ -336,7 +336,7 @@ describe('DLS Data Publication Landing page', () => {
           return Promise.resolve({
             data: { data: initialDataCiteData },
           });
-        } else if (/\/queue\/allowed$/.test(url)) {
+        } else if (/\/queue\/.*\/allowed$/.test(url)) {
           return Promise.resolve({
             data: true,
           });

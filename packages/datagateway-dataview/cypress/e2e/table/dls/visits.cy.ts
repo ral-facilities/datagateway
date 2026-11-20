@@ -125,7 +125,7 @@ describe('DLS - Visits Table', () => {
   });
 
   it('should be able to view details & also able to hide the panel', () => {
-    cy.intercept('**/queue/allowed?*').as('queueAllowed');
+    cy.intercept('**/allowed?*').as('queueAllowed');
     cy.get('[aria-label="Show details"]').first().click();
 
     cy.get('#details-panel').should('be.visible');
@@ -161,7 +161,15 @@ describe('DLS - Visits Table', () => {
 
 describe('DLS - visit restore button', () => {
   beforeEach(() => {
-    cy.login({ username: 'root', password: 'pw', mechanism: 'simple' });
+    // login as an InvestigationUser as they have permission in the default run.properties
+    cy.login(
+      {
+        username: 'Chris481',
+        password: 'pw',
+        mechanism: 'simple',
+      },
+      'Chris481'
+    );
     cy.intercept('**/investigations?*').as('investigations');
     cy.intercept('**/investigations/count?*').as('investigationsCount');
 
