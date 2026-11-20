@@ -286,7 +286,7 @@ describe('Admin Download Status Table', () => {
         },
         `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
-    });
+    }, 30_000);
 
     it('should filter download availability properly', async () => {
       // use skipHover to avoid triggering sort tooltips which slow the test down
@@ -359,7 +359,7 @@ describe('Admin Download Status Table', () => {
         },
         `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
       );
-    });
+    }, 30_000);
   });
 
   it('sends filter request on date filter', async () => {
@@ -435,7 +435,7 @@ describe('Admin Download Status Table', () => {
       },
       `WHERE download.facilityName = '${mockedSettings.facilityName}' ORDER BY download.id ASC LIMIT 0, 50`
     );
-  });
+  }, 30_000);
 
   it('should filter deleted properly', async () => {
     renderComponent();

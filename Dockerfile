@@ -1,7 +1,7 @@
 # Dockerfile to build and serve datagateway
 
 # Build stage
-FROM node:24.14.1-alpine@sha256:8510330d3eb72c804231a834b1a8ebb55cb3796c3e4431297a24d246b8add4d5 AS builder
+FROM node:24.22.1-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS builder
 
 WORKDIR /datagateway-build
 
@@ -30,7 +30,7 @@ RUN set -eux; \
     yarn build;
 
 # Run stage
-FROM httpd:2.4.67-alpine@sha256:0136c2d4462f3b8ecc92bea70efdfef4d06523999ae8d7aa533969dea6db4576
+FROM httpd:2.4.71-alpine@sha256:32bd0639bcc4917ef1fd9363a1d9dd2dd9c498565118b062a10d51e43a5c3a24
 
 WORKDIR /usr/local/apache2/htdocs
 

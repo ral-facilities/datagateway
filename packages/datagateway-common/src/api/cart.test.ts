@@ -7,8 +7,7 @@ import {
   useDownload,
   useDownloadTypes,
   useQueueAllowed,
-  useQueueDataCollection,
-  useQueueVisit,
+  useQueueEntity,
   useRemoveFromCart,
   useSubmitCart,
 } from '.';
@@ -478,14 +477,14 @@ describe('Cart api functions', () => {
         data: true,
       });
 
-      const { result } = renderHook(() => useQueueAllowed(), {
+      const { result } = renderHook(() => useQueueAllowed('visit'), {
         wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(axios.get).toHaveBeenCalledWith(
-        'https://example.com/topcat/user/queue/allowed',
+        'https://example.com/topcat/user/queue/visit/allowed',
         {
           params: {
             sessionId: null,
@@ -501,19 +500,23 @@ describe('Cart api functions', () => {
         message: 'Test error message',
       });
 
-      const { result } = renderHook(() => useQueueAllowed(), {
+      const { result } = renderHook(() => useQueueAllowed('dataCollection'), {
         wrapper: createReactQueryWrapper(),
       });
 
       await waitFor(() => expect(result.current.isError).toBe(true));
 
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://example.com/topcat/user/queue/dataCollection/allowed',
+        expect.anything()
+      );
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
       });
     });
   });
 
-  describe('useQueueVisit', () => {
+  describe('useQueueEntity', () => {
     it('should submit visit to the queue', async () => {
       axios.post = vi.fn().mockResolvedValue({ data: ['123', '456'] });
 
@@ -532,7 +535,10 @@ describe('Cart api functions', () => {
 
       const { result } = renderHook(
         () =>
-          useQueueVisit(params.facilityName, 'https://example.com/downloadApi'),
+          useQueueEntity(
+            params.facilityName,
+            'https://example.com/downloadApi'
+          ),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -544,6 +550,7 @@ describe('Cart api functions', () => {
         fileName: params.fileName,
         transport: params.transport,
         entityId: params.visitId,
+        entity: 'visit',
       });
       // wait for mutation to finish to finish
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -560,38 +567,13 @@ describe('Cart api functions', () => {
         message: 'test error message',
       });
 
-      const { result } = renderHook(
-        () => useQueueVisit('LILS', 'https://example.com/downloadApi'),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      result.current.mutate({
-        emailAddress: 'a@b.c',
-        fileName: 'test-file',
-        transport: 'https',
-        entityId: 'VISIT_1',
-      });
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      expect(handleICATError).toHaveBeenCalledWith({
-        message: 'test error message',
-      });
-    });
-  });
-
-  describe('useQueueDataCollection', () => {
-    it('should submit data collection to the queue', async () => {
-      axios.post = vi.fn().mockResolvedValue({ data: ['123', '456'] });
-
       const params = {
         sessionId: '',
         transport: 'https',
-        email: 'cat@dog.com',
+        email: 'a@b.c',
         fileName: 'test-file',
         dataCollectionId: '1',
-        facilityName: 'TEST',
+        facilityName: 'LILS',
       };
       const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([paramName, paramValue]) => {
@@ -599,40 +581,7 @@ describe('Cart api functions', () => {
       });
 
       const { result } = renderHook(
-        () =>
-          useQueueDataCollection(
-            params.facilityName,
-            'https://example.com/downloadApi'
-          ),
-        {
-          wrapper: createReactQueryWrapper(),
-        }
-      );
-
-      // submit the cart
-      result.current.mutate({
-        emailAddress: params.email,
-        fileName: params.fileName,
-        transport: params.transport,
-        entityId: params.dataCollectionId,
-      });
-      // wait for mutation to finish to finish
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-      expect(axios.post).toHaveBeenCalledWith(
-        `https://example.com/downloadApi/user/queue/dataCollection`,
-        searchParams
-      );
-      expect(result.current.data).toEqual(['123', '456']);
-    });
-
-    it('should call handleICATError when an error is encountered', async () => {
-      axios.post = vi.fn().mockRejectedValue({
-        message: 'test error message',
-      });
-
-      const { result } = renderHook(
-        () => useQueueDataCollection('LILS', 'https://example.com/downloadApi'),
+        () => useQueueEntity('LILS', 'https://example.com/downloadApi'),
         {
           wrapper: createReactQueryWrapper(),
         }
@@ -643,9 +592,14 @@ describe('Cart api functions', () => {
         fileName: 'test-file',
         transport: 'https',
         entityId: '1',
+        entity: 'dataCollection',
       });
       await waitFor(() => expect(result.current.isError).toBe(true));
 
+      expect(axios.post).toHaveBeenCalledWith(
+        `https://example.com/downloadApi/user/queue/dataCollection`,
+        searchParams
+      );
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'test error message',
       });

@@ -18,13 +18,12 @@ import { formatBytes } from '../table/cellRenderers/cellContentRenderers';
 
 import { UseMutateFunction } from '@tanstack/react-query';
 import {
-  QueueDataCollectionParams,
-  QueueVisitParams,
+  QueueEntity,
+  QueueEntityParams,
   SubmitCartParams,
   getDefaultFileName,
   useDownload,
-  useQueueDataCollection,
-  useQueueVisit,
+  useQueueEntity,
   useSubmitCart,
 } from '../api/cart';
 import type { AccessMethods, Download } from '../app.types';
@@ -61,11 +60,11 @@ interface DownloadConfirmDialogProps {
   downloadApiUrl: string;
   accessMethods: AccessMethods;
 
-  entityId?: string;
-  submitDownloadHook:
-    | typeof useSubmitCart
-    | typeof useQueueVisit
-    | typeof useQueueDataCollection;
+  queueEntityInfo?: {
+    entityId: string;
+    entity: QueueEntity;
+  };
+  submitDownloadHook: typeof useSubmitCart | typeof useQueueEntity;
   defaultFileNameFormat: string;
 
   redirectToStatusTab?: () => void;
@@ -87,7 +86,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     accessMethods,
     postDownloadSuccessFn,
     submitDownloadHook,
-    entityId,
+    queueEntityInfo,
     defaultFileNameFormat,
   } = props;
 
@@ -248,7 +247,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName(
         getDefaultFileName(defaultFileNameFormat, {
           facilityName,
-          ...(entityId && { entityId, visitId: entityId, id: entityId }),
+          ...(queueEntityInfo && {
+            entityId: queueEntityInfo.entityId,
+            visitId: queueEntityInfo.entityId,
+            id: queueEntityInfo.entityId,
+          }),
         })
       );
     }
@@ -258,13 +261,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       submitDownload as UseMutateFunction<
         unknown,
         unknown,
-        SubmitCartParams | QueueVisitParams | QueueDataCollectionParams
+        SubmitCartParams | QueueEntityParams
       >
     )({
       emailAddress,
       fileName: downloadName ?? undefined,
       transport: selectedMethod,
-      entityId,
+      ...queueEntityInfo,
     });
   };
 
@@ -330,10 +333,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   label={t('downloadConfirmDialog.download_name_label')}
                   placeholder={`${getDefaultFileName(defaultFileNameFormat, {
                     facilityName,
-                    ...(entityId && {
-                      entityId,
-                      visitId: entityId,
-                      id: entityId,
+                    ...(queueEntityInfo && {
+                      entityId: queueEntityInfo.entityId,
+                      visitId: queueEntityInfo.entityId,
+                      id: queueEntityInfo.entityId,
                     }),
                   })}`}
                   fullWidth={true}
