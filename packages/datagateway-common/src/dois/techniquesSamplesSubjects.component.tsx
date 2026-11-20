@@ -352,39 +352,6 @@ const TechniquesSamplesSubjects: React.FC<{
         </Grid>
         <Grid container item spacing={1} direction="row">
           <Grid container item xs={12} alignItems="center" spacing={1}>
-            <Grid item xs>
-              <Autocomplete
-                multiple
-                options={[]}
-                value={techniques}
-                onChange={(_event, value) => setTechniques(value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label={t('DOIGenerationForm.techniques')}
-                    color="secondary"
-                    InputProps={{
-                      ...params.InputProps,
-                      sx: {
-                        cursor: 'default',
-                        backgroundColor: 'background.default',
-                      },
-                    }}
-                    inputProps={{
-                      ...params.inputProps,
-                      readOnly: true,
-                      sx: { caretColor: 'transparent', cursor: 'default' },
-                    }}
-                    required={true}
-                    error={techniqueError}
-                  />
-                )}
-                getOptionLabel={getTechniqueDisplayName}
-                forcePopupIcon={false}
-                open={false}
-                disabled={disabled}
-              />
-            </Grid>
             <Grid item xs="auto">
               <Button
                 variant="contained"
@@ -403,6 +370,62 @@ const TechniquesSamplesSubjects: React.FC<{
                   ]);
                 }}
                 bioportalUrl={bioportalUrl}
+              />
+            </Grid>
+            <Grid item xs>
+              <Autocomplete
+                multiple
+                options={[]}
+                value={techniques}
+                onChange={(_event, value) => setTechniques(value)}
+                aria-hidden={techniques.length === 0 ? 'true' : undefined}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={
+                      techniques.length > 0
+                        ? t('DOIGenerationForm.techniques')
+                        : ''
+                    }
+                    color="secondary"
+                    variant="outlined"
+                    FormHelperTextProps={{
+                      sx: {
+                        position: 'absolute',
+                        top: 16,
+                      },
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        cursor: 'default',
+                        backgroundColor: (theme) =>
+                          theme.palette.mode === 'dark'
+                            ? theme.palette.grey[800]
+                            : theme.palette.grey[100],
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(0, 0, 0, 0) !important',
+                        },
+                      },
+                    }}
+                    inputProps={{
+                      ...params.inputProps,
+                      readOnly: true,
+                      tabIndex: techniques.length === 0 ? -1 : undefined,
+                      sx: { caretColor: 'transparent', cursor: 'default' },
+                    }}
+                    required={true}
+                    error={techniqueError}
+                    helperText={
+                      techniqueError &&
+                      t('DOIGenerationForm.no_technique_error')
+                    }
+                  />
+                )}
+                getOptionLabel={getTechniqueDisplayName}
+                forcePopupIcon={false}
+                open={false}
+                disabled={disabled}
               />
             </Grid>
           </Grid>
