@@ -477,10 +477,12 @@ describe('DOI edit form component', () => {
     renderComponent();
 
     // wait for data publication to load
-    await waitFor(() =>
-      expect(
-        screen.getByRole('textbox', { name: 'DOIGenerationForm.title' })
-      ).toHaveValue('Title')
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole('textbox', { name: 'DOIGenerationForm.title' })
+        ).toHaveValue('Title'),
+      { timeout: 5_000 }
     );
     await user.type(
       screen.getByRole('textbox', { name: 'DOIGenerationForm.title' }),
