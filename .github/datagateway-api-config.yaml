@@ -1,0 +1,38 @@
+api:
+  title: "Datagateway API"
+  description: "This is the API for the Datagateway"
+  url_prefix: "/"
+  reload: true
+  host: "127.0.0.1"
+  port: 5000
+  allowed_cors_headers: ["*"]
+  allowed_cors_origins: ["*"]
+  allowed_cors_methods: ["*"]
+
+icat:
+  url: "http://icat_payara_container:8080"
+  check_cert: false
+  client_cache_size: 5
+  client_pool_init_size: 2
+  client_pool_max_size: 5
+  # reader:
+  #   mechanism: "simple"
+  #   username: "reader"
+  #   password: "readerpw"
+  #   maxsize: 128
+  #   ttl: 600
+  
+read_only_api:
+  extension: "/datagateway-api"
+
+search_api:
+  extension: "/search-api"
+  mechanism: "anon"
+  username: ""
+  password: ""
+  search_scoring:
+    enabled: false
+    api_url: "http://localhost:9000/score"
+    api_request_timeout: 5
+    group: "documents" # corresponds to the defined group in the scoring app. https://github.com/panosc-eu/panosc-search-scoring/blob/master/docs/md/PaNOSC_Federated_Search_Results_Scoring_API.md#model
+    limit: 1000
