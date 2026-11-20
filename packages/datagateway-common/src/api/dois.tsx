@@ -202,26 +202,35 @@ export const useCheckDOI = (
   const retries =
     typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
-  return useQuery(['checkDOI', doi], () => fetchDOI(doi, dataCiteUrl), {
-    retry: (failureCount: number, error: AxiosError) => {
-      if (
-        // DOI is invalid - don't retry as this is a correct response from the server
-        error.response?.status === 404 ||
-        failureCount >= retries
-      )
-        return false;
-      return true;
-    },
-    select: (doi) => ({
-      title: doi.attributes.titles[0].title,
-      identifier: doi.attributes.doi,
-      relatedIdentifierType: DOIIdentifierType.DOI,
-      relationType: '',
-    }),
-    // set enabled false to only fetch on demand when the add creator button is pressed
-    enabled: false,
-    cacheTime: 0,
-  });
+  const doiProxyRegex =
+    /^https?:\/\/(?:www\.)?(?:(?:dx\.)?doi\.org|hdl\.handle\.net|handle\.test\.datacite\.org\/)\//;
+
+  const doiIdentifier = doi?.replace(doiProxyRegex, '');
+
+  return useQuery(
+    ['checkDOI', doiIdentifier],
+    () => fetchDOI(doiIdentifier, dataCiteUrl),
+    {
+      retry: (failureCount: number, error: AxiosError) => {
+        if (
+          // DOI is invalid - don't retry as this is a correct response from the server
+          error.response?.status === 404 ||
+          failureCount >= retries
+        )
+          return false;
+        return true;
+      },
+      select: (doi) => ({
+        title: doi.attributes.titles[0].title,
+        identifier: doi.attributes.doi,
+        relatedIdentifierType: DOIIdentifierType.DOI,
+        relationType: '',
+      }),
+      // set enabled false to only fetch on demand when the add creator button is pressed
+      enabled: false,
+      cacheTime: 0,
+    }
+  );
 };
 
 /**
