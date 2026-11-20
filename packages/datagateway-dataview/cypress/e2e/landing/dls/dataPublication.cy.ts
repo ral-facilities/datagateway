@@ -136,11 +136,11 @@ describe('DLS - User Generated Data Publication Landing', () => {
     cy.contains('Username').parent().find('input').type('Michael222');
     cy.contains('button', 'Add Creator').click();
 
-    // DOI from https://support.datacite.org/docs/testing-guide
+    // DOI from https://support.datacite.org/docs/api-get-doi
     cy.contains('Identifier (e.g. DOI, URL)')
       .parent()
       .find('input')
-      .type('10.17596/w76y-4s92');
+      .type('10.14454/qdd3-ps68');
     cy.contains('button', 'Add DOI').click();
     cy.contains('label', 'Resource Type').parent().click();
     cy.contains('Journal').click();
@@ -212,7 +212,7 @@ describe('DLS - User Generated Data Publication Landing', () => {
       'Value URI: http://purl.org/pan-science/PaNET/PaNET01325'
     ).should('exist');
 
-    cy.contains('div', 'Identifier: 10.17596/w76y-4s92')
+    cy.contains('div', 'Identifier: 10.14454/qdd3-ps68')
       .as('relatedDOI')
       .should('exist');
     cy.get('@relatedDOI')
