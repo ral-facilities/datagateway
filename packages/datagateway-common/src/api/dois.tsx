@@ -189,32 +189,52 @@ export const useDOI = (
 };
 
 /**
+ * Check a DOI exists
+ * @param doi The DOI to fetch metadata for
+ */
+export const checkDOI = (
+  doi: string
+): Promise<{ DOI: string; RA?: string; status?: string }> => {
+  return axios.get(`https://doi.org/doiRA/${doi}`).then((response) => {
+    const doi = response.data[0];
+    if (typeof doi.RA === 'undefined') {
+      throw new Error(doi.status ?? 'Invalid DOI', { cause: 'Invalid DOI' });
+    } else {
+      return doi;
+    }
+  });
+};
+
+/**
  * Checks whether a DOI is valid and returns the DOI metadata
  * @param doi The DOI that we're checking
  * @returns the {@link RelatedIdentifier} that matches the username, or 404
  */
 export const useCheckDOI = (
-  doi: string,
-  dataCiteUrl: string | undefined
-): UseQueryResult<RelatedIdentifier, AxiosError> => {
+  doi: string
+): UseQueryResult<RelatedIdentifier, Error | AxiosError> => {
   const queryClient = useQueryClient();
   const opts = queryClient.getDefaultOptions();
   const retries =
     typeof opts?.queries?.retry === 'number' ? opts.queries.retry : 3;
 
-  return useQuery(['checkDOI', doi], () => fetchDOI(doi, dataCiteUrl), {
-    retry: (failureCount: number, error: AxiosError) => {
+  const doiProxyRegex =
+    /^https?:\/\/(?:www\.)?(?:(?:dx\.)?doi\.org|hdl\.handle\.net|handle\.test\.datacite\.org\/)\//;
+
+  const doiIdentifier = doi?.replace(doiProxyRegex, '');
+
+  return useQuery(['checkDOI', doiIdentifier], () => checkDOI(doiIdentifier), {
+    retry: (failureCount: number, error: Error | AxiosError) => {
       if (
         // DOI is invalid - don't retry as this is a correct response from the server
-        error.response?.status === 404 ||
+        error.cause === 'Invalid DOI' ||
         failureCount >= retries
       )
         return false;
       return true;
     },
     select: (doi) => ({
-      title: doi.attributes.titles[0].title,
-      identifier: doi.attributes.doi,
+      identifier: doi.DOI,
       relatedIdentifierType: DOIIdentifierType.DOI,
       relationType: '',
     }),

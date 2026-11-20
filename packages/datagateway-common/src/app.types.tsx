@@ -260,10 +260,9 @@ export interface FundingReference {
 /** The related identifier type that gets used in the related identifier picker component & what is sent to the doi minter api */
 export type RelatedIdentifier = Pick<
   RelatedItem,
-  'title' | 'fullReference' | 'identifier'
+  'identifier' | 'relatedItemType'
 > & {
   relationType: DOIRelationType | '';
-  relatedItemType?: DOIResourceType;
   relatedIdentifierType: DOIIdentifierType;
 };
 
