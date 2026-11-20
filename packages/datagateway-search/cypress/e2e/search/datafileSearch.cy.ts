@@ -44,6 +44,8 @@ describe('Datafile search tab', () => {
           });
       });
 
+    cy.findByRole('button', { name: 'Toggle Format filter panel' }).click();
+
     cy.findByRole('button', {
       name: 'Toggle Parameter name filter panel',
     }).click();
@@ -58,13 +60,17 @@ describe('Datafile search tab', () => {
             cy.findByText('1').should('exist');
           });
 
-        cy.findByRole('button', { name: 'Add PARAMETERTYPE 46 filter' })
+        cy.findByRole('button', { name: 'Add PARAMETERTYPE 36 filter' })
           .should('exist')
           .within(() => {
             cy.findByRole('checkbox').should('not.be.checked');
             cy.findByText('1').should('exist');
           });
       });
+
+    cy.findByRole('button', {
+      name: 'Toggle Parameter name filter panel',
+    }).click();
 
     cy.findByRole('button', { name: 'Toggle Sample filter panel' }).click();
 
@@ -75,6 +81,8 @@ describe('Datafile search tab', () => {
           cy.findByText('1').should('exist');
         });
     });
+
+    cy.findByRole('button', { name: 'Toggle Sample filter panel' }).click();
 
     cy.findByRole('button', {
       name: 'Toggle Instrument filter panel',
