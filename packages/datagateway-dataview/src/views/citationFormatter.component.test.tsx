@@ -8,7 +8,11 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import { StateType, dGCommonReducer } from 'datagateway-common';
+import {
+  StateType,
+  dGCommonInitialState,
+  dGCommonReducer,
+} from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { combineReducers, createStore } from 'redux';
@@ -33,7 +37,16 @@ describe('Citation formatter component tests', () => {
     render(
       <Provider
         store={createStore(
-          combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer })
+          combineReducers<Partial<StateType>>({ dgcommon: dGCommonReducer }),
+          {
+            dgcommon: {
+              ...dGCommonInitialState,
+              urls: {
+                ...dGCommonInitialState.urls,
+                dataCiteUrl: 'https://example.com/datacite',
+              },
+            },
+          }
         )}
       >
         <QueryClientProvider client={queryClient}>
@@ -142,7 +155,7 @@ describe('Citation formatter component tests', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://api.datacite.org/text/x-bibliography/test',
+      'https://example.com/datacite/text/x-bibliography/test',
       expect.objectContaining({
         params,
       })
@@ -215,7 +228,7 @@ describe('Citation formatter component tests', () => {
     });
 
     expect(axios.get).toHaveBeenCalledWith(
-      'https://api.datacite.org/text/x-bibliography/test',
+      'https://example.com/datacite/text/x-bibliography/test',
       expect.objectContaining({
         params,
       })
