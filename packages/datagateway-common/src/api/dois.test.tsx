@@ -788,20 +788,12 @@ describe('useCheckDOI', () => {
 
   it('fetches DOI info from DataCite given a DOI', async () => {
     axios.get = vi.fn().mockResolvedValue({
-      data: {
-        data: {
-          id: 1,
-          attributes: { doi: 'doi', titles: [{ title: 'title' }] },
-        },
-      },
+      data: [{ DOI: 'doi', RA: 'DataCite' }],
     });
 
-    const { result } = renderHook(
-      () => useCheckDOI('doi', 'https://example.com/datacite'),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
+    const { result } = renderHook(() => useCheckDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
 
     expect(result.current.status).toBe('loading');
     expect(result.current.fetchStatus).toBe('idle');
@@ -809,11 +801,8 @@ describe('useCheckDOI', () => {
       result.current.refetch();
     });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/datacite/dois/doi'
-    );
+    expect(axios.get).toHaveBeenCalledWith('https://doi.org/doiRA/doi');
     expect(result.current.data).toEqual({
-      title: 'title',
       identifier: 'doi',
       relatedIdentifierType: DOIIdentifierType.DOI,
       relationType: '',
@@ -822,20 +811,12 @@ describe('useCheckDOI', () => {
 
   it('fetches DOI info from DataCite given a DOI link', async () => {
     axios.get = vi.fn().mockResolvedValue({
-      data: {
-        data: {
-          id: 1,
-          attributes: { doi: 'doi', titles: [{ title: 'title' }] },
-        },
-      },
+      data: [{ DOI: 'doi', RA: 'DataCite' }],
     });
 
-    const { result } = renderHook(
-      () => useCheckDOI('https://doi.org/doi', 'https://example.com/datacite'),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
+    const { result } = renderHook(() => useCheckDOI('https://doi.org/doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
 
     expect(result.current.status).toBe('loading');
     expect(result.current.fetchStatus).toBe('idle');
@@ -843,32 +824,22 @@ describe('useCheckDOI', () => {
       result.current.refetch();
     });
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://example.com/datacite/dois/doi'
-    );
+    expect(axios.get).toHaveBeenCalledWith('https://doi.org/doiRA/doi');
     expect(result.current.data).toEqual({
-      title: 'title',
       identifier: 'doi',
       relatedIdentifierType: DOIIdentifierType.DOI,
       relationType: '',
     });
   });
 
-  it('does not retry 404 errors', async () => {
-    const error = {
-      message: 'Test error message',
-      response: {
-        status: 404,
-      },
-    };
-    axios.get = vi.fn().mockRejectedValue(error);
+  it('does not retry no doi found errors', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: [{ DOI: 'doi', status: 'DOI does not exist' }],
+    });
 
-    const { result } = renderHook(
-      () => useCheckDOI('doi', 'https://example.com/datacite'),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
+    const { result } = renderHook(() => useCheckDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
 
     expect(result.current.status).toBe('loading');
     expect(result.current.fetchStatus).toBe('idle');
@@ -888,12 +859,9 @@ describe('useCheckDOI', () => {
     };
     axios.get = vi.fn().mockRejectedValue(error);
 
-    const { result } = renderHook(
-      () => useCheckDOI('doi', 'https://example.com/datacite'),
-      {
-        wrapper: createReactQueryWrapper(),
-      }
-    );
+    const { result } = renderHook(() => useCheckDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
 
     expect(result.current.status).toBe('loading');
     expect(result.current.fetchStatus).toBe('idle');

@@ -179,8 +179,6 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
         <RelatedIdentifiers
           relatedIdentifiers={relatedIdentifiers}
           changeRelatedIdentifiers={setRelatedIdentifiers}
-          dataCiteUrl={dataCiteUrl}
-          doiHandleUrl={doiHandleUrl}
           disabled={mintLoading}
           showErrors={showErrors}
         />
