@@ -81,10 +81,8 @@ describe('DOI Generation form', () => {
         'aria-invalid',
         'true'
       );
-      cy.findByRole('combobox', { name: 'Techniques' }).should(
-        'have.attr',
-        'aria-invalid',
-        'true'
+      cy.findByText('Please select at least one technique').should(
+        'be.visible'
       );
       cy.findByRole('combobox', { name: 'Subjects' }).should(
         'have.attr',
