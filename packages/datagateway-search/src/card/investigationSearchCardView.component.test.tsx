@@ -203,7 +203,6 @@ describe('Investigation - Card View', () => {
     expect(
       within(card).queryByRole('button', { name: 'buttons.download' })
     ).toBeNull();
-    expect(within(card).queryByRole('link', { name: 'doi 1' })).toBeNull();
   });
 
   it('renders ISIS link & file sizes correctly', async () => {

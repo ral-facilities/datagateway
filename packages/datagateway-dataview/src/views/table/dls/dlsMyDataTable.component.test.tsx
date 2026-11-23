@@ -146,6 +146,9 @@ describe('DLS MyData table component', () => {
       await findColumnHeaderByName('investigations.visit_id')
     ).toBeInTheDocument();
     expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
       await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
@@ -173,6 +176,13 @@ describe('DLS MyData table component', () => {
           columnIndex: await findColumnIndexByName('investigations.visit_id'),
         })
       ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByText('doi 1')
     ).toBeInTheDocument();
     expect(
       within(
@@ -281,7 +291,7 @@ describe('DLS MyData table component', () => {
     );
   });
 
-  it('renders title and visit ID as a links', async () => {
+  it('renders title, visit ID and DOI as a links', async () => {
     renderComponent();
 
     const row = await findRowAt(0);
@@ -296,6 +306,9 @@ describe('DLS MyData table component', () => {
       'href',
       '/browse/proposal/Test 1/investigation/1/dataset'
     );
+    expect(
+      await within(row).findByRole('link', { name: 'doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
   });
 
   it('gracefully handles empty InvestigationInstrument', async () => {
