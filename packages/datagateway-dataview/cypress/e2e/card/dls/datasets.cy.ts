@@ -43,12 +43,6 @@ describe('DLS - Datasets Cards', () => {
       .first()
       .get('[aria-label="card-more-information"]')
       .contains('1.39 GB', { timeout: 10000 });
-
-    cy.get('#dataset-type-tab').click({ force: true });
-    cy.get('[data-testid="card"]')
-      .first()
-      .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 2');
   });
 
   it('should be able to sort by one field or multiple', () => {

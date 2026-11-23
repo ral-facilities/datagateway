@@ -266,9 +266,18 @@ const DatasetSearchTable: React.FC<DatasetTableProps> = ({ hierarchy }) => {
         },
         disableSort: true,
       },
+      ...(hierarchy === FACILITY_NAME.dls
+        ? [
+            {
+              label: t('datasets.type'),
+              dataKey: 'type.name',
+              disableSort: true,
+            },
+          ]
+        : []),
       {
         label: t('datasets.size'),
-        dataKey: 'size',
+        dataKey: 'fileSize',
         cellContentRenderer: (cellProps: TableCellProps) => {
           return formatBytes(cellProps.rowData.fileSize);
         },

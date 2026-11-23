@@ -24,6 +24,7 @@ const Subheading = styled(Typography)(({ theme }) => ({
 
 const fetchCitation = (
   doi: string,
+  dataCiteUrl: string | undefined,
   format: string,
   locale: string
 ): Promise<string> => {
@@ -34,7 +35,7 @@ const fetchCitation = (
   //Documentation found here: https://support.datacite.org/docs/datacite-content-resolver
   //api.datacite.org seems to work better than data.crosscite.org
   return axios
-    .get<string>(`https://api.datacite.org/text/x-bibliography/${doi}`, {
+    .get<string>(`${dataCiteUrl}/text/x-bibliography/${doi}`, {
       params,
     })
     .then((response) => {
@@ -60,6 +61,9 @@ const useCitation = (
   const doiHandleUrl = useSelector(
     (state: StateType) => state.dgcommon.urls.doiHandleUrl
   );
+  const dataCiteUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.dataCiteUrl
+  );
 
   return useQuery<string, AxiosError>(
     [formattedUsers, title, startDate, publisherName, doi, format, locale],
@@ -78,7 +82,7 @@ const useCitation = (
 
         return citation;
       } else {
-        if (doi) return fetchCitation(doi, format, locale);
+        if (doi) return fetchCitation(doi, dataCiteUrl, format, locale);
         else throw new Error('No DOI was supplied');
       }
     },

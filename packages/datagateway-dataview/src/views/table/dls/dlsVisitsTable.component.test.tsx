@@ -8,12 +8,12 @@ import {
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import {
-  dGCommonInitialState,
   Investigation,
+  dGCommonInitialState,
   useInvestigationCount,
   useInvestigationsInfinite,
 } from 'datagateway-common';
-import { createMemoryHistory, History } from 'history';
+import { History, createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
@@ -138,6 +138,9 @@ describe('DLS Visits table component', () => {
       await findColumnHeaderByName('investigations.visit_id')
     ).toBeInTheDocument();
     expect(
+      await findColumnHeaderByName('investigations.doi')
+    ).toBeInTheDocument();
+    expect(
       await findColumnHeaderByName('investigations.size')
     ).toBeInTheDocument();
     expect(
@@ -158,6 +161,13 @@ describe('DLS Visits table component', () => {
           columnIndex: await findColumnIndexByName('investigations.visit_id'),
         })
       ).getByText('1')
+    ).toBeInTheDocument();
+    expect(
+      within(
+        findCellInRow(row, {
+          columnIndex: await findColumnIndexByName('investigations.doi'),
+        })
+      ).getByText('doi 1')
     ).toBeInTheDocument();
     expect(
       within(
@@ -285,7 +295,7 @@ describe('DLS Visits table component', () => {
     expect(await screen.findByTestId('dls-visit-details-panel')).toBeTruthy();
   });
 
-  it('renders visit ID as links', async () => {
+  it('renders visit ID and DOI as links', async () => {
     renderComponent();
 
     const visitIdColIndex = await findColumnIndexByName(
@@ -303,6 +313,16 @@ describe('DLS Visits table component', () => {
       'href',
       '/browse/proposal/Test 1/investigation/1/dataset'
     );
+
+    const doiColIndex = await findColumnIndexByName('investigations.doi');
+
+    const doiCell = await findCellInRow(row, {
+      columnIndex: doiColIndex,
+    });
+
+    expect(
+      within(doiCell).getByRole('link', { name: 'doi 1' })
+    ).toHaveAttribute('href', 'https://doi.org/doi 1');
   });
 
   it('renders fine with incomplete data', async () => {

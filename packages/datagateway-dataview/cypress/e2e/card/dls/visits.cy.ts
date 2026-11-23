@@ -13,6 +13,22 @@ describe('DLS - Visits Cards', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
 
+    cy.get('[data-testid="card"]')
+      .first()
+      .get('[data-testid="dls-investigations-card-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
+
+        cy.get('[data-testid="card"]')
+          .first()
+          .get('[data-testid="dls-investigations-card-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+
     //Default sort
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('.MuiTableSortLabel-iconDirectionDesc').should('be.visible');

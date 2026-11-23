@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosHeaders } from 'axios';
 import log from 'loglevel';
 import {
   handleDOIAPIError,
+  useCheckDOI,
   useCheckROR,
   useCheckUser,
   useDOI,
@@ -15,7 +16,11 @@ import {
   usePublishDraftVersion,
   useSearchPANETTechniques,
 } from '.';
-import { ContributorType, DownloadCartItem } from '../app.types';
+import {
+  ContributorType,
+  DOIIdentifierType,
+  DownloadCartItem,
+} from '../app.types';
 import {
   createBioPortalTerm,
   createReactQueryWrapper,
@@ -771,6 +776,98 @@ describe('useDOI', () => {
       wrapper: createReactQueryWrapper(),
     });
 
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(axios.get).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('useCheckDOI', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('fetches DOI info from DataCite given a DOI', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: [{ DOI: 'doi', RA: 'DataCite' }],
+    });
+
+    const { result } = renderHook(() => useCheckDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(axios.get).toHaveBeenCalledWith('https://doi.org/doiRA/doi');
+    expect(result.current.data).toEqual({
+      identifier: 'doi',
+      relatedIdentifierType: DOIIdentifierType.DOI,
+      relationType: '',
+    });
+  });
+
+  it('fetches DOI info from DataCite given a DOI link', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: [{ DOI: 'doi', RA: 'DataCite' }],
+    });
+
+    const { result } = renderHook(() => useCheckDOI('https://doi.org/doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(axios.get).toHaveBeenCalledWith('https://doi.org/doiRA/doi');
+    expect(result.current.data).toEqual({
+      identifier: 'doi',
+      relatedIdentifierType: DOIIdentifierType.DOI,
+      relationType: '',
+    });
+  });
+
+  it('does not retry no doi found errors', async () => {
+    axios.get = vi.fn().mockResolvedValue({
+      data: [{ DOI: 'doi', status: 'DOI does not exist' }],
+    });
+
+    const { result } = renderHook(() => useCheckDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(axios.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('should retry other errors', async () => {
+    const error = {
+      message: 'Test error message',
+      response: {
+        status: 400,
+      },
+    };
+    axios.get = vi.fn().mockRejectedValue(error);
+
+    const { result } = renderHook(() => useCheckDOI('doi'), {
+      wrapper: createReactQueryWrapper(),
+    });
+
+    expect(result.current.status).toBe('loading');
+    expect(result.current.fetchStatus).toBe('idle');
+    act(() => {
+      result.current.refetch();
+    });
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(axios.get).toHaveBeenCalledTimes(4);
   });

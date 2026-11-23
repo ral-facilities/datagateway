@@ -221,28 +221,24 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
 
   const information = React.useMemo(
     () => [
-      ...(hierarchy !== FACILITY_NAME.dls
-        ? [
-            {
-              content: function doiFormat(entity: Investigation) {
-                return (
-                  entity?.doi && (
-                    <MuiLink
-                      href={`${doiHandleUrl}/${entity.doi}`}
-                      data-testid="investigation-search-card-doi-link"
-                    >
-                      {entity.doi}
-                    </MuiLink>
-                  )
-                );
-              },
-              icon: Public,
-              label: t('investigations.doi'),
-              dataKey: 'doi',
-              disableSort: true,
-            },
-          ]
-        : []),
+      {
+        content: function doiFormat(entity: Investigation) {
+          return (
+            entity?.doi && (
+              <MuiLink
+                href={`${doiHandleUrl}/${entity.doi}`}
+                data-testid="investigation-search-card-doi-link"
+              >
+                {entity.doi}
+              </MuiLink>
+            )
+          );
+        },
+        icon: Public,
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        disableSort: true,
+      },
       {
         icon: Fingerprint,
         label: t('investigations.visit_id'),
@@ -306,7 +302,7 @@ const InvestigationCardView: React.FC<InvestigationCardProps> = (props) => {
         disableSort: true,
       },
     ],
-    [hierarchy, t, doiHandleUrl]
+    [t, doiHandleUrl]
   );
 
   const moreInformation = React.useCallback(

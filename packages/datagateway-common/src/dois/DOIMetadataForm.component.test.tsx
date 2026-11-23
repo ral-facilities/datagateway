@@ -39,8 +39,6 @@ describe('DOI generation form component', () => {
       setSelectedUsers: vi.fn(),
       relatedIdentifiers: [
         {
-          title: 'DOI Title',
-          fullReference: '',
           identifier: 'doi',
           relatedIdentifierType: DOIIdentifierType.DOI,
           relatedItemType: DOIResourceType.Dataset,
@@ -86,6 +84,7 @@ describe('DOI generation form component', () => {
       doiHandleUrl: 'https://doi.org',
       rorApiUrl: 'https://api.ror.org/v2/organizations',
       localContactRole: 'local_contact|DataCollector',
+      disableContributors: false,
     };
   });
 
@@ -207,7 +206,6 @@ describe('DOI generation form component', () => {
     ];
     props.relatedIdentifiers = [
       {
-        title: 'DOI Title',
         identifier: 'doi',
         relatedIdentifierType: DOIIdentifierType.DOI,
         relatedItemType: DOIResourceType.Dataset,
@@ -231,7 +229,6 @@ describe('DOI generation form component', () => {
     // empty funders
     props.relatedIdentifiers = [
       {
-        title: 'DOI Title',
         identifier: 'doi',
         relatedIdentifierType: DOIIdentifierType.DOI,
         relatedItemType: DOIResourceType.Dataset,

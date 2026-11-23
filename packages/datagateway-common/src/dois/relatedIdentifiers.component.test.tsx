@@ -3,7 +3,7 @@ import { RenderResult, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios, { AxiosResponse } from 'axios';
 import * as React from 'react';
-import { DOIIdentifierType, DataCiteResponse } from '../app.types';
+import { DOIIdentifierType } from '../app.types';
 import RelatedIdentifiers from './relatedIdentifiers.component';
 
 vi.mock('loglevel');
@@ -28,7 +28,7 @@ describe('Related identifiers form component', () => {
 
   let props: React.ComponentProps<typeof RelatedIdentifiers>;
 
-  let mockDOIResponse: DataCiteResponse;
+  let mockDOIResponse: { DOI: string; RA?: string; status?: string };
 
   const TestComponent: React.FC = () => {
     const [relatedIdentifiers, changeRelatedIdentifiers] = React.useState(
@@ -54,8 +54,6 @@ describe('Related identifiers form component', () => {
     props = {
       relatedIdentifiers: [
         {
-          title: 'Related DOI 1',
-          fullReference: '',
           identifier: 'related.doi.1',
           relationType: '',
           relatedItemType: undefined,
@@ -63,58 +61,18 @@ describe('Related identifiers form component', () => {
         },
       ],
       changeRelatedIdentifiers: vi.fn(),
-      dataCiteUrl: 'example.com',
-      doiHandleUrl: 'https://doi.org',
       disabled: false,
       showErrors: false,
     };
 
-    mockDOIResponse = {
-      data: {
-        id: '2',
-        type: 'DOI',
-        attributes: {
-          doi: 'related.doi.2',
-          titles: [{ title: 'Related DOI 2' }],
-          url: 'www.example.com',
-          publisher: {
-            name: '',
-            publisherIdentifier: null,
-            publisherIdentifierScheme: null,
-            schemeUri: null,
-          },
-          publicationYear: 2025,
-          dates: [],
-          types: {
-            resourceType: '',
-            resourceTypeGeneral: '',
-          },
-          rightsList: [],
-          geoLocations: [],
-          fundingReferences: [],
-          identifiers: [],
-          creators: [],
-          subjects: [],
-          contributors: [],
-          language: null,
-          alternateIdentifiers: [],
-          relatedIdentifiers: [],
-          sizes: [],
-          formats: [],
-          version: '',
-          descriptions: [],
-          relatedItems: [],
-        },
-        relationships: undefined,
-      },
-    };
+    mockDOIResponse = { DOI: 'related.doi.2', RA: 'DataCite' };
 
     axios.get = vi
       .fn()
       .mockImplementation((url: string): Promise<Partial<AxiosResponse>> => {
-        if (/\/dois\/.*/.test(url)) {
+        if (/\/doiRA\/.*/.test(url)) {
           return Promise.resolve({
-            data: mockDOIResponse,
+            data: [mockDOIResponse],
           });
         } else {
           return Promise.reject(`Endpoint not mocked: ${url}`);
@@ -248,9 +206,7 @@ describe('Related identifiers form component', () => {
     ).toHaveLength(2);
 
     // test errors with various API error responses
-    vi.mocked(axios.get).mockRejectedValueOnce({
-      response: { data: { errors: [{ title: 'error msg' }] }, status: 404 },
-    });
+    mockDOIResponse = { DOI: '3', status: 'error msg' };
 
     await user.type(
       screen.getByRole('textbox', {
@@ -398,18 +354,10 @@ describe('Related identifiers form component', () => {
     const doiLink = screen.getByRole('link', { name: 'related.doi.1' });
 
     expect(doiLink).toHaveAttribute('href', 'https://doi.org/related.doi.1');
-
-    await user.hover(doiLink);
-
-    expect(
-      await screen.findByRole('tooltip', { name: 'Related DOI 1' })
-    ).toBeInTheDocument();
   });
 
   it('should render urls as links', async () => {
     props.relatedIdentifiers[0] = {
-      title: 'URL 1',
-      fullReference: '',
       identifier: 'https://example.com',
       relationType: '',
       relatedItemType: undefined,

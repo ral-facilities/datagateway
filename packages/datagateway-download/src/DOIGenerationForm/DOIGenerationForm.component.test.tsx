@@ -13,7 +13,6 @@ import {
   DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
-  DataCiteDOI,
   ROR,
   User,
   fetchDownloadCart,
@@ -89,7 +88,7 @@ describe('DOI generation form component', () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   let mockUser: User;
-  let mockDOIResponse: { data: DataCiteDOI };
+  let mockDOIResponse: { DOI: string; RA?: string; status?: string };
   let mockDraftResponse: Awaited<ReturnType<typeof mintDraftCart>>;
   let mockROR: ROR;
   const fundersList = [
@@ -117,46 +116,7 @@ describe('DOI generation form component', () => {
       email: 'user2@example.com',
       affiliation: 'Example 2 Uni',
     };
-    mockDOIResponse = {
-      data: {
-        id: '1',
-        type: 'DOI',
-        attributes: {
-          doi: 'related.doi.1',
-          titles: [{ title: 'Related DOI 1' }],
-          url: 'www.example.com',
-          // minimum data to not error
-          descriptions: [],
-          creators: [],
-          contributors: [],
-          relatedIdentifiers: [],
-          publisher: {
-            name: 'test',
-            publisherIdentifier: null,
-            publisherIdentifierScheme: null,
-            schemeUri: null,
-          },
-          publicationYear: 2025,
-          dates: [],
-          types: {
-            resourceType: 'Experimental Datasets',
-            resourceTypeGeneral: 'Other',
-          },
-          rightsList: [],
-          geoLocations: [],
-          fundingReferences: [],
-          subjects: [],
-          sizes: [],
-          identifiers: [],
-          alternateIdentifiers: [],
-          language: null,
-          formats: [],
-          relatedItems: [],
-          version: '1',
-        },
-        relationships: [],
-      },
-    };
+    mockDOIResponse = { DOI: 'related.doi.1', RA: 'DataCite' };
     mockDraftResponse = {
       concept: {
         data_publication_id: '1',
@@ -226,9 +186,9 @@ describe('DOI generation form component', () => {
           return Promise.resolve({
             data: mockUser,
           });
-        } else if (/\/dois\/.*/.test(url)) {
+        } else if (/\/doiRA\/.*/.test(url)) {
           return Promise.resolve({
-            data: mockDOIResponse,
+            data: [mockDOIResponse],
           });
         } else if (/\/organizations/.test(url)) {
           return Promise.resolve({
@@ -660,7 +620,6 @@ describe('DOI generation form component', () => {
         ],
         related_items: [
           {
-            title: 'Related DOI 1',
             identifier: 'related.doi.1',
             relatedIdentifierType: DOIIdentifierType.DOI,
             relationType: DOIRelationType.IsCitedBy,

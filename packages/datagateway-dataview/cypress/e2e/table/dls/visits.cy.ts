@@ -28,6 +28,20 @@ describe('DLS - Visits Table', () => {
     );
   });
 
+  it('should have the correct url for the DOI link', () => {
+    cy.get('[data-testid="dls-investigations-table-doi-link"]')
+      .first()
+      .then(($doi) => {
+        const doi = $doi.text();
+
+        const url = `${Cypress.expose('doiHandleUrl')}/${doi}`;
+
+        cy.get('[data-testid="dls-investigations-table-doi-link"]')
+          .first()
+          .should('have.attr', 'href', url);
+      });
+  });
+
   // Lazy loading can't be tested on this table at the moment since there is only 1 investigation.
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');

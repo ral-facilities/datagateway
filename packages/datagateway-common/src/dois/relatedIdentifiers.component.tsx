@@ -27,37 +27,28 @@ import {
   DOIResourceType,
   RelatedIdentifier,
 } from '../app.types';
-import { StyledTooltip } from '../arrowtooltip.component';
 
 type RelatedIdentifiersProps = {
   relatedIdentifiers: RelatedIdentifier[];
   changeRelatedIdentifiers: React.Dispatch<
     React.SetStateAction<RelatedIdentifier[]>
   >;
-  dataCiteUrl: string | undefined;
-  doiHandleUrl: string;
   disabled: boolean;
   showErrors: boolean;
 };
 
 const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
-  const {
-    relatedIdentifiers,
-    changeRelatedIdentifiers,
-    dataCiteUrl,
-    doiHandleUrl,
-    disabled,
-    showErrors,
-  } = props;
+  const { relatedIdentifiers, changeRelatedIdentifiers, disabled, showErrors } =
+    props;
   const [t] = useTranslation();
   const [relatedIdentiferInputText, setRelatedIdentifierInputText] =
     React.useState('');
   const [relatedIdentifierError, setRelatedIdentifierError] =
     React.useState('');
-  const { refetch: checkDOI } = useCheckDOI(
-    relatedIdentiferInputText,
-    dataCiteUrl
-  );
+  const { refetch: checkDOI } = useCheckDOI(relatedIdentiferInputText);
+
+  // hardcode doiHandleUrl as doi.org since we're validating using doi.org/RA they need to be real DOIs
+  const doiHandleUrl = 'https://doi.org';
 
   return (
     <Paper
@@ -148,22 +139,9 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                           setRelatedIdentifierInputText('');
                         }
                       })
-                      .catch(
-                        (
-                          error: AxiosError<{
-                            errors: {
-                              status: string;
-                              title: string;
-                            }[];
-                          }>
-                        ) => {
-                          setRelatedIdentifierError(
-                            error.response?.data?.errors
-                              ? error.response.data.errors[0].title
-                              : 'Error'
-                          );
-                        }
-                      );
+                      .catch((error: Error | AxiosError) => {
+                        setRelatedIdentifierError(error.message);
+                      });
                   } else {
                     setRelatedIdentifierError(
                       'Cannot add duplicate identifier'
@@ -240,17 +218,12 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                     <TableCell>
                       {relatedIdentifier.relatedIdentifierType ===
                       DOIIdentifierType.DOI ? (
-                        <StyledTooltip
-                          describeChild
-                          title={relatedIdentifier.title}
+                        <Link
+                          href={`${doiHandleUrl}/${relatedIdentifier.identifier}`}
+                          target="_blank"
                         >
-                          <Link
-                            href={`${doiHandleUrl}/${relatedIdentifier.identifier}`}
-                            target="_blank"
-                          >
-                            {relatedIdentifier.identifier}
-                          </Link>
-                        </StyledTooltip>
+                          {relatedIdentifier.identifier}
+                        </Link>
                       ) : relatedIdentifier.relatedIdentifierType ===
                         DOIIdentifierType.URL ? (
                         <Link

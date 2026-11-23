@@ -697,11 +697,11 @@ describe('DOI Generation form', () => {
       // wait for users to load
       cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
-      // DOI from https://support.datacite.org/docs/testing-guide
+      // DOI from https://support.datacite.org/docs/api-get-doi
       cy.contains('Identifier (e.g. DOI, URL)')
         .parent()
         .find('input')
-        .type('10.17596/w76y-4s92');
+        .type('10.14454/qdd3-ps68');
       cy.contains('button', 'Add DOI').click();
 
       // shouldn't let users submit DOIs without selecting a relation or resource type
@@ -735,7 +735,7 @@ describe('DOI Generation form', () => {
         'be.visible'
       );
 
-      cy.contains('div', 'Identifier: 10.17596/w76y-4s92')
+      cy.contains('div', 'Identifier: 10.14454/qdd3-ps68')
         .as('relatedDOI')
         .should('exist');
       cy.get('@relatedDOI')
@@ -787,7 +787,6 @@ describe('DOI Generation form', () => {
       // wait for users to load
       cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
-      // DOI from https://support.datacite.org/docs/testing-guide
       cy.contains('Identifier (e.g. DOI, URL)')
         .parent()
         .find('input')

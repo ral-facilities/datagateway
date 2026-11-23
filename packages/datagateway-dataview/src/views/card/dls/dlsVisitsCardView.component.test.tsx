@@ -55,6 +55,7 @@ describe('DLS Visits - Card View', () => {
         visitId: '1',
         fileSize: 1,
         fileCount: 1,
+        doi: 'doi 1',
       },
     ];
     history = createMemoryHistory();
