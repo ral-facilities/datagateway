@@ -81,7 +81,7 @@ describe('DOI Generation form', () => {
         'aria-invalid',
         'true'
       );
-      cy.findByText('Please select at least once technique').should(
+      cy.findByText('Please select at least one technique').should(
         'be.visible'
       );
       cy.findByRole('combobox', { name: 'Subjects' }).should(
