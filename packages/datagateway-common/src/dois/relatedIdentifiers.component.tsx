@@ -122,20 +122,32 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                 variant="contained"
                 disabled={disabled}
                 onClick={() => {
-                  return checkDOI({ throwOnError: true })
-                    .then((response) => {
-                      // add DOI
-                      if (response.data) {
-                        changeRelatedIdentifiers((dois) => [
-                          ...dois,
-                          response.data,
-                        ]);
-                        setRelatedIdentifierInputText('');
-                      }
-                    })
-                    .catch((error: Error | AxiosError) => {
-                      setRelatedIdentifierError(error.message);
-                    });
+                  // don't let the user add duplicates
+                  if (
+                    relatedIdentifiers.every(
+                      (ri) => ri.identifier !== relatedIdentiferInputText
+                    )
+                  ) {
+                    checkDOI({ throwOnError: true })
+                      .then((response) => {
+                        // add DOI
+                        if (response.data) {
+                          changeRelatedIdentifiers((dois) => [
+                            ...dois,
+                            response.data,
+                          ]);
+                          setRelatedIdentifierInputText('');
+                        }
+                      })
+                      .catch((error: Error | AxiosError) => {
+                        setRelatedIdentifierError(error.message);
+                      });
+                  } else {
+                    setRelatedIdentifierError(
+                      'Cannot add duplicate identifier'
+                    );
+                    setRelatedIdentifierInputText('');
+                  }
                 }}
               >
                 {t('DOIGenerationForm.add_related_doi')}
@@ -146,14 +158,24 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                 variant="contained"
                 disabled={disabled}
                 onClick={() => {
-                  changeRelatedIdentifiers((relatedIdentifiers) => [
-                    ...relatedIdentifiers,
-                    {
-                      identifier: relatedIdentiferInputText,
-                      relatedIdentifierType: DOIIdentifierType.URL, // default to URL
-                      relationType: '',
-                    },
-                  ]);
+                  if (
+                    relatedIdentifiers.every(
+                      (ri) => ri.identifier !== relatedIdentiferInputText
+                    )
+                  ) {
+                    changeRelatedIdentifiers((relatedIdentifiers) => [
+                      ...relatedIdentifiers,
+                      {
+                        identifier: relatedIdentiferInputText,
+                        relatedIdentifierType: DOIIdentifierType.URL, // default to URL
+                        relationType: '',
+                      },
+                    ]);
+                  } else {
+                    setRelatedIdentifierError(
+                      'Cannot add duplicate identifier'
+                    );
+                  }
                   setRelatedIdentifierInputText('');
                 }}
               >

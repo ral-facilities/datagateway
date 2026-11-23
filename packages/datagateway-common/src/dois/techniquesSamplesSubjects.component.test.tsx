@@ -378,8 +378,59 @@ describe('Techniques, Samples & Subjects selector component', () => {
 
     await user.click(
       screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_subject',
+      })
+    );
+
+    expect(props.setSubjects).not.toHaveBeenCalled();
+  });
+
+  it('does not let you add duplicate samples or subjects', async () => {
+    renderComponent();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample 1'
+    );
+
+    await user.click(
+      screen.getByRole('button', {
         name: 'DOIGenerationForm.add_sample',
       })
+    );
+
+    expect(props.setSamples).not.toHaveBeenCalled();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.samples',
+      }),
+      'sample 1{enter}'
+    );
+    expect(props.setSamples).not.toHaveBeenCalled();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
+      'subject 1'
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.add_subject',
+      })
+    );
+
+    expect(props.setSubjects).not.toHaveBeenCalled();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.subjects_label',
+      }),
+      'subject 1{enter}'
     );
 
     expect(props.setSubjects).not.toHaveBeenCalled();
@@ -484,6 +535,11 @@ describe('Techniques, Samples & Subjects selector component', () => {
     const descendantsResponse = (await mockDescendantsResponse)?.data;
     expect(
       screen.getByRole('cell', {
+        name: 'technique 3',
+      })
+    );
+    expect(
+      screen.getByRole('cell', {
         name: `${
           descendantsResponse?.collection?.[0].prefLabel
         } (${descendantsResponse?.collection?.[0].synonym?.join(', ')})`,
@@ -519,6 +575,84 @@ describe('Techniques, Samples & Subjects selector component', () => {
         name: descendantsResponse?.collection?.[1].prefLabel,
       })
     ).toBeInTheDocument();
+  });
+
+  it('does not let you add duplicate techniques', async () => {
+    renderComponent();
+
+    // add a new technique
+    await user.click(
+      screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
+    );
+
+    expect(
+      await screen.findByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
+    ).toBeVisible();
+
+    await user.type(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      }),
+      't'
+    );
+
+    expect(
+      screen.getByRole('combobox', {
+        name: 'DOIGenerationForm.technique_selector_label',
+      })
+    ).toHaveValue('t');
+
+    // test we debounce properly
+    expect(
+      screen.queryByRole('option', {
+        name: 'technique 1 (1)',
+      })
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(AUTOCOMPLETE_DEBOUNCE_DELAY);
+    });
+
+    expect(
+      await screen.findByRole('option', {
+        name: 'technique 1 (1)',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', {
+        name: 'technique 3',
+      })
+    ).toBeInTheDocument();
+
+    // select initial technique
+    await user.click(
+      screen.getByRole('option', {
+        name: 'technique 3',
+      })
+    );
+
+    // select descendant
+    await user.click(
+      screen.getByRole('cell', {
+        name: 'technique 3',
+      })
+    );
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.technique_dialog_confirm_button',
+      })
+    );
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole('dialog', {
+        name: 'DOIGenerationForm.technique_dialog_title',
+      })
+    );
+
+    expect(props.setTechniques).not.toHaveBeenCalled();
   });
 
   it('displays error message on technique selector autocomplete when bioportal url is not defined', async () => {

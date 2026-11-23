@@ -364,10 +364,12 @@ const TechniquesSamplesSubjects: React.FC<{
                 open={isTechniqueDialogOpen}
                 changeOpen={setIsTechniqueDialogOpen}
                 addNewTechnique={(technique: BioPortalTerm) => {
-                  setTechniques((existingTechniques) => [
-                    ...existingTechniques,
-                    technique,
-                  ]);
+                  if (!techniques.includes(technique)) {
+                    setTechniques((existingTechniques) => [
+                      ...existingTechniques,
+                      technique,
+                    ]);
+                  }
                 }}
                 bioportalUrl={bioportalUrl}
               />
@@ -476,7 +478,10 @@ const TechniquesSamplesSubjects: React.FC<{
               <Button
                 variant="contained"
                 onClick={() => {
-                  if (samplesString.length > 0) {
+                  if (
+                    samplesString.length > 0 &&
+                    !samples.includes(samplesString)
+                  ) {
                     setSamples([...samples, samplesString]);
                     setSamplesString('');
                   }
@@ -536,7 +541,8 @@ const TechniquesSamplesSubjects: React.FC<{
                 onClick={() => {
                   if (
                     subjectsString.length > 0 &&
-                    !subjectsString.startsWith('sample:')
+                    !subjectsString.startsWith('sample:') &&
+                    !subjects.includes(subjectsString)
                   ) {
                     setSubjects([...subjects, subjectsString]);
                     setSubjectsString('');
