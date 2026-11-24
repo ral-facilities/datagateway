@@ -39,7 +39,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
         doiType: {
           view: newType,
           open: newType === 'user' ? undefined : doiType?.open,
-          pi: newType === 'all' ? undefined : doiType?.pi,
+          pi: doiType?.pi,
         },
       });
   };
