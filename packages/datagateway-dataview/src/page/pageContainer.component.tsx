@@ -668,6 +668,11 @@ const DataviewPageContainer: React.FC = () => {
     [location.search]
   );
 
+  const { doiType } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
   const dlsDefaultFilters = {
     startDate: {
       endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
@@ -675,7 +680,7 @@ const DataviewPageContainer: React.FC = () => {
   };
 
   const disabled =
-    Object.keys(filters).length === 0 ||
+    (Object.keys(filters).length === 0 && doiType === null) ||
     (location.pathname === paths.myData.dls &&
       JSON.stringify(filters) === JSON.stringify(dlsDefaultFilters))
       ? true
@@ -683,11 +688,14 @@ const DataviewPageContainer: React.FC = () => {
 
   const pushFilters = useUpdateQueryParam('filters', 'push');
 
+  const pushDOIType = useUpdateQueryParam('doiType', 'push');
+
   const handleButtonClearFilters = (): void => {
     if (location.pathname === paths.myData.dls) {
       pushFilters(dlsDefaultFilters);
     } else {
       pushFilters({});
+      pushDOIType(null);
     }
   };
 

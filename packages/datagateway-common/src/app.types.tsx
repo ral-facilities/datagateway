@@ -496,6 +496,12 @@ export type ViewsType = 'table' | 'card' | null;
 
 export type DOIViewType = 'user' | 'session' | 'all';
 
+export interface DOIType {
+  view: DOIViewType;
+  open?: boolean;
+  pi?: boolean;
+}
+
 export interface QueryParams {
   sort: SortType;
   filters: FiltersType;
