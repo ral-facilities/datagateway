@@ -289,7 +289,7 @@ describe('DOI generation form component', () => {
     ).toBeDisabled();
   }, 60_000);
 
-  it('should disable mint button & all form fields when mintLoading is true', () => {
+  it('should disable mint button & all form fields when mintLoading is true', async () => {
     props.mintLoading = true;
     renderComponent();
 
@@ -311,6 +311,13 @@ describe('DOI generation form component', () => {
         name: 'DOIGenerationForm.add_creator',
       })
     ).toBeDisabled();
+
+    // expand related identifiers panel to check they are disabled as well
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
     expect(
       screen.getByRole('button', {
         name: 'DOIGenerationForm.delete_related_identifier',

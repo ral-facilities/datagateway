@@ -471,6 +471,12 @@ describe('DOI generation form component', () => {
     );
     await user.click(await screen.findByRole('option', { name: 'Editor' }));
 
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
+
     await user.type(
       screen.getByRole('textbox', {
         name: 'DOIGenerationForm.related_identifier',
