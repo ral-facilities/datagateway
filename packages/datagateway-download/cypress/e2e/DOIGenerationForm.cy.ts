@@ -695,6 +695,11 @@ describe('DOI Generation form', () => {
       // wait for users to load
       cy.contains('button', 'Review DOI metadata').should('not.be.disabled');
 
+      // related identifiers should not be expanded at first
+      cy.contains('Identifier (e.g. DOI, URL)').should('not.be.visible');
+      // expand panel
+      cy.contains('button', 'Related Identifiers').click();
+      cy.contains('Identifier (e.g. DOI, URL)').should('be.visible');
       // DOI from https://support.datacite.org/docs/api-get-doi
       cy.contains('Identifier (e.g. DOI, URL)')
         .parent()
