@@ -80,18 +80,20 @@ interface DateFilter {
 export interface FilterQuery {
   range?: DateFilter;
   terms?: FiltersType;
+  bool?: BoolQuery;
 }
 
 export interface BoolQuery {
-  bool: {
-    must?: TextQuery;
-    filter?: {
-      bool: {
-        must: FilterQuery[];
-      };
+  must?: TextQuery;
+  should?: FilterQuery[];
+  filter?: {
+    bool: {
+      must?: FilterQuery[];
+      should?: FilterQuery[];
+      minimum_should_match?: number;
     };
-    minimum_should_match?: number | string;
   };
+  minimum_should_match?: number | string;
 }
 
 export interface FacetQuery {
@@ -106,7 +108,9 @@ export interface FacetQuery {
 export interface ElasticsearchQuery {
   target: DatasearchType;
   size: number;
-  query?: BoolQuery;
+  query?: {
+    bool: BoolQuery;
+  };
   facets?: FacetQuery;
   sort?: SortType[];
   search_after?: SearchAfter;
@@ -272,14 +276,24 @@ const elasticQueryBuilder = (
       filter_query.push(filter_item);
     }
   }
-
+  const name_query: FilterQuery[] = [];
   if (params.restrict) {
     const user = readSciGatewayToken().username;
-    const user_filter: FilterQuery = {};
-    user_filter.terms = {
-      'user.name': [user ?? ''],
+
+    let user_filter: FilterQuery = {
+      terms: {
+        'user.name': [user ?? ''],
+        _name: 'user',
+      },
     };
-    filter_query.push(user_filter);
+    name_query.push(user_filter);
+    user_filter = {
+      terms: {
+        'instrumentuser.name': [user ?? ''],
+        _name: 'instrumentuser',
+      },
+    };
+    name_query.push(user_filter);
   }
 
   const query: ElasticsearchQuery = {
@@ -299,9 +313,14 @@ const elasticQueryBuilder = (
     query.facets = params.facets;
   }
 
-  if (filter_query.length !== 0) {
+  if (filter_query.length !== 0 || name_query.length !== 0) {
     if (query.query) {
-      query.query.bool.filter = { bool: { must: filter_query } };
+      query.query.bool.filter = {
+        bool: {
+          must: filter_query,
+          should: name_query,
+        },
+      };
     }
   }
 
