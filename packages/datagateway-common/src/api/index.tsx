@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
   AdditionalFilters,
+  DOIType,
   Entity,
   Filter,
   FiltersType,
@@ -520,13 +521,13 @@ export const usePushFilters = (): ((
 };
 
 export const useUpdateQueryParam = (
-  type: 'filters' | 'sort' | 'page' | 'results',
+  type: 'filters' | 'sort' | 'page' | 'results' | 'doiType',
   updateMethod: 'push' | 'replace'
-): ((param: FiltersType | SortType | number | null) => void) => {
+): ((param: FiltersType | SortType | number | null | DOIType) => void) => {
   const { push, replace } = useHistory();
   const functionToUse = updateMethod === 'push' ? push : replace;
   return React.useCallback(
-    (param: FiltersType | SortType | number | null) => {
+    (param: FiltersType | SortType | number | null | DOIType) => {
       // need to use window.location.search and not useLocation to ensure we have the most
       // up to date version of search when useUpdateQueryParam is called
       const query = parseSearchToQuery(window.location.search);
@@ -539,6 +540,8 @@ export const useUpdateQueryParam = (
         query.page = param as number | null;
       } else if (type === 'results') {
         query.results = param as number | null;
+      } else if (type === 'doiType') {
+        query.doiType = param as DOIType;
       }
 
       functionToUse({ search: `?${parseQueryToSearch(query).toString()}` });
