@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   BioPortalTerm,
   DOIFundingReference,
+  MicroFrontendId,
   RelatedIdentifier,
 } from '../app.types';
 import CreatorsAndContributors, {
@@ -108,6 +109,17 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     techniqueError ||
     sampleError ||
     fundingReferencesError;
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: 'scigateway:api:reset_scroll',
+        },
+      })
+    );
+  }, []);
 
   return (
     <Grid

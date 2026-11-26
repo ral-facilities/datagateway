@@ -476,7 +476,6 @@ const ViewRouting = React.memo(
       <SwitchRouting>
         {/* For "landing" paths, don't use a containing Paper */}
         <Route
-          exact
           path={[
             ...Object.values(paths.landing),
             ...Object.values(paths.dataPublications.landing),
