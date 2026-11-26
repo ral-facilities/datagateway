@@ -517,7 +517,7 @@ export interface QueryParams {
   endDate: Date | null;
   currentTab: string;
   restrict: boolean;
-  doiType: { view: DOIViewType; open?: boolean; pi?: boolean } | null;
+  doiType: DOIType | null;
 }
 
 export enum ContributorType {
