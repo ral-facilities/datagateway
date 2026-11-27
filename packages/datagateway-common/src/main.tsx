@@ -59,6 +59,7 @@ export * from './parseTokens';
 
 export {
   default as ArrowTooltip,
+  StyledTooltip,
   getTooltipText,
 } from './arrowtooltip.component';
 export { default as DGThemeProvider } from './dgThemeProvider.component';

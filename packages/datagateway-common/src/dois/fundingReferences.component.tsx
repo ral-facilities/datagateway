@@ -16,6 +16,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useCheckROR } from '../api';
 import { DOIFundingReference, ROR } from '../app.types';
+import { StyledTooltip } from '../arrowtooltip.component';
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
 
@@ -303,19 +304,21 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
             />
           </Grid>
           <Grid item xs="auto">
-            <Button
-              variant="contained"
-              onClick={() => setIsRORDialogOpen(true)}
-              disabled={
-                disabled ||
-                fundingReferences.some(
-                  (fr) =>
-                    fr.funderIdentifier === NO_FUNDER_OPTION_FUNDINGIDENTIFIER
-                )
-              }
-            >
-              {t('DOIGenerationForm.add_by_ror')}
-            </Button>
+            <StyledTooltip title={t('DOIGenerationForm.add_by_ror_tooltip')}>
+              <Button
+                variant="contained"
+                onClick={() => setIsRORDialogOpen(true)}
+                disabled={
+                  disabled ||
+                  fundingReferences.some(
+                    (fr) =>
+                      fr.funderIdentifier === NO_FUNDER_OPTION_FUNDINGIDENTIFIER
+                  )
+                }
+              >
+                {t('DOIGenerationForm.add_by_ror')}
+              </Button>
+            </StyledTooltip>
             <RORDialog
               open={isRORDialogOpen}
               changeOpen={setIsRORDialogOpen}
