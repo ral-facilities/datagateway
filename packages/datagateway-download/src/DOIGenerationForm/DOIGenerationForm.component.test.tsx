@@ -4,6 +4,7 @@ import {
   act,
   render,
   screen,
+  waitFor,
   waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
@@ -815,10 +816,12 @@ describe('DOI generation form component', () => {
       })
     );
 
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('dialog', {
-        name: 'DOIGenerationForm.technique_dialog_title',
-      })
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('dialog', {
+          name: 'DOIGenerationForm.technique_dialog_title',
+        })
+      ).not.toBeInTheDocument()
     );
 
     // missing cart
@@ -893,10 +896,12 @@ describe('DOI generation form component', () => {
       })
     );
 
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('dialog', {
-        name: 'DOIGenerationForm.technique_dialog_title',
-      })
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('dialog', {
+          name: 'DOIGenerationForm.technique_dialog_title',
+        })
+      ).not.toBeInTheDocument()
     );
 
     // empty cart
@@ -971,10 +976,12 @@ describe('DOI generation form component', () => {
       })
     );
 
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('dialog', {
-        name: 'DOIGenerationForm.technique_dialog_title',
-      })
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('dialog', {
+          name: 'DOIGenerationForm.technique_dialog_title',
+        })
+      ).not.toBeInTheDocument()
     );
 
     // no users

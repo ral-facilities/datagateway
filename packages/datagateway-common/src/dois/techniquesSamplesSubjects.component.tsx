@@ -355,7 +355,9 @@ const TechniquesSamplesSubjects: React.FC<{
           <Grid container item xs={12} alignItems="center" spacing={1}>
             <Grid item xs="auto">
               <StyledTooltip
-                title={t('DOIGenerationForm.add_technique_tooltip')}
+                title={t('DOIGenerationForm.add_technique_tooltip', {
+                  defaultValue: undefined,
+                })}
                 describeChild
                 open={!disabled}
               >
@@ -483,7 +485,9 @@ const TechniquesSamplesSubjects: React.FC<{
             </Grid>
             <Grid item xs="auto">
               <StyledTooltip
-                title={t('DOIGenerationForm.add_sample_tooltip')}
+                title={t('DOIGenerationForm.add_sample_tooltip', {
+                  defaultValue: undefined,
+                })}
                 describeChild
                 open={!disabled}
               >
@@ -550,7 +554,9 @@ const TechniquesSamplesSubjects: React.FC<{
             </Grid>
             <Grid item xs="auto">
               <StyledTooltip
-                title={t('DOIGenerationForm.add_subject_tooltip')}
+                title={t('DOIGenerationForm.add_subject_tooltip', {
+                  defaultValue: undefined,
+                })}
                 describeChild
                 open={!disabled}
               >

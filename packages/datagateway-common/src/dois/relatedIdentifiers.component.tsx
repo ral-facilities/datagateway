@@ -120,7 +120,9 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
           >
             <Grid item>
               <StyledTooltip
-                title={t('DOIGenerationForm.add_related_doi_tooltip')}
+                title={t('DOIGenerationForm.add_related_doi_tooltip', {
+                  defaultValue: undefined,
+                })}
                 describeChild
                 open={!disabled}
               >
@@ -162,7 +164,9 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
             </Grid>
             <Grid item>
               <StyledTooltip
-                title={t('DOIGenerationForm.add_related_other_tooltip')}
+                title={t('DOIGenerationForm.add_related_other_tooltip', {
+                  defaultValue: undefined,
+                })}
                 describeChild
                 open={!disabled}
               >

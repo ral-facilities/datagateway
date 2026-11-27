@@ -305,7 +305,9 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
           </Grid>
           <Grid item xs="auto">
             <StyledTooltip
-              title={t('DOIGenerationForm.add_by_ror_tooltip')}
+              title={t('DOIGenerationForm.add_by_ror_tooltip', {
+                defaultValue: undefined,
+              })}
               describeChild
               open={
                 !(

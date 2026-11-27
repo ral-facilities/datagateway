@@ -194,7 +194,9 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
           >
             <Grid item>
               <StyledTooltip
-                title={t('DOIGenerationForm.add_creator_tooltip')}
+                title={t('DOIGenerationForm.add_creator_tooltip', {
+                  defaultValue: undefined,
+                })}
                 describeChild
                 open={!(selectedUsers.length === 0 || disabled)}
               >
@@ -210,7 +212,9 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
             {disableContributors !== true && (
               <Grid item>
                 <StyledTooltip
-                  title={t('DOIGenerationForm.add_contributor_tooltip')}
+                  title={t('DOIGenerationForm.add_contributor_tooltip', {
+                    defaultValue: undefined,
+                  })}
                   describeChild
                   open={!(selectedUsers.length === 0 || disabled)}
                 >
