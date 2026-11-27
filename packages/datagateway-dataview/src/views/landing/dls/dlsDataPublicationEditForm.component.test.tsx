@@ -474,6 +474,20 @@ describe('DOI edit form component', () => {
   });
 
   it('should default fill the form with existing info and let the user change these and submit a mint request', async () => {
+    vi.spyOn(console, 'error').mockImplementation((...vars) => {
+      if (
+        vars.some((x) =>
+          x.includes(
+            'loadingPosition="start" should be used in combination with startIcon'
+          )
+        )
+      ) {
+        // do nothing, expected error, should not occur un MUIv6
+      } else {
+        console.error(...vars);
+      }
+    });
+
     renderComponent();
 
     // wait for data publication to load
