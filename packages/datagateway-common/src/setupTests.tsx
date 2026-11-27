@@ -33,6 +33,7 @@ if (typeof window.URL.revokeObjectURL === 'undefined') {
     value: () => {},
   });
 }
+window.scrollTo = vi.fn();
 
 // Add in ResizeObserver as it's not in jsdom's environment
 vi.stubGlobal(

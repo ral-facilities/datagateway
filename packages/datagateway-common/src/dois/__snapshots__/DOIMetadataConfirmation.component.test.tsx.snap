@@ -857,13 +857,13 @@ exports[`DOI metadata confirmation component > should display the provided draft
     </div>
   </div>
   <div
-    class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-12n0uxm-MuiGrid-root"
+    class="MuiGrid-root MuiGrid-container css-1aeneov-MuiGrid-root"
   >
     <div
-      class="MuiGrid-root MuiGrid-item css-13i4rnv-MuiGrid-root"
+      class="MuiGrid-root MuiGrid-item css-18njd3r-MuiGrid-root"
     >
       <button
-        class="MuiButtonBase-root MuiButton-root MuiLoadingButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiLoadingButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-h4t5eh-MuiButtonBase-root-MuiButton-root-MuiLoadingButton-root"
+        class="MuiButtonBase-root MuiButton-root MuiLoadingButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiLoadingButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary css-1pkfx9i-MuiButtonBase-root-MuiButton-root-MuiLoadingButton-root"
         id=":r0:"
         tabindex="0"
         type="button"
@@ -898,21 +898,6 @@ exports[`DOI metadata confirmation component > should display the provided draft
         tabindex="0"
         type="button"
       >
-        <span
-          class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
-        >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
-            data-testid="PublishIcon"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M5 4v2h14V4zm0 10h4v6h6v-6h4l-7-7z"
-            />
-          </svg>
-        </span>
         DOIGenerationForm.generate_DOI
         <span
           class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"

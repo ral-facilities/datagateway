@@ -1,4 +1,3 @@
- 
 import '@testing-library/jest-dom';
 import failOnConsole from 'vitest-fail-on-console';
 
@@ -27,6 +26,7 @@ function noOp(): void {
 if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
 }
+window.scrollTo = vi.fn();
 
 export const flushPromises = (): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve));

@@ -10,6 +10,7 @@ import {
   DataciteMetadata,
   MicroFrontendId,
 } from '../app.types';
+import { ResetPluginScrollType } from '../state/actions/actions.types';
 
 type DOIMetadataConfirmationProps = {
   draftMetadata: DataciteMetadata | undefined;
@@ -99,11 +100,11 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
   const [t] = useTranslation();
 
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
         detail: {
-          type: 'scigateway:api:reset_scroll',
+          type: ResetPluginScrollType,
         },
       })
     );

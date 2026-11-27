@@ -9,6 +9,7 @@ import {
   MicroFrontendId,
   RelatedIdentifier,
 } from '../app.types';
+import { ResetPluginScrollType } from '../state/actions/actions.types';
 import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
@@ -111,11 +112,11 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     fundingReferencesError;
 
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
         detail: {
-          type: 'scigateway:api:reset_scroll',
+          type: ResetPluginScrollType,
         },
       })
     );
