@@ -8,10 +8,12 @@ import {
   DOIRelationType,
   DOIResourceType,
 } from '../app.types';
+import { ResetPluginScrollType } from '../state/actions/actions.types';
 import DOIMetadataConfirmation from './DOIMetadataConfirmation.component';
 
 describe('DOI metadata confirmation component', () => {
   let props: React.ComponentProps<typeof DOIMetadataConfirmation>;
+  let events: CustomEvent<AnyAction>[] = [];
 
   const renderComponent = (): RenderResult =>
     render(<DOIMetadataConfirmation {...props} />, {
@@ -26,6 +28,12 @@ describe('DOI metadata confirmation component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
+
+    events = [];
+    document.dispatchEvent = (e: Event) => {
+      events.push(e as CustomEvent<AnyAction>);
+      return true;
+    };
 
     props = {
       draftMetadata: {
@@ -217,6 +225,19 @@ describe('DOI metadata confirmation component', () => {
   });
 
   it('should display the provided draft metadata', () => {
+    vi.spyOn(console, 'error').mockImplementation((...vars) => {
+      if (
+        vars.some((x) =>
+          x.includes(
+            'loadingPosition="start" should be used in combination with startIcon'
+          )
+        )
+      ) {
+        // do nothing, expected error, should not occur un MUIv6
+      } else {
+        console.error(...vars);
+      }
+    });
     const { asFragment } = renderComponent();
 
     expect(asFragment()).toMatchSnapshot();
@@ -288,5 +309,22 @@ describe('DOI metadata confirmation component', () => {
         name: 'DOIGenerationForm.back_button',
       })
     ).toBeDisabled();
+  });
+
+  it('should reset scroll on mount', async ({ onTestFinished }) => {
+    const scrollToSpy = vi.spyOn(window, 'scrollTo');
+    onTestFinished(() => {
+      scrollToSpy.mockRestore();
+    });
+    renderComponent();
+
+    expect(scrollToSpy).toHaveBeenCalledWith({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+    expect(events[0].detail).toEqual({
+      type: ResetPluginScrollType,
+    });
   });
 });

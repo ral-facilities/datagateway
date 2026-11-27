@@ -19,6 +19,7 @@ export const RegisterRouteType = `${CustomFrontendMessageType}:register_route`;
 export const RequestPluginRerenderType = `${CustomFrontendMessageType}:plugin_rerender`;
 export const SendThemeOptionsType = `${CustomFrontendMessageType}:send_themeoptions`;
 export const BroadcastSignOutType = `${CustomFrontendMessageType}:signout`;
+export const ResetPluginScrollType = `${CustomFrontendMessageType}:reset_plugin_scroll`;
 
 // internal actions
 export const ConfigureFacilityNameType =

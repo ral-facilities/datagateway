@@ -6,8 +6,10 @@ import { useTranslation } from 'react-i18next';
 import {
   BioPortalTerm,
   DOIFundingReference,
+  MicroFrontendId,
   RelatedIdentifier,
 } from '../app.types';
+import { ResetPluginScrollType } from '../state/actions/actions.types';
 import CreatorsAndContributors, {
   ContributorUser,
 } from './creatorsAndContributors.component';
@@ -108,6 +110,17 @@ const DOIMetadataForm: React.FC<DOIMetadataFormProps> = (props) => {
     techniqueError ||
     sampleError ||
     fundingReferencesError;
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: ResetPluginScrollType,
+        },
+      })
+    );
+  }, []);
 
   return (
     <Grid

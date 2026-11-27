@@ -2,16 +2,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RenderResult, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
+import { AnyAction } from 'redux';
 import {
   ContributorType,
   DOIIdentifierType,
   DOIRelationType,
   DOIResourceType,
 } from '../app.types';
+import { ResetPluginScrollType } from '../main';
 import { createBioPortalTerm } from '../setupTests';
 import DOIMetadataForm from './DOIMetadataForm.component';
 
 describe('DOI generation form component', () => {
+  let events: CustomEvent<AnyAction>[] = [];
   let props: React.ComponentProps<typeof DOIMetadataForm>;
 
   const renderComponent = (): RenderResult =>
@@ -27,6 +30,12 @@ describe('DOI generation form component', () => {
 
   beforeEach(() => {
     user = userEvent.setup();
+
+    events = [];
+    document.dispatchEvent = (e: Event) => {
+      events.push(e as CustomEvent<AnyAction>);
+      return true;
+    };
 
     props = {
       title: 'test',
@@ -357,5 +366,22 @@ describe('DOI generation form component', () => {
     expect(
       screen.getByRole('button', { name: 'DOIGenerationForm.add_technique' })
     ).toBeDisabled();
+  });
+
+  it('should reset scroll on mount', async ({ onTestFinished }) => {
+    const scrollToSpy = vi.spyOn(window, 'scrollTo');
+    onTestFinished(() => {
+      scrollToSpy.mockRestore();
+    });
+    renderComponent();
+
+    expect(scrollToSpy).toHaveBeenCalledWith({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+    expect(events[0].detail).toEqual({
+      type: ResetPluginScrollType,
+    });
   });
 });

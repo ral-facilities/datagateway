@@ -1,4 +1,4 @@
-import { ArrowBack, Publish } from '@mui/icons-material';
+import { ArrowBack } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { CircularProgress, Grid, Link, Typography } from '@mui/material';
 import React from 'react';
@@ -8,7 +8,9 @@ import {
   DOICreator,
   DOIIdentifierType,
   DataciteMetadata,
+  MicroFrontendId,
 } from '../app.types';
+import { ResetPluginScrollType } from '../state/actions/actions.types';
 
 type DOIMetadataConfirmationProps = {
   draftMetadata: DataciteMetadata | undefined;
@@ -96,6 +98,17 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
     doiHandleUrl,
   } = props;
   const [t] = useTranslation();
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: ResetPluginScrollType,
+        },
+      })
+    );
+  }, []);
 
   if (typeof metadata === 'undefined') return <CircularProgress />;
 
@@ -492,10 +505,14 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           })}
         </Grid>
       </Grid>
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item>
+      <Grid
+        container
+        justifyContent="space-between"
+        sx={{ position: 'sticky', bottom: '8px' }}
+      >
+        <Grid item sx={{ bgcolor: 'background.default' }}>
           <LoadingButton
-            variant="contained"
+            variant="outlined"
             onClick={onBackClick}
             startIcon={<ArrowBack />}
             loadingPosition="start"
@@ -509,7 +526,6 @@ const DOIMetadataConfirmation: React.FC<DOIMetadataConfirmationProps> = (
           <LoadingButton
             variant="contained"
             onClick={onConfirmClick}
-            startIcon={<Publish />}
             loadingPosition="start"
             loading={props.publishLoading}
             disabled={props.deleteLoading}

@@ -270,6 +270,19 @@ describe('DOI generation form component', () => {
   });
 
   it('should let the user fill in the required fields and submit a mint request', async () => {
+    vi.spyOn(console, 'error').mockImplementation((...vars) => {
+      if (
+        vars.some((x) =>
+          x.includes(
+            'loadingPosition="start" should be used in combination with startIcon'
+          )
+        )
+      ) {
+        // do nothing, expected error, should not occur un MUIv6
+      } else {
+        console.error(...vars);
+      }
+    });
     renderComponent();
 
     // accept data policy

@@ -38,6 +38,8 @@ if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
 }
 
+window.scrollTo = vi.fn();
+
 // these are used for testing async actions
 export let actions: Action[] = [];
 export const resetActions = (): void => {
