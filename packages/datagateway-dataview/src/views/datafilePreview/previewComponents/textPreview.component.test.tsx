@@ -1,9 +1,9 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { DGThemeProvider } from 'datagateway-common';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
-import { combineReducers, createStore, Store } from 'redux';
+import { Store, combineReducers, createStore } from 'redux';
 import { StateType } from '../../../state/app.types';
 import dgdataviewReducer from '../../../state/reducers/dgdataview.reducer';
 import {
@@ -120,7 +120,9 @@ describe('TextPreview', () => {
       });
 
       expect(
-        await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+        await screen.findByLabelText(
+          'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+        )
       ).toHaveStyle({
         'font-size': '13px',
       });
@@ -142,7 +144,9 @@ describe('TextPreview', () => {
       });
 
       expect(
-        await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+        await screen.findByLabelText(
+          'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+        )
       ).toHaveStyle({
         'font-size': '11px',
       });

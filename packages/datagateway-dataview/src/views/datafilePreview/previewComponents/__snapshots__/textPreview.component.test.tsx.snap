@@ -3,7 +3,7 @@
 exports[`TextPreview > should render given text file 1`] = `
 <DocumentFragment>
   <pre
-    aria-label="datafiles.preview.txt.file_content_label"
+    aria-label="datafiles.preview.txt.file_content_label {fileName:Datafile.txt}"
     class="css-1pxm7zh"
     font-size="12"
   >

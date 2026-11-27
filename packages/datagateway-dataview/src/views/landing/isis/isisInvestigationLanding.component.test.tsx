@@ -292,7 +292,9 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
-    expect(screen.getByText('doi_constants.branding.body')).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.branding.body {context:data}')
+    ).toBeInTheDocument();
 
     // investigation details should be visible
     expect(screen.getByText('Test title 1')).toBeInTheDocument();
@@ -453,7 +455,9 @@ describe('ISIS Investigation Landing page', () => {
     expect(
       screen.getByText('doi_constants.branding.title')
     ).toBeInTheDocument();
-    expect(screen.getByText('doi_constants.branding.body')).toBeInTheDocument();
+    expect(
+      screen.getByText('doi_constants.branding.body {context:data}')
+    ).toBeInTheDocument();
 
     // investigation details should be visible
     expect(screen.getByText('Title 1.1')).toBeInTheDocument();

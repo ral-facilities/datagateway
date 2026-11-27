@@ -530,7 +530,8 @@ describe('PageContainer - Tests', () => {
 
     expect(
       within(screen.getByTestId('Breadcrumb-last')).getByText(
-        'breadcrumbs.investigation'
+        'breadcrumbs.investigation',
+        { exact: false }
       )
     ).toBeInTheDocument();
   });
