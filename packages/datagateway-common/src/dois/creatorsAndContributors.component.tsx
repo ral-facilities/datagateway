@@ -23,6 +23,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useCheckUser } from '../api/dois';
 import { ContributorType, User } from '../app.types';
+import { StyledTooltip } from '../arrowtooltip.component';
 import { readSciGatewayToken } from '../parseTokens';
 
 export type ContributorUser = User & {
@@ -192,23 +193,39 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
             mt={0.25}
           >
             <Grid item>
-              <Button
-                variant="contained"
-                onClick={handleAddCreatorOrContributorClick(true)}
-                disabled={selectedUsers.length === 0 || disabled}
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_creator_tooltip', {
+                  defaultValue: undefined,
+                })}
+                describeChild
+                open={!(selectedUsers.length === 0 || disabled)}
               >
-                {t('DOIGenerationForm.add_creator')}
-              </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleAddCreatorOrContributorClick(true)}
+                  disabled={selectedUsers.length === 0 || disabled}
+                >
+                  {t('DOIGenerationForm.add_creator')}
+                </Button>
+              </StyledTooltip>
             </Grid>
             {disableContributors !== true && (
               <Grid item>
-                <Button
-                  variant="contained"
-                  onClick={handleAddCreatorOrContributorClick(false)}
-                  disabled={selectedUsers.length === 0 || disabled}
+                <StyledTooltip
+                  title={t('DOIGenerationForm.add_contributor_tooltip', {
+                    defaultValue: undefined,
+                  })}
+                  describeChild
+                  open={!(selectedUsers.length === 0 || disabled)}
                 >
-                  {t('DOIGenerationForm.add_contributor')}
-                </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleAddCreatorOrContributorClick(false)}
+                    disabled={selectedUsers.length === 0 || disabled}
+                  >
+                    {t('DOIGenerationForm.add_contributor')}
+                  </Button>
+                </StyledTooltip>
               </Grid>
             )}
           </Grid>

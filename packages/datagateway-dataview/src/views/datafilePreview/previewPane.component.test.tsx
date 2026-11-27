@@ -39,7 +39,9 @@ describe('PreviewPane', () => {
     renderComponent();
 
     expect(
-      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toBeInTheDocument();
     expect(screen.getByText('First line')).toBeInTheDocument();
     expect(screen.getByText('Second line')).toBeInTheDocument();

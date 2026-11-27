@@ -38,17 +38,19 @@ const renderNodes = (i18nKey, reactNodes) => {
   });
 };
 
-const useMock = [(k) => k, {}];
-useMock.t = (k) => k;
+const mockTransFunc = (k, o) =>
+  o
+    ? 'defaultValue' in o
+      ? o.defaultValue
+      : `${k} ${JSON.stringify(o).replace(/"/g, '')}`
+    : k;
+
+const useMock = [mockTransFunc, {}];
+useMock.t = mockTransFunc;
 useMock.i18n = {};
 
 const applyTranslation = (Component) => {
-  const applyProps = (props) => (
-    <Component
-      t={(k, o) => (o ? `${k} ${JSON.stringify(o).replace(/"/g, '')}` : k)}
-      {...props}
-    />
-  );
+  const applyProps = (props) => <Component t={mockTransFunc} {...props} />;
   return applyProps;
 };
 

@@ -1,20 +1,20 @@
-import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { Router } from 'react-router-dom';
-import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
-import type { StateType } from '../state/app.types';
-import { createLocation, createMemoryHistory, type History } from 'history';
-import PageBreadcrumbs from './breadcrumbs.component';
-import axios from 'axios';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   render,
-  type RenderResult,
   screen,
   within,
+  type RenderResult,
 } from '@testing-library/react';
+import axios from 'axios';
+import { dGCommonInitialState } from 'datagateway-common';
+import { createLocation, createMemoryHistory, type History } from 'history';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import type { StateType } from '../state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import PageBreadcrumbs from './breadcrumbs.component';
 
 vi.mock('loglevel');
 
@@ -184,7 +184,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.dataset'
+          'breadcrumbs.dataset',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -223,7 +224,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.datafile'
+          'breadcrumbs.datafile',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -312,7 +314,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.dataset'
+          'breadcrumbs.dataset',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -369,7 +372,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.datafile'
+          'breadcrumbs.datafile',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -419,7 +423,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.facilityCycle'
+          'breadcrumbs.facilityCycle',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -461,7 +466,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.investigation'
+          'breadcrumbs.investigation',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -517,7 +523,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.dataset'
+          'breadcrumbs.dataset',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -578,7 +585,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.datafile'
+          'breadcrumbs.datafile',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -631,7 +639,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.dataPublication'
+          'breadcrumbs.dataPublication',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -678,7 +687,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.investigation'
+          'breadcrumbs.investigation',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -737,7 +747,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.dataset'
+          'breadcrumbs.dataset',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });
@@ -801,7 +812,8 @@ describe('PageBreadcrumbs tests (Generic, DLS, ISIS)', () => {
 
       expect(
         within(screen.getByTestId('Breadcrumb-last')).getByText(
-          'breadcrumbs.datafile'
+          'breadcrumbs.datafile',
+          { exact: false }
         )
       ).toBeInTheDocument();
     });

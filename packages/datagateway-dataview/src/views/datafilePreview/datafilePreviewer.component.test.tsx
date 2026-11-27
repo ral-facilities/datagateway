@@ -251,7 +251,7 @@ describe('DatafilePreviewer', () => {
       await screen.findByText('datafiles.preview.cannot_preview')
     ).toBeInTheDocument();
     expect(
-      screen.getByText('datafiles.preview.unsupported')
+      screen.getByText('datafiles.preview.unsupported {ext:exe}')
     ).toBeInTheDocument();
 
     // should still show the details of the datafile
@@ -313,7 +313,9 @@ describe('DatafilePreviewer', () => {
 
     // should be able to see the text file content
     expect(
-      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toBeInTheDocument();
     expect(screen.getByText('First line')).toBeInTheDocument();
     expect(screen.getByText('Second line')).toBeInTheDocument();
@@ -431,7 +433,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('110%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '13px',
     });
@@ -444,7 +448,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('120%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '14px',
     });
@@ -454,7 +460,9 @@ describe('DatafilePreviewer', () => {
     renderComponent();
 
     expect(
-      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toBeInTheDocument();
 
     // pretend user is scrolling up on the zoom level chip
@@ -464,7 +472,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('110%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '13px',
     });
@@ -476,7 +486,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('120%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '14px',
     });
@@ -493,7 +505,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('90%')).toBeInTheDocument();
     expect(
-      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '11px',
     });
@@ -506,7 +520,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('80%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '10px',
     });
@@ -522,7 +538,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('90%')).toBeInTheDocument();
     expect(
-      await screen.findByLabelText('datafiles.preview.txt.file_content_label')
+      await screen.findByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '11px',
     });
@@ -534,7 +552,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('80%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '10px',
     });
@@ -561,7 +581,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('110%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '13px',
     });
@@ -575,7 +597,9 @@ describe('DatafilePreviewer', () => {
 
     expect(await screen.findByText('100%')).toBeInTheDocument();
     expect(
-      screen.getByLabelText('datafiles.preview.txt.file_content_label')
+      screen.getByLabelText(
+        'datafiles.preview.txt.file_content_label {fileName:Datafile.txt}'
+      )
     ).toHaveStyle({
       'font-size': '12px',
     });

@@ -79,7 +79,7 @@ describe('PreviewStatusView', () => {
       await screen.findByText('datafiles.preview.cannot_preview')
     ).toBeInTheDocument();
     expect(
-      screen.getByText('datafiles.preview.unsupported')
+      screen.getByText('datafiles.preview.unsupported {ext:dmg}')
     ).toBeInTheDocument();
   });
 });

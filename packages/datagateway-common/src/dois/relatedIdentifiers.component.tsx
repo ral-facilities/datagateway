@@ -27,6 +27,7 @@ import {
   DOIResourceType,
   RelatedIdentifier,
 } from '../app.types';
+import { StyledTooltip } from '../arrowtooltip.component';
 
 type RelatedIdentifiersProps = {
   relatedIdentifiers: RelatedIdentifier[];
@@ -118,69 +119,85 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
             mt={0.25}
           >
             <Grid item>
-              <Button
-                variant="contained"
-                disabled={disabled}
-                onClick={() => {
-                  // don't let the user add duplicates
-                  if (
-                    relatedIdentifiers.every(
-                      (ri) => ri.identifier !== relatedIdentiferInputText
-                    )
-                  ) {
-                    checkDOI({ throwOnError: true })
-                      .then((response) => {
-                        // add DOI
-                        if (response.data) {
-                          changeRelatedIdentifiers((dois) => [
-                            ...dois,
-                            response.data,
-                          ]);
-                          setRelatedIdentifierInputText('');
-                        }
-                      })
-                      .catch((error: Error | AxiosError) => {
-                        setRelatedIdentifierError(error.message);
-                      });
-                  } else {
-                    setRelatedIdentifierError(
-                      'Cannot add duplicate identifier'
-                    );
-                    setRelatedIdentifierInputText('');
-                  }
-                }}
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_related_doi_tooltip', {
+                  defaultValue: undefined,
+                })}
+                describeChild
+                open={!disabled}
               >
-                {t('DOIGenerationForm.add_related_doi')}
-              </Button>
+                <Button
+                  variant="contained"
+                  disabled={disabled}
+                  onClick={() => {
+                    // don't let the user add duplicates
+                    if (
+                      relatedIdentifiers.every(
+                        (ri) => ri.identifier !== relatedIdentiferInputText
+                      )
+                    ) {
+                      checkDOI({ throwOnError: true })
+                        .then((response) => {
+                          // add DOI
+                          if (response.data) {
+                            changeRelatedIdentifiers((dois) => [
+                              ...dois,
+                              response.data,
+                            ]);
+                            setRelatedIdentifierInputText('');
+                          }
+                        })
+                        .catch((error: Error | AxiosError) => {
+                          setRelatedIdentifierError(error.message);
+                        });
+                    } else {
+                      setRelatedIdentifierError(
+                        'Cannot add duplicate identifier'
+                      );
+                      setRelatedIdentifierInputText('');
+                    }
+                  }}
+                >
+                  {t('DOIGenerationForm.add_related_doi')}
+                </Button>
+              </StyledTooltip>
             </Grid>
             <Grid item>
-              <Button
-                variant="contained"
-                disabled={disabled}
-                onClick={() => {
-                  if (
-                    relatedIdentifiers.every(
-                      (ri) => ri.identifier !== relatedIdentiferInputText
-                    )
-                  ) {
-                    changeRelatedIdentifiers((relatedIdentifiers) => [
-                      ...relatedIdentifiers,
-                      {
-                        identifier: relatedIdentiferInputText,
-                        relatedIdentifierType: DOIIdentifierType.URL, // default to URL
-                        relationType: '',
-                      },
-                    ]);
-                  } else {
-                    setRelatedIdentifierError(
-                      'Cannot add duplicate identifier'
-                    );
-                  }
-                  setRelatedIdentifierInputText('');
-                }}
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_related_other_tooltip', {
+                  defaultValue: undefined,
+                })}
+                describeChild
+                open={!disabled}
               >
-                {t('DOIGenerationForm.add_related_other')}
-              </Button>
+                <Button
+                  variant="contained"
+                  disabled={disabled}
+                  onClick={() => {
+                    if (
+                      relatedIdentifiers.every(
+                        (ri) => ri.identifier !== relatedIdentiferInputText
+                      )
+                    ) {
+                      changeRelatedIdentifiers((relatedIdentifiers) => [
+                        ...relatedIdentifiers,
+                        {
+                          identifier: relatedIdentiferInputText,
+                          relatedIdentifierType: DOIIdentifierType.URL, // default to URL
+                          relationType: '',
+                        },
+                      ]);
+                    } else {
+                      setRelatedIdentifierError(
+                        'Cannot add duplicate identifier'
+                      );
+                    }
+                    setRelatedIdentifierInputText('');
+                  }}
+                >
+                  {t('DOIGenerationForm.add_related_other')}
+                </Button>
+              </StyledTooltip>
             </Grid>
           </Grid>
         </Grid>

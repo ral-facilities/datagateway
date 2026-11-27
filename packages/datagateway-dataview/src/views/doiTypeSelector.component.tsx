@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import {
   DOIViewType,
+  StyledTooltip,
   parseSearchToQuery,
   usePushQueryParams,
 } from 'datagateway-common';
@@ -90,22 +91,49 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
             size="small"
           >
             {/* Padding values to make these buttons the same height as the clear filters button */}
-            <ToggleButton value="all" sx={{ p: '3px 7px' }}>
-              {type === 'myDOIs'
-                ? t('my_doi_table.all')
-                : t('all_doi_table.all')}
-            </ToggleButton>
+            <StyledTooltip
+              title={
+                type === 'myDOIs'
+                  ? t('my_doi_table.all_tooltip')
+                  : t('all_doi_table.all_tooltip')
+              }
+              describeChild
+            >
+              <ToggleButton value="all" sx={{ p: '3px 7px' }}>
+                {type === 'myDOIs'
+                  ? t('my_doi_table.all')
+                  : t('all_doi_table.all')}
+              </ToggleButton>
+            </StyledTooltip>
 
-            <ToggleButton value="user" sx={{ p: '3px 7px' }}>
-              {type === 'myDOIs'
-                ? t('my_doi_table.user')
-                : t('all_doi_table.user')}
-            </ToggleButton>
-            <ToggleButton value="session" sx={{ p: '3px 7px' }}>
-              {type === 'myDOIs'
-                ? t('my_doi_table.session')
-                : t('all_doi_table.session')}
-            </ToggleButton>
+            <StyledTooltip
+              title={
+                type === 'myDOIs'
+                  ? t('my_doi_table.user_tooltip')
+                  : t('all_doi_table.user_tooltip')
+              }
+              describeChild
+            >
+              <ToggleButton value="user" sx={{ p: '3px 7px' }}>
+                {type === 'myDOIs'
+                  ? t('my_doi_table.user')
+                  : t('all_doi_table.user')}
+              </ToggleButton>
+            </StyledTooltip>
+            <StyledTooltip
+              title={
+                type === 'myDOIs'
+                  ? t('my_doi_table.session_tooltip')
+                  : t('all_doi_table.session_tooltip')
+              }
+              describeChild
+            >
+              <ToggleButton value="session" sx={{ p: '3px 7px' }}>
+                {type === 'myDOIs'
+                  ? t('my_doi_table.session')
+                  : t('all_doi_table.session')}
+              </ToggleButton>
+            </StyledTooltip>
           </ToggleButtonGroup>
         </Grid>
       </Grid>
@@ -124,15 +152,27 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
               aria-labelledby="doi-pi-selector-label"
               size="small"
             >
-              <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
-                {t('my_doi_table.pi_or_any')}
-              </ToggleButton>
-              <ToggleButton value={true} sx={{ p: '3px 7px' }}>
-                {t('my_doi_table.pi')}
-              </ToggleButton>
-              <ToggleButton value={false} sx={{ p: '3px 7px' }}>
-                {t('my_doi_table.any')}
-              </ToggleButton>
+              <StyledTooltip
+                title={t('my_doi_table.pi_or_any_tooltip')}
+                describeChild
+              >
+                <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
+                  {t('my_doi_table.pi_or_any')}
+                </ToggleButton>
+              </StyledTooltip>
+              <StyledTooltip title={t('my_doi_table.pi_tooltip')} describeChild>
+                <ToggleButton value={true} sx={{ p: '3px 7px' }}>
+                  {t('my_doi_table.pi')}
+                </ToggleButton>
+              </StyledTooltip>
+              <StyledTooltip
+                title={t('my_doi_table.any_tooltip')}
+                describeChild
+              >
+                <ToggleButton value={false} sx={{ p: '3px 7px' }}>
+                  {t('my_doi_table.any')}
+                </ToggleButton>
+              </StyledTooltip>
             </ToggleButtonGroup>
           </Grid>
         </Grid>
@@ -156,21 +196,48 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
               aria-labelledby="doi-open-selector-label"
               size="small"
             >
-              <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
-                {type === 'myDOIs'
-                  ? t('my_doi_table.open_or_closed')
-                  : t('all_doi_table.open_or_closed')}
-              </ToggleButton>
-              <ToggleButton value={true} sx={{ p: '3px 7px' }}>
-                {type === 'myDOIs'
-                  ? t('my_doi_table.open')
-                  : t('all_doi_table.open')}
-              </ToggleButton>
-              <ToggleButton value={false} sx={{ p: '3px 7px' }}>
-                {type === 'myDOIs'
-                  ? t('my_doi_table.closed')
-                  : t('all_doi_table.closed')}
-              </ToggleButton>
+              <StyledTooltip
+                title={
+                  type === 'myDOIs'
+                    ? t('my_doi_table.open_or_closed_tooltip')
+                    : t('all_doi_table.open_or_closed_tooltip')
+                }
+                describeChild
+              >
+                <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
+                  {type === 'myDOIs'
+                    ? t('my_doi_table.open_or_closed')
+                    : t('all_doi_table.open_or_closed')}
+                </ToggleButton>
+              </StyledTooltip>
+              <StyledTooltip
+                title={
+                  type === 'myDOIs'
+                    ? t('my_doi_table.open_tooltip')
+                    : t('all_doi_table.open_tooltip')
+                }
+                describeChild
+              >
+                <ToggleButton value={true} sx={{ p: '3px 7px' }}>
+                  {type === 'myDOIs'
+                    ? t('my_doi_table.open')
+                    : t('all_doi_table.open')}
+                </ToggleButton>
+              </StyledTooltip>
+              <StyledTooltip
+                title={
+                  type === 'myDOIs'
+                    ? t('my_doi_table.closed_tooltip')
+                    : t('all_doi_table.closed_tooltip')
+                }
+                describeChild
+              >
+                <ToggleButton value={false} sx={{ p: '3px 7px' }}>
+                  {type === 'myDOIs'
+                    ? t('my_doi_table.closed')
+                    : t('all_doi_table.closed')}
+                </ToggleButton>
+              </StyledTooltip>
             </ToggleButtonGroup>
           </Grid>
         </Grid>

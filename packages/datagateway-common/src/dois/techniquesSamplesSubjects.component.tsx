@@ -27,6 +27,7 @@ import {
   useSearchPANETTechniques,
 } from '../api/dois';
 import { BioPortalTerm } from '../app.types';
+import { StyledTooltip } from '../arrowtooltip.component';
 import DialogContent from '../dialogContent.component';
 import DialogTitle from '../dialogTitle.component';
 
@@ -353,13 +354,21 @@ const TechniquesSamplesSubjects: React.FC<{
         <Grid container item spacing={1} direction="row">
           <Grid container item xs={12} alignItems="center" spacing={1}>
             <Grid item xs="auto">
-              <Button
-                variant="contained"
-                onClick={() => setIsTechniqueDialogOpen(true)}
-                disabled={disabled}
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_technique_tooltip', {
+                  defaultValue: undefined,
+                })}
+                describeChild
+                open={!disabled}
               >
-                {t('DOIGenerationForm.add_technique')}
-              </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setIsTechniqueDialogOpen(true)}
+                  disabled={disabled}
+                >
+                  {t('DOIGenerationForm.add_technique')}
+                </Button>
+              </StyledTooltip>
               <TechniqueDialog
                 open={isTechniqueDialogOpen}
                 changeOpen={setIsTechniqueDialogOpen}
@@ -475,21 +484,29 @@ const TechniquesSamplesSubjects: React.FC<{
               />
             </Grid>
             <Grid item xs="auto">
-              <Button
-                variant="contained"
-                onClick={() => {
-                  if (
-                    samplesString.length > 0 &&
-                    !samples.includes(samplesString)
-                  ) {
-                    setSamples([...samples, samplesString]);
-                    setSamplesString('');
-                  }
-                }}
-                disabled={disabled}
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_sample_tooltip', {
+                  defaultValue: undefined,
+                })}
+                describeChild
+                open={!disabled}
               >
-                {t('DOIGenerationForm.add_sample')}
-              </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    if (
+                      samplesString.length > 0 &&
+                      !samples.includes(samplesString)
+                    ) {
+                      setSamples([...samples, samplesString]);
+                      setSamplesString('');
+                    }
+                  }}
+                  disabled={disabled}
+                >
+                  {t('DOIGenerationForm.add_sample')}
+                </Button>
+              </StyledTooltip>
             </Grid>
           </Grid>
           <Grid container item xs={12} alignItems="center" spacing={1}>
@@ -536,22 +553,30 @@ const TechniquesSamplesSubjects: React.FC<{
               />
             </Grid>
             <Grid item xs="auto">
-              <Button
-                variant="contained"
-                onClick={() => {
-                  if (
-                    subjectsString.length > 0 &&
-                    !subjectsString.startsWith('sample:') &&
-                    !subjects.includes(subjectsString)
-                  ) {
-                    setSubjects([...subjects, subjectsString]);
-                    setSubjectsString('');
-                  }
-                }}
-                disabled={disabled}
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_subject_tooltip', {
+                  defaultValue: undefined,
+                })}
+                describeChild
+                open={!disabled}
               >
-                {t('DOIGenerationForm.add_subject')}
-              </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    if (
+                      subjectsString.length > 0 &&
+                      !subjectsString.startsWith('sample:') &&
+                      !subjects.includes(subjectsString)
+                    ) {
+                      setSubjects([...subjects, subjectsString]);
+                      setSubjectsString('');
+                    }
+                  }}
+                  disabled={disabled}
+                >
+                  {t('DOIGenerationForm.add_subject')}
+                </Button>
+              </StyledTooltip>
             </Grid>
           </Grid>
         </Grid>
