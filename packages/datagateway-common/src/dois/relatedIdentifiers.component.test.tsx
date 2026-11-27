@@ -84,8 +84,24 @@ describe('Related identifiers form component', () => {
     vi.clearAllMocks();
   });
 
-  it('should let the user add related dois (but not if fetchDOI fails or duplicates) + lets you change the relation type + resource type', async () => {
+  it('should render as not expanded by default', async () => {
     renderComponent();
+
+    expect(
+      screen.queryByRole('textbox', {
+        name: 'DOIGenerationForm.related_identifier',
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  it('should let the user add related dois once expanded (but not if fetchDOI fails or duplicates) + lets you change the relation type + resource type', async () => {
+    renderComponent();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
 
     expect(
       within(
@@ -236,6 +252,12 @@ describe('Related identifiers form component', () => {
     props.relatedIdentifiers = [];
     renderComponent();
 
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
+
     await user.type(
       screen.getByRole('textbox', {
         name: 'DOIGenerationForm.related_identifier',
@@ -322,6 +344,12 @@ describe('Related identifiers form component', () => {
   it('should let the user delete related identifiers', async () => {
     renderComponent();
 
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
+
     expect(
       within(
         screen.getByRole('table', {
@@ -351,6 +379,12 @@ describe('Related identifiers form component', () => {
   it('should render dois as links and show title on hover', async () => {
     renderComponent();
 
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
+
     const doiLink = screen.getByRole('link', { name: 'related.doi.1' });
 
     expect(doiLink).toHaveAttribute('href', 'https://doi.org/related.doi.1');
@@ -366,14 +400,26 @@ describe('Related identifiers form component', () => {
 
     renderComponent();
 
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
+
     const urlLink = screen.getByRole('link', { name: 'https://example.com' });
 
     expect(urlLink).toHaveAttribute('href', 'https://example.com');
   });
 
-  it('should disable all inputs when disabled prop is true', () => {
+  it('should disable all inputs when disabled prop is true', async () => {
     props.disabled = true;
     renderComponent();
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
 
     expect(
       screen.getByRole('textbox', {

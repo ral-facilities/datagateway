@@ -1,12 +1,15 @@
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Button,
   FormControl,
   Grid,
   InputLabel,
   Link,
   MenuItem,
-  Paper,
   Select,
   Table,
   TableBody,
@@ -50,19 +53,34 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
   // hardcode doiHandleUrl as doi.org since we're validating using doi.org/RA they need to be real DOIs
   const doiHandleUrl = 'https://doi.org';
 
+  const [expanded, setExpanded] = React.useState<boolean>(false);
+
+  const handleChange = (_event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded);
+  };
+
   return (
-    <Paper
+    <Accordion
+      expanded={expanded}
+      onChange={handleChange}
+      elevation={0}
+      variant="outlined"
+      disableGutters
       sx={{
         background: (theme) =>
           theme.palette.mode === 'dark'
             ? theme.palette.grey[800]
             : theme.palette.grey[100],
-        padding: 1,
       }}
-      elevation={0}
-      variant="outlined"
     >
-      <Grid container direction="row" spacing={1}>
+      <AccordionSummary
+        expandIcon={<ExpandMore />}
+        aria-controls="panel-content"
+        id="panel-header"
+        sx={{
+          pl: 1,
+        }}
+      >
         <Grid container item alignItems="end" spacing={0.5}>
           <Grid item>
             <Typography
@@ -73,199 +91,280 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
               {t('DOIGenerationForm.related_identifiers')}
             </Typography>
           </Grid>
-          <Grid item>
-            <Tooltip
-              title={
-                <Trans
-                  i18nKey="DOIGenerationForm.related_identifiers_help_tooltip"
-                  components={{
-                    Link: <Link />,
+          {expanded && (
+            <Grid item>
+              <Tooltip
+                title={
+                  <Trans
+                    i18nKey="DOIGenerationForm.related_identifiers_help_tooltip"
+                    components={{
+                      Link: <Link />,
+                    }}
+                  />
+                }
+              >
+                <HelpOutlineIcon fontSize="small" />
+              </Tooltip>
+            </Grid>
+          )}
+        </Grid>
+      </AccordionSummary>
+      <AccordionDetails
+        sx={{
+          pl: 1,
+        }}
+      >
+        <Grid container direction="row" spacing={1}>
+          <Grid container item spacing={1} alignItems="center">
+            <Grid item xs>
+              <TextField
+                label={t('DOIGenerationForm.related_identifier')}
+                fullWidth
+                error={relatedIdentifierError !== ''}
+                helperText={relatedIdentifierError}
+                color="secondary"
+                InputProps={{
+                  sx: {
+                    backgroundColor: 'background.default',
+                  },
+                }}
+                value={relatedIdentiferInputText}
+                onChange={(event) => {
+                  setRelatedIdentifierInputText(event.target.value);
+                  setRelatedIdentifierError('');
+                }}
+                disabled={disabled}
+              />
+            </Grid>
+            <Grid
+              container
+              item
+              spacing={1}
+              xs="auto"
+              alignSelf="start"
+              mt={0.25}
+            >
+              <Grid item>
+                <Button
+                  variant="contained"
+                  disabled={disabled}
+                  onClick={() => {
+                    // don't let the user add duplicates
+                    if (
+                      relatedIdentifiers.every(
+                        (ri) => ri.identifier !== relatedIdentiferInputText
+                      )
+                    ) {
+                      checkDOI({ throwOnError: true })
+                        .then((response) => {
+                          // add DOI
+                          if (response.data) {
+                            changeRelatedIdentifiers((dois) => [
+                              ...dois,
+                              response.data,
+                            ]);
+                            setRelatedIdentifierInputText('');
+                          }
+                        })
+                        .catch((error: Error | AxiosError) => {
+                          setRelatedIdentifierError(error.message);
+                        });
+                    } else {
+                      setRelatedIdentifierError(
+                        'Cannot add duplicate identifier'
+                      );
+                      setRelatedIdentifierInputText('');
+                    }
                   }}
-                />
-              }
-            >
-              <HelpOutlineIcon fontSize="small" />
-            </Tooltip>
-          </Grid>
-        </Grid>
-        <Grid container item spacing={1} alignItems="center">
-          <Grid item xs>
-            <TextField
-              label={t('DOIGenerationForm.related_identifier')}
-              fullWidth
-              error={relatedIdentifierError !== ''}
-              helperText={relatedIdentifierError}
-              color="secondary"
-              InputProps={{
-                sx: {
-                  backgroundColor: 'background.default',
-                },
-              }}
-              value={relatedIdentiferInputText}
-              onChange={(event) => {
-                setRelatedIdentifierInputText(event.target.value);
-                setRelatedIdentifierError('');
-              }}
-              disabled={disabled}
-            />
-          </Grid>
-          <Grid
-            container
-            item
-            spacing={1}
-            xs="auto"
-            alignSelf="start"
-            mt={0.25}
-          >
-            <Grid item>
-              <Button
-                variant="contained"
-                disabled={disabled}
-                onClick={() => {
-                  // don't let the user add duplicates
-                  if (
-                    relatedIdentifiers.every(
-                      (ri) => ri.identifier !== relatedIdentiferInputText
-                    )
-                  ) {
-                    checkDOI({ throwOnError: true })
-                      .then((response) => {
-                        // add DOI
-                        if (response.data) {
-                          changeRelatedIdentifiers((dois) => [
-                            ...dois,
-                            response.data,
-                          ]);
-                          setRelatedIdentifierInputText('');
-                        }
-                      })
-                      .catch((error: Error | AxiosError) => {
-                        setRelatedIdentifierError(error.message);
-                      });
-                  } else {
-                    setRelatedIdentifierError(
-                      'Cannot add duplicate identifier'
-                    );
+                >
+                  {t('DOIGenerationForm.add_related_doi')}
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  disabled={disabled}
+                  onClick={() => {
+                    if (
+                      relatedIdentifiers.every(
+                        (ri) => ri.identifier !== relatedIdentiferInputText
+                      )
+                    ) {
+                      changeRelatedIdentifiers((relatedIdentifiers) => [
+                        ...relatedIdentifiers,
+                        {
+                          identifier: relatedIdentiferInputText,
+                          relatedIdentifierType: DOIIdentifierType.URL, // default to URL
+                          relationType: '',
+                        },
+                      ]);
+                    } else {
+                      setRelatedIdentifierError(
+                        'Cannot add duplicate identifier'
+                      );
+                    }
                     setRelatedIdentifierInputText('');
-                  }
-                }}
-              >
-                {t('DOIGenerationForm.add_related_doi')}
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="contained"
-                disabled={disabled}
-                onClick={() => {
-                  if (
-                    relatedIdentifiers.every(
-                      (ri) => ri.identifier !== relatedIdentiferInputText
-                    )
-                  ) {
-                    changeRelatedIdentifiers((relatedIdentifiers) => [
-                      ...relatedIdentifiers,
-                      {
-                        identifier: relatedIdentiferInputText,
-                        relatedIdentifierType: DOIIdentifierType.URL, // default to URL
-                        relationType: '',
-                      },
-                    ]);
-                  } else {
-                    setRelatedIdentifierError(
-                      'Cannot add duplicate identifier'
-                    );
-                  }
-                  setRelatedIdentifierInputText('');
-                }}
-              >
-                {t('DOIGenerationForm.add_related_other')}
-              </Button>
+                  }}
+                >
+                  {t('DOIGenerationForm.add_related_other')}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        {relatedIdentifiers.length > 0 && (
-          <Grid item>
-            <Table
-              sx={{
-                backgroundColor: 'background.default',
-              }}
-              size="small"
-              aria-labelledby="related-identifiers-label"
-            >
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    {t('DOIGenerationForm.related_identifier_identifier')}
-                  </TableCell>
-                  <TableCell>
-                    {t('DOIGenerationForm.related_identifier_identifier_type')}
-                  </TableCell>
-                  <TableCell>
-                    {t('DOIGenerationForm.related_identifier_relationship')}
-                  </TableCell>
-                  <TableCell>
-                    {t('DOIGenerationForm.related_identifier_resource_type')}
-                  </TableCell>
-                  <TableCell>
-                    {t('DOIGenerationForm.related_identifier_action')}
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {relatedIdentifiers.map((relatedIdentifier) => (
-                  <TableRow key={relatedIdentifier.identifier}>
+          {relatedIdentifiers.length > 0 && (
+            <Grid item>
+              <Table
+                sx={{
+                  backgroundColor: 'background.default',
+                }}
+                size="small"
+                aria-labelledby="related-identifiers-label"
+              >
+                <TableHead>
+                  <TableRow>
                     <TableCell>
-                      {relatedIdentifier.relatedIdentifierType ===
-                      DOIIdentifierType.DOI ? (
-                        <Link
-                          href={`${doiHandleUrl}/${relatedIdentifier.identifier}`}
-                          target="_blank"
-                        >
-                          {relatedIdentifier.identifier}
-                        </Link>
-                      ) : relatedIdentifier.relatedIdentifierType ===
-                        DOIIdentifierType.URL ? (
-                        <Link
-                          href={relatedIdentifier.identifier}
-                          target="_blank"
-                        >
-                          {relatedIdentifier.identifier}
-                        </Link>
-                      ) : (
-                        <Typography>{relatedIdentifier.identifier}</Typography>
+                      {t('DOIGenerationForm.related_identifier_identifier')}
+                    </TableCell>
+                    <TableCell>
+                      {t(
+                        'DOIGenerationForm.related_identifier_identifier_type'
                       )}
                     </TableCell>
                     <TableCell>
-                      {relatedIdentifier.relatedIdentifierType ===
-                      DOIIdentifierType.DOI ? (
-                        <Typography>{DOIIdentifierType.DOI}</Typography>
-                      ) : (
+                      {t('DOIGenerationForm.related_identifier_relationship')}
+                    </TableCell>
+                    <TableCell>
+                      {t('DOIGenerationForm.related_identifier_resource_type')}
+                    </TableCell>
+                    <TableCell>
+                      {t('DOIGenerationForm.related_identifier_action')}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {relatedIdentifiers.map((relatedIdentifier) => (
+                    <TableRow key={relatedIdentifier.identifier}>
+                      <TableCell>
+                        {relatedIdentifier.relatedIdentifierType ===
+                        DOIIdentifierType.DOI ? (
+                          <Link
+                            href={`${doiHandleUrl}/${relatedIdentifier.identifier}`}
+                            target="_blank"
+                          >
+                            {relatedIdentifier.identifier}
+                          </Link>
+                        ) : relatedIdentifier.relatedIdentifierType ===
+                          DOIIdentifierType.URL ? (
+                          <Link
+                            href={relatedIdentifier.identifier}
+                            target="_blank"
+                          >
+                            {relatedIdentifier.identifier}
+                          </Link>
+                        ) : (
+                          <Typography>
+                            {relatedIdentifier.identifier}
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {relatedIdentifier.relatedIdentifierType ===
+                        DOIIdentifierType.DOI ? (
+                          <Typography>{DOIIdentifierType.DOI}</Typography>
+                        ) : (
+                          <FormControl
+                            fullWidth
+                            size="small"
+                            required
+                            sx={{ minWidth: 150 }}
+                            disabled={disabled}
+                          >
+                            <InputLabel
+                              id={`${relatedIdentifier.identifier.replaceAll(
+                                ' ',
+                                '-'
+                              )}-identifier-type-select-label`}
+                            >
+                              {t(
+                                'DOIGenerationForm.related_identifier_identifier_type'
+                              )}
+                            </InputLabel>
+                            <Select
+                              labelId={`${relatedIdentifier.identifier.replaceAll(
+                                ' ',
+                                '-'
+                              )}-identifier-type-select-label`}
+                              value={relatedIdentifier.relatedIdentifierType}
+                              label={t(
+                                'DOIGenerationForm.related_identifier_identifier_type'
+                              )}
+                              onChange={(event) => {
+                                changeRelatedIdentifiers((dois) => {
+                                  return dois.map((d) => {
+                                    if (
+                                      d.identifier ===
+                                      relatedIdentifier.identifier
+                                    ) {
+                                      return {
+                                        ...d,
+                                        relatedIdentifierType: event.target
+                                          .value as DOIIdentifierType,
+                                      } satisfies RelatedIdentifier;
+                                    } else {
+                                      return d;
+                                    }
+                                  });
+                                });
+                              }}
+                            >
+                              {Object.values(DOIIdentifierType)
+                                .filter(
+                                  (identifierType) =>
+                                    identifierType !== DOIIdentifierType.DOI
+                                )
+                                .map((identifierType) => {
+                                  return (
+                                    <MenuItem
+                                      key={identifierType}
+                                      value={identifierType}
+                                    >
+                                      {identifierType}
+                                    </MenuItem>
+                                  );
+                                })}
+                            </Select>
+                          </FormControl>
+                        )}
+                      </TableCell>
+                      <TableCell>
                         <FormControl
                           fullWidth
                           size="small"
                           required
                           sx={{ minWidth: 150 }}
                           disabled={disabled}
+                          error={
+                            showErrors && relatedIdentifier.relationType === ''
+                          }
                         >
                           <InputLabel
                             id={`${relatedIdentifier.identifier.replaceAll(
                               ' ',
                               '-'
-                            )}-identifier-type-select-label`}
+                            )}-relationship-select-label`}
                           >
                             {t(
-                              'DOIGenerationForm.related_identifier_identifier_type'
+                              'DOIGenerationForm.related_identifier_relationship'
                             )}
                           </InputLabel>
                           <Select
                             labelId={`${relatedIdentifier.identifier.replaceAll(
                               ' ',
                               '-'
-                            )}-identifier-type-select-label`}
-                            value={relatedIdentifier.relatedIdentifierType}
+                            )}-relationship-select-label`}
+                            value={relatedIdentifier.relationType}
                             label={t(
-                              'DOIGenerationForm.related_identifier_identifier_type'
+                              'DOIGenerationForm.related_identifier_relationship'
                             )}
                             onChange={(event) => {
                               changeRelatedIdentifiers((dois) => {
@@ -276,8 +375,9 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                                   ) {
                                     return {
                                       ...d,
-                                      relatedIdentifierType: event.target
-                                        .value as DOIIdentifierType,
+                                      relationType: event.target.value as
+                                        | DOIRelationType
+                                        | '',
                                     } satisfies RelatedIdentifier;
                                   } else {
                                     return d;
@@ -286,178 +386,112 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
                               });
                             }}
                           >
-                            {Object.values(DOIIdentifierType)
+                            {Object.values(DOIRelationType)
                               .filter(
-                                (identifierType) =>
-                                  identifierType !== DOIIdentifierType.DOI
+                                (relation) =>
+                                  !relation.includes('Version') &&
+                                  !relation.includes('Part') &&
+                                  !relation.includes('Collect')
                               )
-                              .map((identifierType) => {
+                              .map((relation) => {
                                 return (
-                                  <MenuItem
-                                    key={identifierType}
-                                    value={identifierType}
-                                  >
-                                    {identifierType}
+                                  <MenuItem key={relation} value={relation}>
+                                    {relation}
                                   </MenuItem>
                                 );
                               })}
                           </Select>
                         </FormControl>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <FormControl
-                        fullWidth
-                        size="small"
-                        required
-                        sx={{ minWidth: 150 }}
-                        disabled={disabled}
-                        error={
-                          showErrors && relatedIdentifier.relationType === ''
-                        }
-                      >
-                        <InputLabel
-                          id={`${relatedIdentifier.identifier.replaceAll(
-                            ' ',
-                            '-'
-                          )}-relationship-select-label`}
+                      </TableCell>
+                      <TableCell>
+                        <FormControl
+                          fullWidth
+                          size="small"
+                          required
+                          sx={{ minWidth: 150 }}
+                          disabled={disabled}
+                          error={
+                            showErrors &&
+                            relatedIdentifier.relatedItemType === undefined
+                          }
                         >
-                          {t(
-                            'DOIGenerationForm.related_identifier_relationship'
-                          )}
-                        </InputLabel>
-                        <Select
-                          labelId={`${relatedIdentifier.identifier.replaceAll(
-                            ' ',
-                            '-'
-                          )}-relationship-select-label`}
-                          value={relatedIdentifier.relationType}
-                          label={t(
-                            'DOIGenerationForm.related_identifier_relationship'
-                          )}
-                          onChange={(event) => {
-                            changeRelatedIdentifiers((dois) => {
-                              return dois.map((d) => {
-                                if (
-                                  d.identifier === relatedIdentifier.identifier
-                                ) {
-                                  return {
-                                    ...d,
-                                    relationType: event.target.value as
-                                      | DOIRelationType
-                                      | '',
-                                  } satisfies RelatedIdentifier;
-                                } else {
-                                  return d;
-                                }
+                          <InputLabel
+                            id={`${relatedIdentifier.identifier.replaceAll(
+                              ' ',
+                              '-'
+                            )}-resource-type-select-label`}
+                          >
+                            {t(
+                              'DOIGenerationForm.related_identifier_resource_type'
+                            )}
+                          </InputLabel>
+                          <Select
+                            labelId={`${relatedIdentifier.identifier.replaceAll(
+                              ' ',
+                              '-'
+                            )}-resource-type-select-label`}
+                            value={relatedIdentifier.relatedItemType ?? ''}
+                            label={t(
+                              'DOIGenerationForm.related_identifier_resource_type'
+                            )}
+                            onChange={(event) => {
+                              changeRelatedIdentifiers((dois) => {
+                                return dois.map((d) => {
+                                  if (
+                                    d.identifier ===
+                                    relatedIdentifier.identifier
+                                  ) {
+                                    return {
+                                      ...d,
+                                      relatedItemType:
+                                        event.target.value !== ''
+                                          ? (event.target
+                                              .value as DOIResourceType)
+                                          : undefined,
+                                    } satisfies RelatedIdentifier;
+                                  } else {
+                                    return d;
+                                  }
+                                });
                               });
-                            });
-                          }}
-                        >
-                          {Object.values(DOIRelationType)
-                            .filter(
-                              (relation) =>
-                                !relation.includes('Version') &&
-                                !relation.includes('Part') &&
-                                !relation.includes('Collect')
-                            )
-                            .map((relation) => {
+                            }}
+                          >
+                            {Object.values(DOIResourceType).map((type) => {
                               return (
-                                <MenuItem key={relation} value={relation}>
-                                  {relation}
+                                <MenuItem key={type} value={type}>
+                                  {type}
                                 </MenuItem>
                               );
                             })}
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>
-                      <FormControl
-                        fullWidth
-                        size="small"
-                        required
-                        sx={{ minWidth: 150 }}
-                        disabled={disabled}
-                        error={
-                          showErrors &&
-                          relatedIdentifier.relatedItemType === undefined
-                        }
-                      >
-                        <InputLabel
-                          id={`${relatedIdentifier.identifier.replaceAll(
-                            ' ',
-                            '-'
-                          )}-resource-type-select-label`}
-                        >
-                          {t(
-                            'DOIGenerationForm.related_identifier_resource_type'
-                          )}
-                        </InputLabel>
-                        <Select
-                          labelId={`${relatedIdentifier.identifier.replaceAll(
-                            ' ',
-                            '-'
-                          )}-resource-type-select-label`}
-                          value={relatedIdentifier.relatedItemType ?? ''}
-                          label={t(
-                            'DOIGenerationForm.related_identifier_resource_type'
-                          )}
-                          onChange={(event) => {
-                            changeRelatedIdentifiers((dois) => {
-                              return dois.map((d) => {
-                                if (
-                                  d.identifier === relatedIdentifier.identifier
-                                ) {
-                                  return {
-                                    ...d,
-                                    relatedItemType:
-                                      event.target.value !== ''
-                                        ? (event.target
-                                            .value as DOIResourceType)
-                                        : undefined,
-                                  } satisfies RelatedIdentifier;
-                                } else {
-                                  return d;
-                                }
-                              });
-                            });
-                          }}
-                        >
-                          {Object.values(DOIResourceType).map((type) => {
-                            return (
-                              <MenuItem key={type} value={type}>
-                                {type}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="small"
-                        onClick={() =>
-                          changeRelatedIdentifiers((dois) =>
-                            dois.filter(
-                              (d) =>
-                                d.identifier !== relatedIdentifier.identifier
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          onClick={() =>
+                            changeRelatedIdentifiers((dois) =>
+                              dois.filter(
+                                (d) =>
+                                  d.identifier !== relatedIdentifier.identifier
+                              )
                             )
-                          )
-                        }
-                        color="secondary"
-                        disabled={disabled}
-                      >
-                        {t('DOIGenerationForm.delete_related_identifier')}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Grid>
-        )}
-      </Grid>
-    </Paper>
+                          }
+                          color="secondary"
+                          disabled={disabled}
+                        >
+                          {t('DOIGenerationForm.delete_related_identifier')}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Grid>
+          )}
+        </Grid>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

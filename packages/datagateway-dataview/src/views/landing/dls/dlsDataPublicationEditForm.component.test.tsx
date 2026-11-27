@@ -497,8 +497,13 @@ describe('DOI edit form component', () => {
       '2'
     );
 
+    // expand related identifiers panel to allow them to be edited
+    await user.click(
+      screen.getByRole('button', {
+        name: 'DOIGenerationForm.related_identifiers',
+      })
+    );
     // editing related DOIs
-
     expect(
       await screen.findByRole(
         'table',
