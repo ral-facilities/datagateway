@@ -193,7 +193,11 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
             mt={0.25}
           >
             <Grid item>
-              <StyledTooltip title={t('DOIGenerationForm.add_creator_tooltip')}>
+              <StyledTooltip
+                title={t('DOIGenerationForm.add_creator_tooltip')}
+                describeChild
+                open={!(selectedUsers.length === 0 || disabled)}
+              >
                 <Button
                   variant="contained"
                   onClick={handleAddCreatorOrContributorClick(true)}
@@ -207,6 +211,8 @@ const CreatorsAndContributors: React.FC<CreatorsAndContributorsProps> = (
               <Grid item>
                 <StyledTooltip
                   title={t('DOIGenerationForm.add_contributor_tooltip')}
+                  describeChild
+                  open={!(selectedUsers.length === 0 || disabled)}
                 >
                   <Button
                     variant="contained"

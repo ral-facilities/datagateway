@@ -97,6 +97,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                   ? t('my_doi_table.all_tooltip')
                   : t('all_doi_table.all_tooltip')
               }
+              describeChild
             >
               <ToggleButton value="all" sx={{ p: '3px 7px' }}>
                 {type === 'myDOIs'
@@ -111,6 +112,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                   ? t('my_doi_table.user_tooltip')
                   : t('all_doi_table.user_tooltip')
               }
+              describeChild
             >
               <ToggleButton value="user" sx={{ p: '3px 7px' }}>
                 {type === 'myDOIs'
@@ -124,6 +126,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                   ? t('my_doi_table.session_tooltip')
                   : t('all_doi_table.session_tooltip')
               }
+              describeChild
             >
               <ToggleButton value="session" sx={{ p: '3px 7px' }}>
                 {type === 'myDOIs'
@@ -149,17 +152,23 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
               aria-labelledby="doi-pi-selector-label"
               size="small"
             >
-              <StyledTooltip title={t('my_doi_table.pi_or_any_tooltip')}>
+              <StyledTooltip
+                title={t('my_doi_table.pi_or_any_tooltip')}
+                describeChild
+              >
                 <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
                   {t('my_doi_table.pi_or_any')}
                 </ToggleButton>
               </StyledTooltip>
-              <StyledTooltip title={t('my_doi_table.pi_tooltip')}>
+              <StyledTooltip title={t('my_doi_table.pi_tooltip')} describeChild>
                 <ToggleButton value={true} sx={{ p: '3px 7px' }}>
                   {t('my_doi_table.pi')}
                 </ToggleButton>
               </StyledTooltip>
-              <StyledTooltip title={t('my_doi_table.any_tooltip')}>
+              <StyledTooltip
+                title={t('my_doi_table.any_tooltip')}
+                describeChild
+              >
                 <ToggleButton value={false} sx={{ p: '3px 7px' }}>
                   {t('my_doi_table.any')}
                 </ToggleButton>
@@ -193,6 +202,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                     ? t('my_doi_table.open_or_closed_tooltip')
                     : t('all_doi_table.open_or_closed_tooltip')
                 }
+                describeChild
               >
                 <ToggleButton value={'undefined'} sx={{ p: '3px 7px' }}>
                   {type === 'myDOIs'
@@ -206,6 +216,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                     ? t('my_doi_table.open_tooltip')
                     : t('all_doi_table.open_tooltip')
                 }
+                describeChild
               >
                 <ToggleButton value={true} sx={{ p: '3px 7px' }}>
                   {type === 'myDOIs'
@@ -219,6 +230,7 @@ const DOITypeSelector = (props: DOITypeSelectorProps): React.ReactElement => {
                     ? t('my_doi_table.closed_tooltip')
                     : t('all_doi_table.closed_tooltip')
                 }
+                describeChild
               >
                 <ToggleButton value={false} sx={{ p: '3px 7px' }}>
                   {type === 'myDOIs'

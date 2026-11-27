@@ -121,6 +121,8 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
             <Grid item>
               <StyledTooltip
                 title={t('DOIGenerationForm.add_related_doi_tooltip')}
+                describeChild
+                open={!disabled}
               >
                 <Button
                   variant="contained"
@@ -159,9 +161,10 @@ const RelatedIdentifiers: React.FC<RelatedIdentifiersProps> = (props) => {
               </StyledTooltip>
             </Grid>
             <Grid item>
-              {' '}
               <StyledTooltip
                 title={t('DOIGenerationForm.add_related_other_tooltip')}
+                describeChild
+                open={!disabled}
               >
                 <Button
                   variant="contained"

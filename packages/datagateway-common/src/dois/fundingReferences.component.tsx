@@ -304,7 +304,19 @@ const FundingReferences: React.FC<FundingReferencesProps> = (props) => {
             />
           </Grid>
           <Grid item xs="auto">
-            <StyledTooltip title={t('DOIGenerationForm.add_by_ror_tooltip')}>
+            <StyledTooltip
+              title={t('DOIGenerationForm.add_by_ror_tooltip')}
+              describeChild
+              open={
+                !(
+                  disabled ||
+                  fundingReferences.some(
+                    (fr) =>
+                      fr.funderIdentifier === NO_FUNDER_OPTION_FUNDINGIDENTIFIER
+                  )
+                )
+              }
+            >
               <Button
                 variant="contained"
                 onClick={() => setIsRORDialogOpen(true)}
